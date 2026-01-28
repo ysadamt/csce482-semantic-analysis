@@ -37,7 +37,7 @@ def step_1_scrape_reddit():
             user_agent="methane_research_bot_v1"
         )
         
-        keywords = 'methane cows environment climate greenhouse gas emission dairy industry'
+        keywords = 'methane cows climate greenhouse gas emission dairy industry'
         limit = 500
         print(f"Searching Reddit for: '{keywords}'...")
         
@@ -134,6 +134,7 @@ def step_3_network_analysis(df):
         'would', 'could', 'should', 'people', 'like', 'make', 'think'
     }
     stop_words.update(additional_stops)
+    lemmatizer = WordNetLemmatizer()
     
     # 2. Extract co-occurrences
     co_occurrence = Counter()
@@ -142,7 +143,8 @@ def step_3_network_analysis(df):
         # Simple cleaning: remove punctuation, lowercase
         clean = re.sub(r'[^\w\s]', '', text.lower())
         # Filter tokens: no stop words, must be longer than 2 chars (keeps "cow")
-        tokens = [w for w in clean.split() if w not in stop_words and len(w) > 2]
+        # Lemmatize to reduce words to base form (e.g., "emissions" -> "emission")
+        tokens = [lemmatizer.lemmatize(w) for w in clean.split() if w not in stop_words and len(w) > 2]
         
         # Create edges between all unique words in the same post
         unique_tokens = sorted(list(set(tokens)))
@@ -192,7 +194,7 @@ def step_3_network_analysis(df):
         G, pos,
         node_size=node_sizes,
         node_color=node_colors,
-        cmap=plt.cm.YlGnBu, # A nice Blue-Green-Yellow colormap
+        cmap=plt.cm.Pastel1, # Light pastel colormap
         alpha=0.9,
         edgecolors='#333333', # Thin dark border for definition
         linewidths=1.0
