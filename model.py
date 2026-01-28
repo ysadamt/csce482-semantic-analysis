@@ -37,7 +37,7 @@ def step_1_scrape_reddit():
             user_agent="methane_research_bot_v1"
         )
         
-        keywords = 'methane cows environment climate green house gas emission dairy industry'
+        keywords = 'methane cows environment climate greenhouse gas emission dairy industry'
         limit = 500
         print(f"Searching Reddit for: '{keywords}'...")
         
