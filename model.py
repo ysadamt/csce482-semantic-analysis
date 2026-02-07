@@ -4,13 +4,14 @@ import re
 import nltk
 import networkx as nx
 import matplotlib.pyplot as plt
+import seaborn as sns
 from collections import Counter
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
 from dotenv import load_dotenv
 import os
 
@@ -37,7 +38,7 @@ def step_1_scrape_reddit():
             user_agent="methane_research_bot_v1"
         )
         
-        keywords = 'methane cows climate greenhouse gas emission dairy industry'
+        keywords = 'methane cows climate emission dairy industry'
         limit = 500
         print(f"Searching Reddit for: '{keywords}'...")
         
@@ -112,7 +113,35 @@ def step_2_build_model():
     # Show detailed classification metrics
     y_pred = model.predict(X_test)
     print("\nClassification Report:")
-    print(classification_report(y_test, y_pred, target_names=['Anti', 'Neutral', 'Pro', 'News']))
+    target_names = ['Anti', 'Neutral', 'Pro', 'News']
+    print(classification_report(y_test, y_pred, target_names=target_names))
+    
+    # --- Visualization: Confusion Matrix Heatmap ---
+    cm = confusion_matrix(y_test, y_pred)
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    
+    # Confusion Matrix
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+                xticklabels=target_names, yticklabels=target_names, ax=axes[0])
+    axes[0].set_xlabel('Predicted', fontsize=12)
+    axes[0].set_ylabel('Actual', fontsize=12)
+    axes[0].set_title('Confusion Matrix', fontsize=14, fontweight='bold')
+    
+    # Class Distribution in Training Data
+    class_counts = df_train['sentiment'].value_counts().sort_index()
+    colors = sns.color_palette('pastel')[:4]
+    axes[1].bar(target_names, [class_counts.get(i, 0) for i in range(4)], color=colors, edgecolor='#333333')
+    axes[1].set_xlabel('Sentiment Class', fontsize=12)
+    axes[1].set_ylabel('Number of Samples', fontsize=12)
+    axes[1].set_title('Training Data Distribution', fontsize=14, fontweight='bold')
+    
+    # Add value labels on bars
+    for i, v in enumerate([class_counts.get(i, 0) for i in range(4)]):
+        axes[1].text(i, v + 50, str(v), ha='center', fontweight='bold')
+    
+    plt.tight_layout()
+    plt.show()
+    print("✅ Model Visualizations Generated.")
     
     return model, vectorizer
 
@@ -243,10 +272,80 @@ def step_4_final_analysis(df, model, vectorizer):
     
     # 3. Results
     print("\nFINAL RESULTS SUMMARY:")
-    print(df['predicted_sentiment'].value_counts())
+    sentiment_counts = df['predicted_sentiment'].value_counts()
+    print(sentiment_counts)
     
     print("\nSAMPLE CLASSIFICATIONS:")
     print(df[['text', 'predicted_sentiment']].head(5))
+    
+    # --- Visualization: Sentiment Analysis Results ---
+    fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+    
+    # Define colors for each sentiment
+    color_map = {'Anti': '#ff6b6b', 'Neutral': '#ffd93d', 'Pro': '#6bcb77', 'News': '#4d96ff'}
+    colors = [color_map.get(label, '#999999') for label in sentiment_counts.index]
+    
+    # 1. Pie Chart - Sentiment Distribution
+    axes[0].pie(sentiment_counts.values, labels=sentiment_counts.index, autopct='%1.1f%%',
+                colors=colors, explode=[0.02]*len(sentiment_counts), shadow=True,
+                textprops={'fontsize': 11, 'fontweight': 'bold'})
+    axes[0].set_title('Sentiment Distribution (Pie)', fontsize=14, fontweight='bold')
+    
+    # 2. Bar Chart - Sentiment Counts
+    bars = axes[1].bar(sentiment_counts.index, sentiment_counts.values, color=colors, edgecolor='#333333')
+    axes[1].set_xlabel('Sentiment', fontsize=12)
+    axes[1].set_ylabel('Number of Posts', fontsize=12)
+    axes[1].set_title('Sentiment Distribution (Bar)', fontsize=14, fontweight='bold')
+    # Add value labels on bars
+    for bar, val in zip(bars, sentiment_counts.values):
+        axes[1].text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1, 
+                     str(val), ha='center', fontweight='bold', fontsize=11)
+    
+    # 3. Horizontal Bar Chart with Percentage
+    total = sentiment_counts.sum()
+    percentages = (sentiment_counts.values / total) * 100
+    y_pos = range(len(sentiment_counts))
+    bars_h = axes[2].barh(y_pos, percentages, color=colors, edgecolor='#333333')
+    axes[2].set_yticks(y_pos)
+    axes[2].set_yticklabels(sentiment_counts.index, fontsize=11)
+    axes[2].set_xlabel('Percentage (%)', fontsize=12)
+    axes[2].set_title('Sentiment Percentage', fontsize=14, fontweight='bold')
+    # Add percentage labels
+    for bar, pct in zip(bars_h, percentages):
+        axes[2].text(bar.get_width() + 0.5, bar.get_y() + bar.get_height()/2,
+                     f'{pct:.1f}%', va='center', fontweight='bold', fontsize=11)
+    axes[2].set_xlim(0, max(percentages) * 1.15)
+    
+    plt.suptitle('Reddit Sentiment Analysis: Methane & Dairy Discourse', 
+                 fontsize=16, fontweight='bold', y=1.02)
+    plt.tight_layout()
+    plt.show()
+    
+    # --- Additional Visualization: Score vs Sentiment ---
+    if 'score' in df.columns:
+        fig2, ax = plt.subplots(figsize=(10, 6))
+        
+        # Box plot of Reddit scores by sentiment
+        sentiment_order = ['Anti', 'Neutral', 'Pro', 'News']
+        available_sentiments = [s for s in sentiment_order if s in df['predicted_sentiment'].values]
+        
+        box_data = [df[df['predicted_sentiment'] == s]['score'].values for s in available_sentiments]
+        bp = ax.boxplot(box_data, labels=available_sentiments, patch_artist=True)
+        
+        # Color the boxes
+        for patch, sentiment in zip(bp['boxes'], available_sentiments):
+            patch.set_facecolor(color_map.get(sentiment, '#999999'))
+            patch.set_alpha(0.7)
+        
+        ax.set_xlabel('Predicted Sentiment', fontsize=12)
+        ax.set_ylabel('Reddit Score (Upvotes)', fontsize=12)
+        ax.set_title('Reddit Post Scores by Sentiment Category', fontsize=14, fontweight='bold')
+        ax.grid(axis='y', alpha=0.3)
+        
+        plt.tight_layout()
+        plt.show()
+    
+    print("✅ Final Analysis Visualizations Generated.")
 
 # ======================================================
 # MAIN EXECUTION FLOW
