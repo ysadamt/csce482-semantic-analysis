@@ -5,13 +5,13 @@ import nltk
 import networkx as nx
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 from collections import Counter
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, confusion_matrix
+from scipy.special import softmax
+from transformers import AutoModelForSequenceClassification, AutoTokenizer, AutoConfig
+import torch
 from dotenv import load_dotenv
 import os
 
@@ -38,21 +38,56 @@ def step_1_scrape_reddit():
             user_agent="methane_research_bot_v1"
         )
         
-        keywords = 'methane cows climate emission dairy industry'
-        limit = 500
-        print(f"Searching Reddit for: '{keywords}'...")
+        # Multiple query variations to bypass the ~250 result-per-query cap
+        queries = [
+            'methane cows climate emission dairy industry',
+            'methane cattle greenhouse gas',
+            'dairy farming emissions climate change',
+            'cow methane enteric fermentation',
+            'livestock emissions global warming',
+            'methane reduction dairy farm',
+            'factory farming methane environment',
+            'cattle ranching climate impact',
+        ]
+        subreddits = ['all', 'climate', 'environment', 'farming', 'science']
+        sort_methods = ['relevance', 'top', 'comments']
+        time_filters = ['all', 'year', 'month']
         
+        target = 2000
+        seen_ids = set()
         data = []
-        # We search 'all' subreddits to catch r/farming, r/climate, r/science
-        for post in reddit.subreddit('all').search(keywords, limit=limit):
-            data.append({
-                'text': f"{post.title} {post.selftext}",
-                'score': post.score,
-                'id': post.id
-            })
-            
+        
+        print(f"Searching Reddit with multiple queries to reach {target} posts...")
+        
+        for query in queries:
+            if len(data) >= target:
+                break
+            for subreddit in subreddits:
+                if len(data) >= target:
+                    break
+                for sort in sort_methods:
+                    if len(data) >= target:
+                        break
+                    for time_filter in time_filters:
+                        if len(data) >= target:
+                            break
+                        try:
+                            for post in reddit.subreddit(subreddit).search(
+                                query, sort=sort, time_filter=time_filter, limit=250
+                            ):
+                                if post.id not in seen_ids:
+                                    seen_ids.add(post.id)
+                                    data.append({
+                                        'text': f"{post.title} {post.selftext}",
+                                        'score': post.score,
+                                        'id': post.id
+                                    })
+                            print(f"  [{len(data):>5} posts] q='{query[:40]}...' r/{subreddit} sort={sort} t={time_filter}")
+                        except Exception:
+                            pass  # skip failed queries silently
+        
         df = pd.DataFrame(data)
-        print(f"✅ Success! Scraped {len(df)} posts.")
+        print(f"✅ Success! Scraped {len(df)} unique posts.")
         return df
 
     except Exception as e:
@@ -67,83 +102,37 @@ def step_1_scrape_reddit():
             "Digestors turn methane into renewable energy which is good.",
             "Climate change is a hoax, leave the farmers alone.",
             "Methane is 80x more potent than CO2 in the short term."
-        ] * 10
-        return pd.DataFrame({'text': mock_data, 'score': [10]*80})
+        ] * 125
+        return pd.DataFrame({'text': mock_data, 'score': [10]*1000})
 
 # ======================================================
-# PART 2: BUILD CLASSIFICATION MODEL (Kaggle Dataset)
+# PART 2: LOAD PRETRAINED SENTIMENT MODEL (RoBERTa)
 # ======================================================
-def step_2_build_model():
-    print("\n--- STEP 2: BUILDING SENTIMENT MODEL ---")
-    
-    # 1. Load Data
-    # load kaggle_climate_data.csv
-    print("Loading Kaggle climate sentiment data...")
+def preprocess_tweet(text):
+    """Preprocess text for twitter-roberta: replace @mentions and URLs."""
+    new_text = []
+    for t in text.split(" "):
+        t = '@user' if t.startswith('@') and len(t) > 1 else t
+        t = 'http' if t.startswith('http') else t
+        new_text.append(t)
+    return " ".join(new_text)
 
-    kaggle_df = pd.read_csv('kaggle_climate_data.csv') # Ensure this file is in the same directory
-    print(f"Loaded {len(kaggle_df)} rows from Kaggle dataset.")
-
-    # Map sentiments to numerical labels
-    # CSV labels:
-    #   -1 (Anti): does not believe in man-made climate change
-    #    0 (Neutral): neither supports nor refutes man-made climate change
-    #    1 (Pro): supports the belief of man-made climate change
-    #    2 (News): links to factual news about climate change
-    sentiment_map = {-1: 0, 0: 1, 1: 2, 2: 3}
-    kaggle_df['sentiment_label'] = kaggle_df['sentiment'].map(sentiment_map)
-    train_texts = kaggle_df['message'].tolist()  # Column is 'message', not 'text'
-    train_labels = kaggle_df['sentiment_label'].tolist()
+def step_2_load_model():
+    print("\n--- STEP 2: LOADING PRETRAINED SENTIMENT MODEL ---")
     
-    df_train = pd.DataFrame({'text': train_texts, 'sentiment': train_labels})
+    MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
+    print(f"Loading model: {MODEL}")
     
-    # 2. Preprocessing & Vectorization
-    print("Vectorizing text (TF-IDF)...")
-    vectorizer = TfidfVectorizer(max_features=1000, stop_words='english')
-    X = vectorizer.fit_transform(df_train['text'])
-    y = df_train['sentiment']
+    tokenizer = AutoTokenizer.from_pretrained(MODEL)
+    config = AutoConfig.from_pretrained(MODEL)
+    model = AutoModelForSequenceClassification.from_pretrained(MODEL)
+    model.eval()  # Set to evaluation mode
     
-    # 3. Train Model (Logistic Regression)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    model = LogisticRegression(max_iter=1000)
-    model.fit(X_train, y_train)
+    # Labels: 0 -> Negative, 1 -> Neutral, 2 -> Positive
+    print(f"Labels: {config.id2label}")
+    print("✅ Pretrained RoBERTa model loaded.")
     
-    print("✅ Model Trained.")
-    print(f"Accuracy on test set: {model.score(X_test, y_test):.2f}")
-    
-    # Show detailed classification metrics
-    y_pred = model.predict(X_test)
-    print("\nClassification Report:")
-    target_names = ['Anti', 'Neutral', 'Pro', 'News']
-    print(classification_report(y_test, y_pred, target_names=target_names))
-    
-    # --- Visualization: Confusion Matrix Heatmap ---
-    cm = confusion_matrix(y_test, y_pred)
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-    
-    # Confusion Matrix
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
-                xticklabels=target_names, yticklabels=target_names, ax=axes[0])
-    axes[0].set_xlabel('Predicted', fontsize=12)
-    axes[0].set_ylabel('Actual', fontsize=12)
-    axes[0].set_title('Confusion Matrix', fontsize=14, fontweight='bold')
-    
-    # Class Distribution in Training Data
-    class_counts = df_train['sentiment'].value_counts().sort_index()
-    colors = sns.color_palette('pastel')[:4]
-    axes[1].bar(target_names, [class_counts.get(i, 0) for i in range(4)], color=colors, edgecolor='#333333')
-    axes[1].set_xlabel('Sentiment Class', fontsize=12)
-    axes[1].set_ylabel('Number of Samples', fontsize=12)
-    axes[1].set_title('Training Data Distribution', fontsize=14, fontweight='bold')
-    
-    # Add value labels on bars
-    for i, v in enumerate([class_counts.get(i, 0) for i in range(4)]):
-        axes[1].text(i, v + 50, str(v), ha='center', fontweight='bold')
-    
-    plt.tight_layout()
-    plt.show()
-    print("✅ Model Visualizations Generated.")
-    
-    return model, vectorizer
+    return model, tokenizer, config
 
 # ======================================================
 # MODIFIED PART 3: NETWORK ANALYSIS (IMPROVED VISUALS)
@@ -229,12 +218,10 @@ def step_3_network_analysis(df):
         linewidths=1.0
     )
     
-    # 3. Edge Sizing & Coloring based on 'weight' (strength)
-    #    Scale the width so it's visible but not overwhelming.
-    edge_widths = [G[u][v]['weight'] * 0.3 for u, v in G.edges()]
+    # 3. Draw Edges
     nx.draw_networkx_edges(
         G, pos,
-        width=edge_widths,
+        width=1.0,
         edge_color='#999999', # Solid medium grey
         alpha=0.6 # Slight transparency
     )
@@ -257,32 +244,54 @@ def step_3_network_analysis(df):
 # ======================================================
 # PART 4: FINAL SENTIMENT CLASSIFICATION
 # ======================================================
-def step_4_final_analysis(df, model, vectorizer):
+def step_4_final_analysis(df, model, tokenizer, config):
     print("\n--- STEP 4: FINAL CLASSIFICATION ---")
     
-    # 1. Transform scraped data using the SAME vectorizer from Step 2
-    X_new = vectorizer.transform(df['text'])
+    # Classify in batches to avoid memory issues
+    batch_size = 32
+    all_labels = []
+    all_scores = []
+    texts = df['text'].tolist()
     
-    # 2. Predict
-    predictions = model.predict(X_new)
+    print(f"Classifying {len(texts)} posts in batches of {batch_size}...")
     
-    # Map back to labels
-    label_map = {0: 'Anti', 1: 'Neutral', 2: 'Pro', 3: 'News'}
-    df['predicted_sentiment'] = [label_map[p] for p in predictions]
+    with torch.no_grad():
+        for i in range(0, len(texts), batch_size):
+            batch_texts = [preprocess_tweet(t)[:512] for t in texts[i:i+batch_size]]
+            encoded = tokenizer(batch_texts, return_tensors='pt', padding=True,
+                                truncation=True, max_length=512)
+            output = model(**encoded)
+            scores_batch = output.logits.detach().numpy()
+            
+            for scores_row in scores_batch:
+                probs = softmax(scores_row)
+                pred_idx = np.argmax(probs)
+                all_labels.append(config.id2label[pred_idx])
+                all_scores.append(float(np.max(probs)))
+            
+            if (i // batch_size) % 10 == 0:
+                print(f"  Processed {min(i + batch_size, len(texts))}/{len(texts)} posts...")
+    
+    # Map labels to readable names
+    label_display = {'negative': 'Negative', 'neutral': 'Neutral', 'positive': 'Positive'}
+    df['predicted_sentiment'] = [label_display.get(l.lower(), l) for l in all_labels]
+    df['confidence'] = all_scores
     
     # 3. Results
     print("\nFINAL RESULTS SUMMARY:")
     sentiment_counts = df['predicted_sentiment'].value_counts()
     print(sentiment_counts)
     
+    print(f"\nAverage confidence: {df['confidence'].mean():.3f}")
+    
     print("\nSAMPLE CLASSIFICATIONS:")
-    print(df[['text', 'predicted_sentiment']].head(5))
+    print(df[['text', 'predicted_sentiment', 'confidence']].head(5).to_string())
     
     # --- Visualization: Sentiment Analysis Results ---
     fig, axes = plt.subplots(1, 3, figsize=(16, 5))
     
     # Define colors for each sentiment
-    color_map = {'Anti': '#ff6b6b', 'Neutral': '#ffd93d', 'Pro': '#6bcb77', 'News': '#4d96ff'}
+    color_map = {'Negative': '#ff6b6b', 'Neutral': '#ffd93d', 'Positive': '#6bcb77'}
     colors = [color_map.get(label, '#999999') for label in sentiment_counts.index]
     
     # 1. Pie Chart - Sentiment Distribution
@@ -323,24 +332,35 @@ def step_4_final_analysis(df, model, vectorizer):
     
     # --- Additional Visualization: Score vs Sentiment ---
     if 'score' in df.columns:
-        fig2, ax = plt.subplots(figsize=(10, 6))
+        fig2, axes2 = plt.subplots(1, 2, figsize=(16, 6))
         
         # Box plot of Reddit scores by sentiment
-        sentiment_order = ['Anti', 'Neutral', 'Pro', 'News']
+        sentiment_order = ['Negative', 'Neutral', 'Positive']
         available_sentiments = [s for s in sentiment_order if s in df['predicted_sentiment'].values]
         
         box_data = [df[df['predicted_sentiment'] == s]['score'].values for s in available_sentiments]
-        bp = ax.boxplot(box_data, labels=available_sentiments, patch_artist=True)
+        bp = axes2[0].boxplot(box_data, labels=available_sentiments, patch_artist=True)
         
         # Color the boxes
         for patch, sentiment in zip(bp['boxes'], available_sentiments):
             patch.set_facecolor(color_map.get(sentiment, '#999999'))
             patch.set_alpha(0.7)
         
-        ax.set_xlabel('Predicted Sentiment', fontsize=12)
-        ax.set_ylabel('Reddit Score (Upvotes)', fontsize=12)
-        ax.set_title('Reddit Post Scores by Sentiment Category', fontsize=14, fontweight='bold')
-        ax.grid(axis='y', alpha=0.3)
+        axes2[0].set_xlabel('Predicted Sentiment', fontsize=12)
+        axes2[0].set_ylabel('Reddit Score (Upvotes)', fontsize=12)
+        axes2[0].set_title('Reddit Post Scores by Sentiment Category', fontsize=14, fontweight='bold')
+        axes2[0].grid(axis='y', alpha=0.3)
+        
+        # Confidence distribution by sentiment
+        for sentiment in available_sentiments:
+            subset = df[df['predicted_sentiment'] == sentiment]['confidence']
+            axes2[1].hist(subset, bins=20, alpha=0.6, label=sentiment,
+                          color=color_map.get(sentiment, '#999999'), edgecolor='#333333')
+        axes2[1].set_xlabel('Confidence Score', fontsize=12)
+        axes2[1].set_ylabel('Number of Posts', fontsize=12)
+        axes2[1].set_title('Model Confidence by Sentiment', fontsize=14, fontweight='bold')
+        axes2[1].legend(fontsize=11)
+        axes2[1].grid(axis='y', alpha=0.3)
         
         plt.tight_layout()
         plt.show()
@@ -354,11 +374,11 @@ if __name__ == "__main__":
     # 1. Scrape
     reddit_df = step_1_scrape_reddit()
     
-    # 2. Build Model
-    sentiment_model, tfidf_vectorizer = step_2_build_model()
+    # 2. Load Pretrained Model
+    sentiment_model, tokenizer, config = step_2_load_model()
     
     # 3. Map Keywords
     step_3_network_analysis(reddit_df)
     
     # 4. Final Classify
-    step_4_final_analysis(reddit_df, sentiment_model, tfidf_vectorizer)
+    step_4_final_analysis(reddit_df, sentiment_model, tokenizer, config)
