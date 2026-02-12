@@ -55,11 +55,12 @@ def step_1_scrape_reddit():
         sort_methods = ['relevance', 'top', 'comments']
         time_filters = ['all', 'year', 'month']
         
-        target = 2000
+        target = 3000
         seen_ids = set()
         data = []
+        cutoff_date = datetime(2016, 1, 1)
         
-        print(f"Searching Reddit with multiple queries to reach {target} posts...")
+        print(f"Searching Reddit with multiple queries to reach {target} posts (2016 onwards)...")
         
         for query in queries:
             if len(data) >= target:
@@ -77,7 +78,8 @@ def step_1_scrape_reddit():
                             for post in reddit.subreddit(subreddit).search(
                                 query, sort=sort, time_filter=time_filter, limit=250
                             ):
-                                if post.id not in seen_ids:
+                                post_date = datetime.fromtimestamp(post.created_utc)
+                                if post.id not in seen_ids and post_date >= cutoff_date:
                                     seen_ids.add(post.id)
                                     data.append({
                                         'text': f"{post.title} {post.selftext}",
@@ -151,7 +153,6 @@ def step_3_network_analysis(df):
         return
 
     # 1. Pre-clean for network mapping
-    #    We add more domain-specific "noise" words to get a clearer picture.
     stop_words = set(stopwords.words('english'))
     additional_stops = {
         'methane', 'dairy', 'http', 'https', 'cows', 'industry', 
@@ -160,17 +161,17 @@ def step_3_network_analysis(df):
     stop_words.update(additional_stops)
     lemmatizer = WordNetLemmatizer()
     
-    # 2. Extract co-occurrences
+    # 2. Extract co-occurrences and word frequencies
     co_occurrence = Counter()
+    word_freq = Counter()
     
     for text in df['text']:
-        # Simple cleaning: remove punctuation, lowercase
         clean = re.sub(r'[^\w\s]', '', text.lower())
-        # Filter tokens: no stop words, must be longer than 2 chars (keeps "cow")
-        # Lemmatize to reduce words to base form (e.g., "emissions" -> "emission")
         tokens = [lemmatizer.lemmatize(w) for w in clean.split() if w not in stop_words and len(w) > 2]
         
-        # Create edges between all unique words in the same post
+        for token in tokens:
+            word_freq[token] += 1
+        
         unique_tokens = sorted(list(set(tokens)))
         for i in range(len(unique_tokens)):
             for j in range(i + 1, len(unique_tokens)):
@@ -180,14 +181,12 @@ def step_3_network_analysis(df):
     # 3. Build Graph with NetworkX
     G = nx.Graph()
     
-    # Add top 80 strongest edges.
-    # IMPORTANT: We filter out edges with weight 1 to remove clutter.
     num_edges_added = 0
-    for (w1, w2), weight in co_occurrence.most_common(150):
+    for (w1, w2), weight in co_occurrence.most_common(200):
         if weight > 1: 
             G.add_edge(w1, w2, weight=weight)
             num_edges_added += 1
-        if num_edges_added >= 80:
+        if num_edges_added >= 100:
             break
             
     print(f"Network built with {G.number_of_nodes()} nodes and {G.number_of_edges()} edges.")
@@ -196,55 +195,105 @@ def step_3_network_analysis(df):
         print("⚠️ Not enough significant co-occurrences to plot.")
         return
     
-    # ===================================================
-    # IMPROVED VISUALIZATION CODE
-    # ===================================================
-    # Set up the figure with a clean white background
-    plt.figure(figsize=(12, 10), facecolor='white')
+    # 4. Community Detection (Louvain method)
+    from networkx.algorithms.community import greedy_modularity_communities
+    communities = list(greedy_modularity_communities(G, weight='weight'))
     
-    # 1. Layout: 'k' controls spacing. Larger k = more spread out.
-    #    'seed' ensures the same layout every time you run it.
+    # Assign community ID to each node
+    node_community = {}
+    for idx, community in enumerate(communities):
+        for node in community:
+            node_community[node] = idx
+    
+    num_communities = len(communities)
+    print(f"Detected {num_communities} topic communities.")
+    
+    # Print community details
+    for idx, community in enumerate(communities):
+        # Sort words in community by frequency
+        sorted_words = sorted(community, key=lambda w: word_freq.get(w, 0), reverse=True)
+        top_words = sorted_words[:5]
+        print(f"  Community {idx + 1}: {', '.join(top_words)} (+{max(0, len(community) - 5)} more)")
+    
+    # Print top 15 most frequent keywords in the network
+    network_words = set(G.nodes())
+    top_keywords = [(w, word_freq[w]) for w in network_words]
+    top_keywords.sort(key=lambda x: x[1], reverse=True)
+    print(f"\nTop 15 Keywords by Frequency:")
+    for word, freq in top_keywords[:15]:
+        print(f"  {word}: {freq} occurrences")
+    
+    # ===================================================
+    # VISUALIZATION WITH COMMUNITIES
+    # ===================================================
+    # Use distinct colors for communities
+    community_palette = [
+        '#4d96ff', '#ff6b6b', '#6bcb77', '#ffd93d', '#c084fc',
+        '#f97316', '#06b6d4', '#ec4899', '#84cc16', '#a78bfa',
+        '#fb923c', '#22d3ee', '#f472b6', '#a3e635', '#818cf8'
+    ]
+    
+    plt.figure(figsize=(14, 11), facecolor='white')
+    
     pos = nx.spring_layout(G, k=0.5, iterations=50, seed=42)
     
-    # 2. Node Sizing & Coloring based on "Degree" (importance)
-    degrees = dict(G.degree())
-    # Scale factor to make nodes a good size
-    node_sizes = [v * 200 for v in degrees.values()]
-    # Use degree count for color mapping
-    node_colors = [v for v in degrees.values()]
-
-    # Draw Nodes
+    # Node sizing based on word frequency
+    max_freq = max(word_freq.get(n, 1) for n in G.nodes())
+    node_sizes = [300 + (word_freq.get(n, 1) / max_freq) * 2000 for n in G.nodes()]
+    
+    # Node coloring based on community
+    node_colors = [community_palette[node_community[n] % len(community_palette)] for n in G.nodes()]
+    
+    # Draw edges
+    nx.draw_networkx_edges(
+        G, pos,
+        width=1.0,
+        edge_color='#cccccc',
+        alpha=0.4
+    )
+    
+    # Draw nodes
     nx.draw_networkx_nodes(
         G, pos,
         node_size=node_sizes,
         node_color=node_colors,
-        cmap=plt.cm.Pastel1, # Light pastel colormap
         alpha=0.9,
-        edgecolors='#333333', # Thin dark border for definition
+        edgecolors='#333333',
         linewidths=1.0
     )
     
-    # 3. Draw Edges
-    nx.draw_networkx_edges(
-        G, pos,
-        width=1.0,
-        edge_color='#999999', # Solid medium grey
-        alpha=0.6 # Slight transparency
-    )
+    # Labels: larger font for high-frequency words
+    labels_large = {n: n for n in G.nodes() if word_freq.get(n, 0) >= top_keywords[min(9, len(top_keywords)-1)][1]}
+    labels_small = {n: n for n in G.nodes() if n not in labels_large}
     
-    # 4. Labels
     nx.draw_networkx_labels(
-        G, pos,
-        font_size=10,
-        font_family='sans-serif',
-        font_weight='bold',
-        font_color='#222222' # Dark grey for high contrast
+        G, pos, labels=labels_large,
+        font_size=12, font_family='sans-serif',
+        font_weight='bold', font_color='#111111'
+    )
+    nx.draw_networkx_labels(
+        G, pos, labels=labels_small,
+        font_size=8, font_family='sans-serif',
+        font_weight='normal', font_color='#444444'
     )
     
-    plt.title("Keyword Co-occurrence: Methane & Dairy Discourse", fontsize=14, fontweight='bold', color='#222222')
-    plt.axis('off') # Turn off the axis for a clean look
+    # Add legend for communities
+    legend_handles = []
+    for idx, community in enumerate(communities):
+        sorted_words = sorted(community, key=lambda w: word_freq.get(w, 0), reverse=True)
+        label = f"Topic {idx+1}: {', '.join(sorted_words[:3])}"
+        color = community_palette[idx % len(community_palette)]
+        legend_handles.append(plt.Line2D([0], [0], marker='o', color='w',
+                              markerfacecolor=color, markersize=10, label=label))
+    
+    plt.legend(handles=legend_handles, loc='upper left', fontsize=9,
+               framealpha=0.9, title='Topic Communities', title_fontsize=10)
+    
+    plt.title("Keyword Co-occurrence Network with Topic Communities",
+              fontsize=14, fontweight='bold', color='#222222')
+    plt.axis('off')
     plt.tight_layout()
-    plt.show() # This will open the new, improved graph window
+    plt.show()
     print("✅ Network Map Generated.")
 
 # ======================================================
