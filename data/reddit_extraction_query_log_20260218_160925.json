@@ -1,0 +1,389 @@
+[
+  {
+    "timestamp": "2026-02-18T16:08:02.763905",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "all",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 192,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:07.680676",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "all",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 149,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:11.163611",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "all",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 212,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:15.877800",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "all",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 213,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:19.783716",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "all",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 123,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:23.961541",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "all",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 154,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:27.568916",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "all",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 246,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:31.652748",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "all",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:32.229291",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "climate",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 35,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:32.465370",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "climate",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:35.225703",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "climate",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 216,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:36.201636",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "climate",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 63,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:39.113148",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "climate",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 63,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:40.077532",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "climate",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:42.295483",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "climate",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 77,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:43.275579",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "climate",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:46.106534",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "environment",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 62,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:46.290366",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "environment",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:49.148788",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "environment",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 143,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:49.662976",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "environment",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 22,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:52.731168",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "environment",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 42,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:53.246799",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "environment",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:56.347739",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "environment",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 137,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:56.730960",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "environment",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:58.994221",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "farming",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 111,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:08:59.283028",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "farming",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:02.256369",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "farming",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 101,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:02.971137",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "farming",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 3,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:05.430308",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "farming",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 38,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:05.731478",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "farming",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:08.706694",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "farming",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 63,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:08.978341",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "farming",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:09.527089",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "science",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 18,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:09.712873",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "science",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:12.294958",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "science",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 122,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:12.902899",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "science",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 44,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:15.469653",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "science",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 13,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:16.085594",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "science",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:18.225900",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "science",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 107,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:18.949670",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "science",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:22.602283",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "sustainability",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 178,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:23.139776",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "sustainability",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-18T16:09:25.333213",
+    "query": "sustainable dairy farming sustainability",
+    "subreddit": "sustainability",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 53,
+    "api_tier": "standard"
+  }
+]

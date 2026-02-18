@@ -1,0 +1,48 @@
+{
+  "sentiment_distribution": {
+    "neutral": 1498,
+    "negative": 695,
+    "positive": 668
+  },
+  "mean_sentiment_score": 0.023722915881863843,
+  "temporal_stats": {
+    "temporal_range": {
+      "start": "2018-01-01",
+      "end": "2026-02-18",
+      "span_days": 2970,
+      "span_months": 98
+    },
+    "daily_volume": {
+      "mean": 1.8316261203585147,
+      "std": 5.992025325495551,
+      "median": 1.0,
+      "skewness": 37.80337603758539,
+      "min": 1.0,
+      "max": 235.0
+    },
+    "weekly_volume": {
+      "mean": 6.828162291169451,
+      "std": 12.42273996129064,
+      "median": 5.0
+    },
+    "posts_per_year": {
+      "2018": 116,
+      "2019": 178,
+      "2020": 203,
+      "2021": 228,
+      "2022": 291,
+      "2023": 331,
+      "2024": 384,
+      "2025": 757,
+      "2026": 373
+    }
+  },
+  "trend_significance": {
+    "first_vs_second_half": {
+      "first_half_mean": 0.02483503511144541,
+      "second_half_mean": 0.024053223641608015,
+      "mann_whitney_U": 1312.0,
+      "p_value": 0.4303000191472329,
+      "cohens_d": -0.005523496484230717,
+      "direction": "decreasing",
+      "significant": 
