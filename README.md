@@ -1,4 +1,5 @@
 # Reddit Sentiment Analysis Research Pipeline
+
 ## Methane/Dairy Climate Discourse Analysis
 
 A reproducible, peer-review-ready research pipeline for analyzing public sentiment on climate-related discourse from Reddit.
@@ -8,13 +9,15 @@ A reproducible, peer-review-ready research pipeline for analyzing public sentime
 This project implements a 3-phase research methodology for social media sentiment analysis:
 
 ### Phase 1: Data Extraction
+
 - Reddit API integration via PRAW
 - Boolean query construction for construct validity
 - Pagination support for temporal completeness
 - User ID anonymization (SHA-256 hashing) for IRB compliance
 - Query logging for reproducibility
 
-### Phase 2: Data Preprocessing  
+### Phase 2: Data Preprocessing
+
 - Text cleaning (URLs, mentions, hashtags)
 - Emoji handling (converts to descriptive text)
 - SpaCy lemmatization
@@ -24,22 +27,37 @@ This project implements a 3-phase research methodology for social media sentimen
 - Full attrition reporting
 
 ### Phase 3: Empirical Analysis
-Three analysis techniques implemented:
+
+Expanded reviewer-ready analysis includes:
 
 1. **Trend-Based Temporal Analysis**
    - Monthly volume and sentiment trends
    - Rolling averages with confidence bands
-   - First-half vs second-half statistical comparison
+   - First-half vs second-half inferential comparison (Mann–Whitney U, Cohen's d, 95% CI)
+   - Temporal autocorrelation and structural-break diagnostics
 
 2. **Statistical Spike Detection**
    - σ-based anomaly detection (μ ± 2σ)
-   - Volume and sentiment spike identification
-   - Lag correlation analysis
+   - Volume and sentiment spike identification with significance tiers
+   - Lag structure analysis at 0/7/21 days
+   - Cross-correlation profile and multiple-testing correction (Bonferroni + FDR)
 
 3. **Odds Ratio / Log-Odds Analysis**
    - Semantic drivers of positive/negative sentiment
    - Probability distributions with 95% CI
    - Net sentiment calculation
+
+4. **Topic Validity & Stability Analysis**
+   - Topic coherence (C_v-style NPMI proxy)
+   - Topic-count sensitivity across model settings
+   - Bootstrap topic-stability overlap scores
+   - Topic-sentiment interaction analysis
+
+5. **Robustness & Sensitivity**
+   - Alternative sentiment model validation (TextBlob agreement)
+   - Excluding top 5% volume days
+   - Excluding top 5% most active users
+   - Subsampling and ±7-day window sensitivity checks
 
 ## 🚀 Quick Start
 
@@ -110,8 +128,12 @@ data/
 results/
 ├── trend_analysis.png                  # Temporal trend visualization
 ├── spike_detection.png                 # Spike detection visualization
+├── epidemic_curve_overlay.png          # Volume + sentiment overlay
+├── correlation_heatmap.png             # Cross-metric correlation matrix
 ├── semantic_drivers.png                # Log-odds analysis visualization
 ├── probability_distribution.png        # Sentiment probability plot
+├── topic_sentiment_interaction.png     # Topic-level sentiment composition
+├── topic_sentiment_interaction.csv     # Topic-sentiment table
 ├── analysis_results.json               # Complete numerical results
 └── analyzed_data_TIMESTAMP.csv         # Final annotated dataset
 ```
@@ -119,6 +141,7 @@ results/
 ## 📈 Analysis Outputs
 
 ### Attrition Table (Required for Publication)
+
 ```
 Stage                  | Description                        | Count
 -----------------------|------------------------------------|---------
@@ -130,35 +153,44 @@ N4_final_analytic     | Final analytic dataset             | 2641
 ```
 
 ### Statistical Reporting Format
+
 All results include:
+
 - Test statistic
 - p-value
 - Effect size (Cohen's d)
 - 95% confidence interval
 
 Example:
+
 ```
-"Net sentiment differed significantly between periods 
+"Net sentiment differed significantly between periods
 (Mann-Whitney U=842, p=0.003, Cohen's d=0.41)"
 ```
 
 ## 🔬 Methodology Notes
 
 ### Query Design
+
 Queries follow Boolean logic framework:
+
 ```
-(Primary Concept A OR Primary Concept B) 
+(Primary Concept A OR Primary Concept B)
 AND (Contextual Constraint)
 ```
 
 ### Sentiment Model
+
 Uses `cardiffnlp/twitter-roberta-base-sentiment-latest` for classification:
+
 - Negative (-1)
-- Neutral (0)  
+- Neutral (0)
 - Positive (+1)
 
 ### Spike Detection
+
 Anomalies defined as observations exceeding:
+
 - μ + 2σ (p < 0.05)
 - μ + 2.58σ (p < 0.01)
 - μ + 3.29σ (p < 0.001)
@@ -166,6 +198,7 @@ Anomalies defined as observations exceeding:
 ## 📚 Citation
 
 If using this pipeline for research, please cite appropriate methodology:
+
 - PRAW: Python Reddit API Wrapper
 - HuggingFace Transformers
 - CardiffNLP Twitter-RoBERTa

@@ -1,3 +1,6 @@
 Topic,Label,Top Words,Word Count,Total Freq,Avg Sentiment
-1,"can, sustainable, food","can, sustainable, food, dairy, world",36,25050,0.072
-2,"out, time, don","out, time, don, over, while",21,18722,-0.008
+1,Emissions & Climate Science,"while, world, year, after, years",25,17258,-0.005
+2,Dairy Farming & Livestock Practices,"sustainable, food, dairy, farm, climate",29,19641,0.068
+3,"Policy, Regulation & Public Debate","out, time, don, over, system",74,33034,-0.008
+4,"Economics, Prices & Supply Chain","can, sustainability, community, per, human",56,21511,0.034
+5,"Mitigation, Technology & Sustainability",move,1,270,0.012

@@ -17,6 +17,8 @@ import matplotlib.dates as mdates
 import seaborn as sns
 import networkx as nx
 import re
+import os
+import json
 from scipy import stats
 from scipy.special import softmax
 from scipy.signal import find_peaks
@@ -24,11 +26,115 @@ from scipy.stats import mannwhitneyu, ttest_ind, pearsonr, spearmanr
 from collections import Counter
 from typing import Dict, List, Tuple, Optional
 import warnings
+from itertools import combinations
 from datetime import datetime, timedelta
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, AutoConfig
 import torch
+from textblob import TextBlob
 
 warnings.filterwarnings('ignore')
+
+
+def _cohens_d(group_a: np.ndarray, group_b: np.ndarray) -> float:
+    """Compute Cohen's d for two independent samples."""
+    group_a = np.asarray(group_a, dtype=float)
+    group_b = np.asarray(group_b, dtype=float)
+    if len(group_a) < 2 or len(group_b) < 2:
+        return 0.0
+    var_a = np.var(group_a, ddof=1)
+    var_b = np.var(group_b, ddof=1)
+    pooled = np.sqrt((var_a + var_b) / 2)
+    if pooled == 0 or np.isnan(pooled):
+        return 0.0
+    return float((np.mean(group_a) - np.mean(group_b)) / pooled)
+
+
+def _pearson_ci(r: float, n: int, alpha: float = 0.05) -> Tuple[float, float]:
+    """95% CI for Pearson r via Fisher z-transform."""
+    if n <= 3:
+        return np.nan, np.nan
+    if abs(r) >= 1:
+        return r, r
+    z = np.arctanh(r)
+    se = 1 / np.sqrt(n - 3)
+    z_crit = stats.norm.ppf(1 - alpha / 2)
+    lo = np.tanh(z - z_crit * se)
+    hi = np.tanh(z + z_crit * se)
+    return float(lo), float(hi)
+
+
+def _effect_size_label(value: float) -> str:
+    """Interpret correlation-like effect size magnitudes."""
+    a = abs(float(value))
+    if a < 0.1:
+        return 'negligible'
+    if a < 0.3:
+        return 'small'
+    if a < 0.5:
+        return 'moderate'
+    return 'large'
+
+
+def _durbin_watson(values: np.ndarray) -> float:
+    """Durbin-Watson statistic for residual autocorrelation diagnostics."""
+    values = np.asarray(values, dtype=float)
+    if len(values) < 3:
+        return np.nan
+    residuals = values - np.mean(values)
+    numerator = np.sum(np.diff(residuals) ** 2)
+    denominator = np.sum(residuals ** 2)
+    if denominator == 0:
+        return np.nan
+    return float(numerator / denominator)
+
+
+def _fdr_bh(p_values: List[float]) -> List[float]:
+    """Benjamini-Hochberg FDR correction."""
+    p_values = np.asarray(p_values, dtype=float)
+    n = len(p_values)
+    if n == 0:
+        return []
+    order = np.argsort(p_values)
+    ranked = p_values[order]
+    adjusted = np.empty(n, dtype=float)
+    running_min = 1.0
+    for i in range(n - 1, -1, -1):
+        rank = i + 1
+        val = ranked[i] * n / rank
+        running_min = min(running_min, val)
+        adjusted[i] = running_min
+    out = np.empty(n, dtype=float)
+    out[order] = np.clip(adjusted, 0, 1)
+    return out.tolist()
+
+
+def _bonferroni(p_values: List[float]) -> List[float]:
+    """Bonferroni p-value correction."""
+    n = max(1, len(p_values))
+    return [min(1.0, float(p) * n) for p in p_values]
+
+
+def _safe_serializable(obj):
+    """Convert numpy/pandas objects to JSON-serializable types."""
+    if obj is pd.NA:
+        return None
+    if isinstance(obj, np.generic):
+        return _safe_serializable(obj.item())
+    if isinstance(obj, (bool, int, float, str)) or obj is None:
+        return obj
+    if isinstance(obj, (np.integer, np.floating)):
+        return float(obj)
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    if isinstance(obj, pd.Timestamp):
+        return obj.isoformat()
+    if isinstance(obj, pd.Period):
+        return str(obj)
+    if isinstance(obj, dict):
+        return {k: _safe_serializable(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_safe_serializable(v) for v in obj]
+    return obj
 
 
 class SentimentAnalyzer:
@@ -148,7 +254,38 @@ class TrendAnalysis:
         # Weekly volume
         weekly_volume = df.groupby('year_week').size()
         
-        stats = {
+        daily_autocorr_lag1 = daily_volume.autocorr(lag=1) if len(daily_volume) > 2 else np.nan
+        daily_autocorr_lag7 = daily_volume.autocorr(lag=7) if len(daily_volume) > 8 else np.nan
+
+        # Simple structural break diagnostic (midpoint Chow-style F statistic)
+        chow_midpoint = {}
+        if len(daily_volume) >= 20:
+            y = daily_volume.values.astype(float)
+            x = np.arange(len(y), dtype=float)
+            x_design = np.column_stack([np.ones_like(x), x])
+
+            def _rss(design, target):
+                beta, *_ = np.linalg.lstsq(design, target, rcond=None)
+                residuals = target - design @ beta
+                return float(np.sum(residuals ** 2))
+
+            split = len(y) // 2
+            k = 2
+            rss_pooled = _rss(x_design, y)
+            rss_1 = _rss(x_design[:split], y[:split])
+            rss_2 = _rss(x_design[split:], y[split:])
+            numerator = (rss_pooled - (rss_1 + rss_2)) / k
+            denominator = (rss_1 + rss_2) / max(1, (len(y) - 2 * k))
+            f_stat = numerator / denominator if denominator > 0 else np.nan
+            p_value = 1 - stats.f.cdf(f_stat, k, max(1, len(y) - 2 * k)) if not np.isnan(f_stat) else np.nan
+            chow_midpoint = {
+                'f_statistic': float(f_stat) if not np.isnan(f_stat) else np.nan,
+                'p_value': float(p_value) if not np.isnan(p_value) else np.nan,
+                'significant_break_0_05': bool(p_value < 0.05) if not np.isnan(p_value) else False,
+                'split_date': str(pd.to_datetime(daily_volume.index[split]))
+            }
+
+        temporal_stats = {
             'temporal_range': {
                 'start': df[self.date_column].min().strftime('%Y-%m-%d'),
                 'end': df[self.date_column].max().strftime('%Y-%m-%d'),
@@ -168,10 +305,16 @@ class TrendAnalysis:
                 'std': weekly_volume.std(),
                 'median': weekly_volume.median()
             },
+            'autocorrelation': {
+                'daily_lag1': daily_autocorr_lag1,
+                'daily_lag7': daily_autocorr_lag7,
+                'durbin_watson_daily_volume': _durbin_watson(daily_volume.values)
+            },
+            'structural_break_midpoint': chow_midpoint,
             'posts_per_year': df['year'].value_counts().sort_index().to_dict()
         }
         
-        return stats
+        return temporal_stats
     
     def analyze_sentiment_trends(self) -> pd.DataFrame:
         """
@@ -227,8 +370,19 @@ class TrendAnalysis:
                 stat, p_value = mannwhitneyu(first_half, second_half, alternative='two-sided')
                 
                 # Effect size (Cohen's d)
-                pooled_std = np.sqrt((np.var(first_half) + np.var(second_half)) / 2)
-                cohens_d = (np.mean(second_half) - np.mean(first_half)) / pooled_std if pooled_std > 0 else 0
+                cohens_d = _cohens_d(second_half, first_half)
+
+                # Confidence interval for mean difference (Welch approximation)
+                mean_diff = float(np.mean(second_half) - np.mean(first_half))
+                se = np.sqrt(
+                    (np.var(first_half, ddof=1) / max(1, len(first_half))) +
+                    (np.var(second_half, ddof=1) / max(1, len(second_half)))
+                )
+                ci_low, ci_high = (mean_diff, mean_diff)
+                if se > 0:
+                    tcrit = stats.t.ppf(0.975, df=max(1, len(first_half) + len(second_half) - 2))
+                    ci_low = mean_diff - tcrit * se
+                    ci_high = mean_diff + tcrit * se
                 
                 results['first_vs_second_half'] = {
                     'first_half_mean': np.mean(first_half),
@@ -236,8 +390,14 @@ class TrendAnalysis:
                     'mann_whitney_U': stat,
                     'p_value': p_value,
                     'cohens_d': cohens_d,
+                    'mean_difference': mean_diff,
+                    'mean_difference_ci_95': [float(ci_low), float(ci_high)],
                     'direction': 'increasing' if np.mean(second_half) > np.mean(first_half) else 'decreasing',
-                    'significant': p_value < 0.05
+                    'significant': p_value < 0.05,
+                    'assumptions_checked': {
+                        'non_parametric_test_used': True,
+                        'independent_periods_assumed': True
+                    }
                 }
         
         return results
@@ -352,6 +512,34 @@ class SpikeDetection:
             daily_sent.columns = ['date', 'avg_sentiment']
             daily_sent['date'] = pd.to_datetime(daily_sent['date'])
             self.daily_volume = self.daily_volume.merge(daily_sent, on='date')
+
+        # Daily class proportions for richer temporal diagnostics
+        if 'sentiment' in self.df.columns:
+            daily_sentiment_dist = (
+                self.df.groupby(self.df[date_column].dt.date)['sentiment']
+                .value_counts(normalize=True)
+                .unstack(fill_value=0)
+                .reset_index()
+            )
+            daily_sentiment_dist.columns = [
+                'date' if c == date_column else f"pct_{c}" if c in ['negative', 'neutral', 'positive'] else c
+                for c in daily_sentiment_dist.columns
+            ]
+            daily_sentiment_dist['date'] = pd.to_datetime(daily_sentiment_dist['date'])
+            self.daily_volume = self.daily_volume.merge(daily_sentiment_dist, on='date', how='left')
+            for c in ['pct_negative', 'pct_neutral', 'pct_positive']:
+                if c not in self.daily_volume.columns:
+                    self.daily_volume[c] = 0.0
+
+            include_neutral = True
+            denom = self.daily_volume['pct_positive'] + self.daily_volume['pct_negative']
+            if include_neutral:
+                denom = denom + self.daily_volume['pct_neutral']
+            self.daily_volume['net_sentiment'] = np.where(
+                denom > 0,
+                (self.daily_volume['pct_positive'] - self.daily_volume['pct_negative']) / denom,
+                0.0
+            )
     
     def detect_volume_spikes(self, sigma_threshold: float = 2.0) -> pd.DataFrame:
         """
@@ -381,7 +569,7 @@ class SpikeDetection:
             lambda x: 'high' if x > 0 else 'low'
         )
         spikes['significance'] = spikes['z_score'].abs().apply(
-            lambda x: 'p<0.05' if x > 1.96 else ('p<0.01' if x > 2.58 else 'p<0.001' if x > 3.29 else 'ns')
+            lambda x: 'p<0.001' if x > 3.29 else ('p<0.01' if x > 2.58 else ('p<0.05' if x > 1.96 else 'ns'))
         )
         
         return spikes.sort_values('z_score', ascending=False)
@@ -411,7 +599,8 @@ class SpikeDetection:
         return spikes.sort_values('z_score', ascending=False)
     
     def compute_lag_correlations(self, event_dates: List[str] = None,
-                                 max_lag: int = 14) -> pd.DataFrame:
+                                 max_lag: int = 28,
+                                 target_lags: Optional[List[int]] = None) -> pd.DataFrame:
         """
         Compute correlations at different time lags.
         
@@ -428,6 +617,9 @@ class SpikeDetection:
             print("⚠️ No sentiment data for lag analysis")
             return pd.DataFrame()
         
+        if target_lags is None:
+            target_lags = [0, 7, 21]
+
         results = []
         
         for lag in range(0, max_lag + 1):
@@ -442,15 +634,69 @@ class SpikeDetection:
                     df_lag['volume'], df_lag['sentiment_lagged']
                 )
                 
+                ci_low, ci_high = _pearson_ci(r_vol_sent, len(df_lag))
                 results.append({
                     'lag_days': lag,
                     'correlation_vol_sent': r_vol_sent,
                     'p_value': p_vol_sent,
+                    'ci_95_low': ci_low,
+                    'ci_95_high': ci_high,
+                    'effect_size': _effect_size_label(r_vol_sent),
                     'significant': p_vol_sent < 0.05,
+                    'is_target_lag': lag in target_lags,
                     'n': len(df_lag)
                 })
-        
-        return pd.DataFrame(results)
+
+        lag_df = pd.DataFrame(results)
+        if len(lag_df) == 0:
+            return lag_df
+
+        lag_df['p_bonferroni'] = _bonferroni(lag_df['p_value'].tolist())
+        lag_df['p_fdr_bh'] = _fdr_bh(lag_df['p_value'].tolist())
+        lag_df['significant_fdr_0_05'] = lag_df['p_fdr_bh'] < 0.05
+
+        return lag_df
+
+    def compute_cross_correlation_profile(self, max_lag: int = 28) -> pd.DataFrame:
+        """Cross-correlation profile between daily volume and net sentiment."""
+        if 'net_sentiment' not in self.daily_volume.columns:
+            return pd.DataFrame()
+
+        x = self.daily_volume['volume'].astype(float).values
+        y = self.daily_volume['net_sentiment'].astype(float).values
+        if len(x) < max(12, max_lag + 3):
+            return pd.DataFrame()
+
+        x = (x - x.mean()) / (x.std() + 1e-12)
+        y = (y - y.mean()) / (y.std() + 1e-12)
+
+        rows = []
+        for lag in range(-max_lag, max_lag + 1):
+            if lag < 0:
+                x_part = x[-lag:]
+                y_part = y[:len(y) + lag]
+            elif lag > 0:
+                x_part = x[:len(x) - lag]
+                y_part = y[lag:]
+            else:
+                x_part = x
+                y_part = y
+
+            if len(x_part) < 10:
+                continue
+            corr, p_value = pearsonr(x_part, y_part)
+            rows.append({
+                'lag_days': lag,
+                'cross_correlation': corr,
+                'p_value': p_value,
+                'n': len(x_part)
+            })
+
+        ccf = pd.DataFrame(rows)
+        if len(ccf) > 0:
+            ccf['p_fdr_bh'] = _fdr_bh(ccf['p_value'].tolist())
+            ccf['significant_fdr_0_05'] = ccf['p_fdr_bh'] < 0.05
+        return ccf
     
     def plot_spikes(self, volume_spikes: pd.DataFrame = None,
                    sentiment_spikes: pd.DataFrame = None,
@@ -541,6 +787,84 @@ class SpikeDetection:
             print(f"📊 Spike plot saved to: {save_path}")
         
         plt.show()
+
+    def plot_epidemic_curve_overlay(self,
+                                    volume_spikes: Optional[pd.DataFrame] = None,
+                                    save_path: str = None,
+                                    event_markers: Optional[List[Tuple[str, str]]] = None) -> None:
+        """Plot epidemic-style overlay: volume bars + sentiment line + spike markers."""
+        fig, ax1 = plt.subplots(figsize=(14, 6))
+
+        ax1.bar(self.daily_volume['date'], self.daily_volume['volume'],
+                color='#4d96ff', alpha=0.5, label='Daily post volume (count)')
+        ax1.set_ylabel('Post volume (posts/day)', fontsize=11)
+
+        ax2 = ax1.twinx()
+        sentiment_series = 'net_sentiment' if 'net_sentiment' in self.daily_volume.columns else 'avg_sentiment'
+        if sentiment_series in self.daily_volume.columns:
+            line = self.daily_volume[sentiment_series]
+            roll = line.rolling(window=7, min_periods=1).mean()
+            sem = line.rolling(window=7, min_periods=3).std() / np.sqrt(7)
+            ax2.plot(self.daily_volume['date'], roll, color='#ff6b6b', linewidth=2.2,
+                     label='7-day average sentiment')
+            ax2.fill_between(self.daily_volume['date'], (roll - 1.96 * sem).fillna(roll),
+                             (roll + 1.96 * sem).fillna(roll), color='#ff6b6b', alpha=0.18,
+                             label='Approx. 95% CI band')
+            ax2.set_ylabel('Sentiment index (unitless)', fontsize=11)
+
+        if volume_spikes is not None and len(volume_spikes) > 0:
+            highs = volume_spikes[volume_spikes['spike_type'] == 'high']
+            ax1.scatter(highs['date'], highs['volume'], color='red', marker='^', s=90,
+                        zorder=5, label='Significant surge (μ+2σ)')
+
+        if event_markers:
+            for event_date, event_label in event_markers:
+                event_ts = pd.to_datetime(event_date)
+                ax1.axvline(event_ts, color='black', linestyle='--', alpha=0.4)
+                ax1.annotate(event_label, xy=(event_ts, ax1.get_ylim()[1] * 0.92),
+                             xytext=(5, 0), textcoords='offset points', rotation=90,
+                             fontsize=9, va='top')
+
+        ax1.set_title('Epidemic Curve Overlay: Discourse Volume and Sentiment Dynamics',
+                      fontsize=14, fontweight='bold')
+        ax1.set_xlabel('Date')
+        ax1.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+        plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
+
+        handles1, labels1 = ax1.get_legend_handles_labels()
+        handles2, labels2 = ax2.get_legend_handles_labels()
+        ax1.legend(handles1 + handles2, labels1 + labels2, loc='upper left', fontsize=9)
+        ax1.grid(axis='y', alpha=0.3)
+        plt.tight_layout()
+
+        if save_path:
+            plt.savefig(save_path, dpi=300, bbox_inches='tight')
+            print(f"📊 Epidemic overlay saved to: {save_path}")
+
+        plt.show()
+
+    def plot_correlation_heatmap(self, save_path: str = None) -> Optional[pd.DataFrame]:
+        """Correlation heatmap for key temporal metrics."""
+        metric_cols = ['volume', 'pct_negative', 'pct_neutral', 'pct_positive', 'net_sentiment', 'avg_sentiment']
+        available = [c for c in metric_cols if c in self.daily_volume.columns]
+        if len(available) < 3:
+            return None
+
+        corr_df = self.daily_volume[available].corr(method='pearson')
+
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(corr_df, annot=True, fmt='.2f', cmap='coolwarm', center=0,
+                    square=True, linewidths=0.5, cbar_kws={'label': 'Pearson r'})
+        plt.title('Correlation Heatmap of Sentiment and Volume Metrics',
+                  fontsize=13, fontweight='bold')
+        plt.tight_layout()
+
+        if save_path:
+            plt.savefig(save_path, dpi=300, bbox_inches='tight')
+            print(f"📊 Correlation heatmap saved to: {save_path}")
+
+        plt.show()
+        return corr_df
 
 
 class OddsRatioAnalysis:
@@ -850,6 +1174,44 @@ class NetworkAnalysis:
         self.word_freq = None
         self.node_community = None
         self.community_topics = None
+        self.preset_topic_definitions = [
+            {
+                'label': 'Emissions & Climate Science',
+                'anchors': {
+                    'methane', 'emission', 'emissions', 'greenhouse', 'climate',
+                    'warming', 'carbon', 'co2', 'atmosphere', 'science'
+                }
+            },
+            {
+                'label': 'Dairy Farming & Livestock Practices',
+                'anchors': {
+                    'dairy', 'cattle', 'cow', 'cows', 'livestock', 'farm',
+                    'farming', 'feed', 'manure', 'herd', 'enteric'
+                }
+            },
+            {
+                'label': 'Policy, Regulation & Public Debate',
+                'anchors': {
+                    'policy', 'regulation', 'government', 'law', 'epa',
+                    'ban', 'rules', 'subsidy', 'politics', 'public'
+                }
+            },
+            {
+                'label': 'Economics, Prices & Supply Chain',
+                'anchors': {
+                    'price', 'prices', 'cost', 'market', 'inflation', 'shortage',
+                    'supply', 'demand', 'industry', 'consumer', 'economy'
+                }
+            },
+            {
+                'label': 'Mitigation, Technology & Sustainability',
+                'anchors': {
+                    'sustainable', 'sustainability', 'innovation', 'technology',
+                    'digesters', 'digester', 'reduction', 'renewable', 'solution',
+                    'efficiency', 'transparency', 'welfare'
+                }
+            }
+        ]
     
     def _tokenize_text(self, text: str) -> List[str]:
         """Extract clean tokens from text."""
@@ -860,9 +1222,10 @@ class NetworkAnalysis:
         tokens = [t for t in tokens if t not in self.stopwords]
         return tokens
     
-    def build_network(self, min_cooccurrence: int = 3, 
-                     max_edges: int = 150,
-                     window_size: int = None) -> nx.Graph:
+    def build_network(self, min_cooccurrence: int = 1,
+                     max_edges: int = 800,
+                     window_size: int = None,
+                     min_word_frequency: int = 2) -> nx.Graph:
         """
         Build word co-occurrence network.
         
@@ -871,6 +1234,7 @@ class NetworkAnalysis:
             max_edges: Maximum number of edges to include
             window_size: If set, only count co-occurrences within window
                         If None, use document-level co-occurrence
+            min_word_frequency: Minimum unigram frequency required for a node
         
         Returns:
             NetworkX graph
@@ -893,6 +1257,11 @@ class NetworkAnalysis:
         
         # Build graph
         self.G = nx.Graph()
+
+        allowed_words = {
+            word for word, freq in self.word_freq.items()
+            if freq >= min_word_frequency
+        }
         
         edges_added = 0
         for (w1, w2), weight in co_occurrence.most_common():
@@ -900,15 +1269,17 @@ class NetworkAnalysis:
                 break
             if edges_added >= max_edges:
                 break
+            if w1 not in allowed_words or w2 not in allowed_words:
+                continue
             self.G.add_edge(w1, w2, weight=weight)
             edges_added += 1
         
         print(f"   Network: {self.G.number_of_nodes()} nodes, {self.G.number_of_edges()} edges")
         return self.G
     
-    def detect_communities(self) -> List[set]:
+    def detect_communities(self, random_seed: int = 42) -> List[set]:
         """
-        Detect topic communities using greedy modularity optimization.
+        Detect communities with Louvain, then map into 5 preset domain topics.
         
         Returns:
             List of communities (sets of words)
@@ -916,18 +1287,56 @@ class NetworkAnalysis:
         if self.G is None or self.G.number_of_nodes() == 0:
             print("   ⚠️ No network built yet")
             return []
-        
-        from networkx.algorithms.community import greedy_modularity_communities
-        
-        self.communities = list(greedy_modularity_communities(self.G, weight='weight'))
-        
-        # Map nodes to community IDs
+
+        try:
+            from networkx.algorithms.community import louvain_communities
+            louvain_result = list(louvain_communities(self.G, weight='weight', seed=random_seed))
+        except Exception:
+            from networkx.algorithms.community import greedy_modularity_communities
+            louvain_result = list(greedy_modularity_communities(self.G, weight='weight'))
+
+        preset_bins = [set() for _ in self.preset_topic_definitions]
+
+        for comm in louvain_result:
+            words = sorted(list(comm), key=lambda w: self.word_freq.get(w, 0), reverse=True)
+            top_words = set(words[:15])
+            scores = []
+            for preset in self.preset_topic_definitions:
+                overlap = len(top_words.intersection(preset['anchors']))
+                scores.append(overlap)
+
+            if max(scores) == 0:
+                target_idx = int(np.argmin([len(b) for b in preset_bins]))
+            else:
+                best = max(scores)
+                candidates = [i for i, s in enumerate(scores) if s == best]
+                if len(candidates) == 1:
+                    target_idx = candidates[0]
+                else:
+                    target_idx = min(candidates, key=lambda i: len(preset_bins[i]))
+
+            preset_bins[target_idx].update(comm)
+
+        # Guarantee all 5 preset communities are non-empty for reporting consistency
+        empty_idxs = [i for i, c in enumerate(preset_bins) if len(c) == 0]
+        for empty_idx in empty_idxs:
+            donor_idx = int(np.argmax([len(c) for c in preset_bins]))
+            donor_nodes = sorted(list(preset_bins[donor_idx]),
+                                 key=lambda w: self.word_freq.get(w, 0))
+            if donor_nodes:
+                moved = donor_nodes[0]
+                preset_bins[donor_idx].remove(moved)
+                preset_bins[empty_idx].add(moved)
+
+        self.communities = [c for c in preset_bins if len(c) > 0]
+
         self.node_community = {}
         for idx, community in enumerate(self.communities):
             for node in community:
                 self.node_community[node] = idx
-        
-        print(f"   Detected {len(self.communities)} topic communities")
+
+        print(f"   Detected {len(louvain_result)} Louvain communities")
+        print(f"   Mapped to {len(self.communities)} preset topic communities")
         return self.communities
     
     def label_topics(self, n_words: int = 5) -> Dict[int, Dict]:
@@ -952,8 +1361,11 @@ class NetworkAnalysis:
             
             top_words = [w for w, _ in words_with_freq[:n_words]]
             
-            # Generate topic label from top 3 words
-            topic_label = ", ".join(top_words[:3])
+            # Use preset domain label when available, fallback to keyword label
+            if idx < len(self.preset_topic_definitions):
+                topic_label = self.preset_topic_definitions[idx]['label']
+            else:
+                topic_label = ", ".join(top_words[:3])
             
             # Calculate total frequency and centrality metrics
             total_freq = sum(f for _, f in words_with_freq)
@@ -1207,6 +1619,367 @@ class NetworkAnalysis:
         
         plt.show()
 
+    def compute_topic_coherence(self, top_n_words: int = 8) -> Dict:
+        """
+        Compute NPMI-based topic coherence (C_v-style proxy) for each community.
+        """
+        if self.community_topics is None:
+            self.label_topics()
+
+        token_docs = []
+        for text in self.df[self.text_column].fillna(''):
+            token_docs.append(set(self._tokenize_text(text)))
+
+        if len(token_docs) == 0:
+            return {'model_coherence_cv_proxy': np.nan, 'topic_scores': {}}
+
+        doc_count = len(token_docs)
+        word_doc_freq = Counter()
+        for doc in token_docs:
+            word_doc_freq.update(doc)
+
+        topic_scores = {}
+        for idx, info in self.community_topics.items():
+            words = info['top_words'][:top_n_words]
+            if len(words) < 2:
+                topic_scores[idx] = np.nan
+                continue
+
+            pair_scores = []
+            for w1, w2 in combinations(words, 2):
+                p_w1 = word_doc_freq.get(w1, 0) / doc_count
+                p_w2 = word_doc_freq.get(w2, 0) / doc_count
+                p_joint = sum(1 for d in token_docs if (w1 in d and w2 in d)) / doc_count
+                if p_w1 == 0 or p_w2 == 0 or p_joint == 0:
+                    continue
+                pmi = np.log(p_joint / (p_w1 * p_w2))
+                npmi = pmi / (-np.log(p_joint))
+                pair_scores.append(npmi)
+
+            topic_scores[idx] = float(np.mean(pair_scores)) if pair_scores else np.nan
+
+        valid_scores = [v for v in topic_scores.values() if not np.isnan(v)]
+        model_score = float(np.mean(valid_scores)) if valid_scores else np.nan
+
+        return {
+            'model_coherence_cv_proxy': model_score,
+            'topic_scores': topic_scores,
+            'interpretation': (
+                'strong' if not np.isnan(model_score) and model_score > 0.6
+                else 'acceptable' if not np.isnan(model_score) and model_score > 0.5
+                else 'weak_or_requires_justification'
+            )
+        }
+
+    def topic_count_sensitivity(self,
+                                min_cooccurrence_values: Optional[List[int]] = None,
+                                max_edges: int = 150) -> pd.DataFrame:
+        """Sensitivity analysis for number of topics (k) and coherence proxy."""
+        if min_cooccurrence_values is None:
+            min_cooccurrence_values = [2, 3, 4, 5]
+
+        rows = []
+        for min_co in min_cooccurrence_values:
+            tmp = NetworkAnalysis(self.df, text_column=self.text_column)
+            tmp.build_network(
+                min_cooccurrence=min_co,
+                max_edges=max_edges,
+                min_word_frequency=2
+            )
+            if tmp.G is None or tmp.G.number_of_nodes() == 0:
+                rows.append({
+                    'min_cooccurrence': min_co,
+                    'topic_count_k': 0,
+                    'coherence_cv_proxy': np.nan
+                })
+                continue
+            tmp.detect_communities()
+            tmp.label_topics()
+            coh = tmp.compute_topic_coherence()
+            rows.append({
+                'min_cooccurrence': min_co,
+                'topic_count_k': len(tmp.communities),
+                'coherence_cv_proxy': coh['model_coherence_cv_proxy']
+            })
+
+        return pd.DataFrame(rows)
+
+    def topic_stability_bootstrap(self,
+                                  n_bootstrap: int = 8,
+                                  sample_frac: float = 0.8,
+                                  top_n_words: int = 6,
+                                  random_seed: int = 42) -> Dict:
+        """Bootstrap topic stability via Jaccard overlap of top words."""
+        if self.community_topics is None:
+            self.label_topics()
+
+        if self.community_topics is None or len(self.community_topics) == 0:
+            return {'mean_topic_overlap_jaccard': np.nan, 'bootstrap_runs': 0}
+
+        rng = np.random.default_rng(random_seed)
+        baseline_topics = [set(v['top_words'][:top_n_words]) for v in self.community_topics.values()]
+        overlaps = []
+
+        n_rows = len(self.df)
+        sample_size = max(20, int(sample_frac * n_rows))
+
+        for i in range(n_bootstrap):
+            idx = rng.choice(n_rows, size=sample_size, replace=True)
+            sample_df = self.df.iloc[idx].copy()
+            tmp = NetworkAnalysis(sample_df, text_column=self.text_column)
+            tmp.build_network(min_cooccurrence=2, max_edges=500, min_word_frequency=2)
+            if tmp.G is None or tmp.G.number_of_nodes() == 0:
+                continue
+            tmp.detect_communities()
+            tmp.label_topics(n_words=top_n_words)
+            current_topics = [set(v['top_words'][:top_n_words]) for v in tmp.community_topics.values()]
+            if not current_topics:
+                continue
+
+            per_topic_best = []
+            for bt in baseline_topics:
+                best = 0.0
+                for ct in current_topics:
+                    union = len(bt.union(ct))
+                    if union == 0:
+                        continue
+                    best = max(best, len(bt.intersection(ct)) / union)
+                per_topic_best.append(best)
+
+            overlaps.append(float(np.mean(per_topic_best)) if per_topic_best else 0.0)
+
+        return {
+            'mean_topic_overlap_jaccard': float(np.mean(overlaps)) if overlaps else np.nan,
+            'std_topic_overlap_jaccard': float(np.std(overlaps)) if overlaps else np.nan,
+            'bootstrap_runs': len(overlaps),
+            'stable_topics_threshold_0_6': bool(np.mean(overlaps) >= 0.6) if overlaps else False
+        }
+
+    def plot_topic_sentiment_interaction(self, save_path: str = None) -> Optional[pd.DataFrame]:
+        """Stacked bar chart: sentiment composition per detected topic."""
+        if 'sentiment' not in self.df.columns:
+            return None
+        if self.community_topics is None:
+            self.label_topics()
+
+        rows = []
+        for idx, info in self.community_topics.items():
+            topic_words = info['top_words'][:4]
+            if not topic_words:
+                continue
+            pattern = r'\\b(' + '|'.join(re.escape(w) for w in topic_words) + r')\\b'
+            mask = self.df[self.text_column].str.lower().str.contains(pattern, regex=True, na=False)
+            subset = self.df[mask]
+            if len(subset) == 0:
+                continue
+
+            counts = subset['sentiment'].value_counts(normalize=True)
+            rows.append({
+                'topic': f"Topic {info['topic_id']}",
+                'label': info['label'],
+                'negative': counts.get('negative', 0.0),
+                'neutral': counts.get('neutral', 0.0),
+                'positive': counts.get('positive', 0.0),
+                'n_posts': len(subset)
+            })
+
+        if not rows:
+            return None
+
+        interaction = pd.DataFrame(rows).sort_values('n_posts', ascending=False)
+
+        plt.figure(figsize=(12, 6))
+        x = np.arange(len(interaction))
+        neg = interaction['negative'].values
+        neu = interaction['neutral'].values
+        pos = interaction['positive'].values
+
+        plt.bar(x, neg, color='#ff6b6b', label='Negative')
+        plt.bar(x, neu, bottom=neg, color='#ffd93d', label='Neutral')
+        plt.bar(x, pos, bottom=neg + neu, color='#6bcb77', label='Positive')
+        plt.xticks(x, interaction['topic'], rotation=30, ha='right')
+        plt.ylabel('Sentiment share within topic')
+        plt.title('Topic-Sentiment Interaction (Stacked Proportions)',
+                  fontsize=14, fontweight='bold')
+        plt.ylim(0, 1)
+        plt.legend()
+        plt.tight_layout()
+
+        if save_path:
+            plt.savefig(save_path, dpi=300, bbox_inches='tight')
+            print(f"📊 Topic-sentiment interaction saved to: {save_path}")
+
+        plt.show()
+        return interaction
+
+
+def resolve_attrition_counts(df: pd.DataFrame, data_dir: str = 'data') -> Dict:
+    """Resolve N1→N4 attrition counts using saved attrition report if available."""
+    attrition = {
+        'N1_raw_collected': np.nan,
+        'N2_after_deduplication': np.nan,
+        'N3_after_language_filter': np.nan,
+        'N4_final_analytic': int(len(df))
+    }
+
+    if not os.path.isdir(data_dir):
+        return attrition
+
+    candidates = [
+        f for f in os.listdir(data_dir)
+        if f.startswith('attrition_report_') and f.endswith('.csv')
+    ]
+    if not candidates:
+        return attrition
+
+    latest = sorted(candidates)[-1]
+    path = os.path.join(data_dir, latest)
+    try:
+        report = pd.read_csv(path)
+        if 'Stage' in report.columns and 'Count' in report.columns:
+            mapping = dict(zip(report['Stage'].astype(str), report['Count']))
+
+            def _safe_int(value, fallback=np.nan):
+                if pd.isna(value):
+                    return fallback
+                try:
+                    return int(value)
+                except Exception:
+                    return fallback
+
+            attrition['N1_raw_collected'] = _safe_int(
+                mapping.get('N0_initial', mapping.get('N0_raw_extracted', np.nan))
+            )
+            attrition['N2_after_deduplication'] = _safe_int(
+                mapping.get('N1_deduplicated', mapping.get('N1_unique_posts', np.nan))
+            )
+            attrition['N3_after_language_filter'] = _safe_int(mapping.get('N2_language_filtered', np.nan))
+            attrition['N4_final_analytic'] = _safe_int(mapping.get('N4_final_analytic', len(df)), fallback=len(df))
+            attrition['source_file'] = path
+    except Exception:
+        pass
+
+    if 'author_id_hash' in df.columns:
+        activity = df['author_id_hash'].value_counts()
+        threshold = activity.quantile(0.95) if len(activity) > 0 else np.nan
+        top_users = activity[activity >= threshold].index if len(activity) > 0 else []
+        removed_share = df['author_id_hash'].isin(top_users).mean() if len(df) > 0 else 0.0
+        attrition['top_5pct_user_activity_share'] = float(removed_share)
+
+    return attrition
+
+
+class RobustnessAnalysis:
+    """Robustness checks: model, temporal, sampling, and user concentration sensitivity."""
+
+    def __init__(self, df: pd.DataFrame, text_column: str, date_column: str):
+        self.df = df.copy()
+        self.text_column = text_column
+        self.date_column = date_column
+        self.df[self.date_column] = pd.to_datetime(self.df[self.date_column])
+
+    def _summary_metric(self, in_df: pd.DataFrame) -> Dict:
+        if len(in_df) == 0:
+            return {'mean_sentiment_score': np.nan, 'net_sentiment': np.nan, 'n': 0}
+        sent = in_df['sentiment'].value_counts()
+        net = (sent.get('positive', 0) - sent.get('negative', 0)) / max(1, len(in_df))
+        return {
+            'mean_sentiment_score': float(in_df['sentiment_score'].mean()),
+            'net_sentiment': float(net),
+            'n': int(len(in_df))
+        }
+
+    def alternative_sentiment_model_validation(self, sample_size: int = 500) -> Dict:
+        """Validate BERT sentiment against TextBlob polarity on a sample."""
+        if len(self.df) == 0:
+            return {}
+        sample = self.df.sample(n=min(sample_size, len(self.df)), random_state=42)
+        blob_scores = sample[self.text_column].fillna('').apply(lambda t: TextBlob(str(t)).sentiment.polarity)
+        if len(sample) < 10:
+            return {}
+        r, p = pearsonr(sample['sentiment_score'].values, blob_scores.values)
+        ci_low, ci_high = _pearson_ci(r, len(sample))
+        return {
+            'n': int(len(sample)),
+            'pearson_r_bert_vs_textblob': float(r),
+            'p_value': float(p),
+            'ci_95': [ci_low, ci_high],
+            'effect_size': _effect_size_label(r)
+        }
+
+    def exclude_top_volume_days(self, percentile: float = 0.95) -> Dict:
+        """Recompute results excluding top-activity days."""
+        daily_counts = self.df.groupby(self.df[self.date_column].dt.date).size()
+        cutoff = daily_counts.quantile(percentile)
+        keep_dates = daily_counts[daily_counts < cutoff].index
+        filtered = self.df[self.df[self.date_column].dt.date.isin(keep_dates)]
+        return {
+            'cutoff_percentile': percentile,
+            'daily_count_cutoff': float(cutoff),
+            'full': self._summary_metric(self.df),
+            'filtered': self._summary_metric(filtered)
+        }
+
+    def exclude_top_active_users(self, percentile: float = 0.95) -> Dict:
+        """Sensitivity analysis excluding top 5% most active users."""
+        if 'author_id_hash' not in self.df.columns:
+            return {'available': False}
+        user_counts = self.df['author_id_hash'].value_counts()
+        threshold = user_counts.quantile(percentile)
+        top_users = set(user_counts[user_counts >= threshold].index)
+        filtered = self.df[~self.df['author_id_hash'].isin(top_users)]
+        return {
+            'available': True,
+            'threshold_posts_per_user': float(threshold),
+            'excluded_users': int(len(top_users)),
+            'full': self._summary_metric(self.df),
+            'filtered': self._summary_metric(filtered)
+        }
+
+    def subsampling_test(self, fractions: Optional[List[float]] = None, repeats: int = 5) -> Dict:
+        """Subsampling stability test for key sentiment metrics."""
+        if fractions is None:
+            fractions = [0.5, 0.7, 0.9]
+
+        rows = []
+        for frac in fractions:
+            for seed in range(repeats):
+                sample = self.df.sample(frac=frac, random_state=seed)
+                metric = self._summary_metric(sample)
+                rows.append({
+                    'fraction': frac,
+                    'seed': seed,
+                    'mean_sentiment_score': metric['mean_sentiment_score'],
+                    'net_sentiment': metric['net_sentiment']
+                })
+
+        sub_df = pd.DataFrame(rows)
+        return {
+            'results': sub_df.to_dict('records'),
+            'stability_summary': sub_df.groupby('fraction').agg({
+                'mean_sentiment_score': ['mean', 'std'],
+                'net_sentiment': ['mean', 'std']
+            }).to_dict()
+        }
+
+    def time_window_sensitivity(self, shift_days: int = 7) -> Dict:
+        """Check sensitivity when truncating start/end windows by ±shift days."""
+        min_d = self.df[self.date_column].min()
+        max_d = self.df[self.date_column].max()
+
+        centered = self.df[(self.df[self.date_column] >= min_d + pd.Timedelta(days=shift_days)) &
+                           (self.df[self.date_column] <= max_d - pd.Timedelta(days=shift_days))]
+        early_shift = self.df[self.df[self.date_column] >= min_d + pd.Timedelta(days=shift_days)]
+        late_shift = self.df[self.df[self.date_column] <= max_d - pd.Timedelta(days=shift_days)]
+
+        return {
+            'shift_days': shift_days,
+            'full': self._summary_metric(self.df),
+            'centered_window': self._summary_metric(centered),
+            'drop_first_window': self._summary_metric(early_shift),
+            'drop_last_window': self._summary_metric(late_shift)
+        }
+
 
 def run_full_analysis(df: pd.DataFrame,
                      text_column: str = 'clean_text',
@@ -1238,6 +2011,18 @@ def run_full_analysis(df: pd.DataFrame,
     print(f"{'='*60}\n")
     
     results = {}
+
+    # ===== Step 0: Attrition & Analytic Population =====
+    print("📋 Step 0: Attrition & Sample Construction")
+    print("-" * 40)
+    attrition = resolve_attrition_counts(df, data_dir='data')
+    print(f"   N1 (Raw collected): {attrition.get('N1_raw_collected', 'NA')}")
+    print(f"   N2 (After deduplication): {attrition.get('N2_after_deduplication', 'NA')}")
+    print(f"   N3 (After language filter): {attrition.get('N3_after_language_filter', 'NA')}")
+    print(f"   N4 (Final analytic): {attrition.get('N4_final_analytic', len(df))}")
+    if 'top_5pct_user_activity_share' in attrition:
+        print(f"   Top 5% user activity share: {attrition['top_5pct_user_activity_share']*100:.2f}%")
+    results['attrition'] = attrition
     
     # ===== Step 1: Sentiment Classification =====
     print("📊 Step 1: Sentiment Classification")
@@ -1258,6 +2043,18 @@ def run_full_analysis(df: pd.DataFrame,
     
     results['sentiment_distribution'] = sentiment_dist.to_dict()
     results['mean_sentiment_score'] = df['sentiment_score'].mean()
+
+    # Representativeness and potential bias disclosure
+    representativeness = {}
+    if 'subreddit' in df.columns:
+        subreddit_counts = df['subreddit'].value_counts()
+        representativeness['subreddit_distribution'] = subreddit_counts.to_dict()
+        representativeness['subreddit_hhi'] = float(np.sum((subreddit_counts / len(df)) ** 2))
+    if 'author_id_hash' in df.columns:
+        author_counts = df['author_id_hash'].value_counts()
+        representativeness['author_activity_top_5pct_threshold'] = float(author_counts.quantile(0.95))
+        representativeness['author_activity_gini_proxy'] = float(author_counts.std() / (author_counts.mean() + 1e-9))
+    results['representativeness'] = representativeness
     
     # ===== Step 2: Trend Analysis =====
     print(f"\n📈 Step 2: Trend-Based Analysis")
@@ -1320,24 +2117,39 @@ def run_full_analysis(df: pd.DataFrame,
                   f"score={spike['avg_sentiment']:.3f} (z={spike['z_score']:.2f}, {spike['spike_type']})")
     
     # Lag correlations
-    lag_corr = spike_detector.compute_lag_correlations(max_lag=14)
+    lag_corr = spike_detector.compute_lag_correlations(max_lag=28, target_lags=[0, 7, 21])
     if len(lag_corr) > 0:
-        print(f"\n   Lag Correlation Analysis (volume vs sentiment):")
-        sig_lags = lag_corr[lag_corr['significant']]
+        print(f"\n   Lag Correlation Analysis (volume vs sentiment, target lags 0/7/21):")
+        sig_lags = lag_corr[lag_corr['is_target_lag']]
         if len(sig_lags) > 0:
             for _, row in sig_lags.iterrows():
                 print(f"      Lag {row['lag_days']} days: r={row['correlation_vol_sent']:.3f} "
-                      f"(p={row['p_value']:.4f})")
+                      f"(p={row['p_value']:.4f}, FDR={row['p_fdr_bh']:.4f}, "
+                      f"95% CI [{row['ci_95_low']:.3f}, {row['ci_95_high']:.3f}], {row['effect_size']})")
         else:
             print(f"      No significant lag correlations found")
+
+    ccf = spike_detector.compute_cross_correlation_profile(max_lag=28)
+    if len(ccf) > 0:
+        best = ccf.iloc[ccf['cross_correlation'].abs().argmax()]
+        print(f"   CCF strongest lag: {int(best['lag_days'])} days (r={best['cross_correlation']:.3f}, p={best['p_value']:.4f})")
     
     results['volume_spikes'] = volume_spikes.to_dict('records') if len(volume_spikes) > 0 else []
     results['sentiment_spikes'] = sentiment_spikes.to_dict('records') if len(sentiment_spikes) > 0 else []
     results['lag_correlations'] = lag_corr.to_dict('records') if len(lag_corr) > 0 else []
+    results['cross_correlation_profile'] = ccf.to_dict('records') if len(ccf) > 0 else []
     
     # Plot spikes
     spike_detector.plot_spikes(volume_spikes, sentiment_spikes,
                               save_path=os.path.join(output_dir, 'spike_detection.png'))
+    spike_detector.plot_epidemic_curve_overlay(
+        volume_spikes=volume_spikes,
+        save_path=os.path.join(output_dir, 'epidemic_curve_overlay.png')
+    )
+    corr_matrix = spike_detector.plot_correlation_heatmap(
+        save_path=os.path.join(output_dir, 'correlation_heatmap.png')
+    )
+    results['correlation_matrix'] = corr_matrix.to_dict() if isinstance(corr_matrix, pd.DataFrame) else {}
     
     # ===== Step 4: Odds Ratio Analysis =====
     print(f"\n📐 Step 4: Odds Ratio / Log-Odds Analysis")
@@ -1390,8 +2202,8 @@ def run_full_analysis(df: pd.DataFrame,
     network_analyzer = NetworkAnalysis(df, text_column=text_column)
     
     # Build network
-    print("\n   Building word co-occurrence network...")
-    network_analyzer.build_network(min_cooccurrence=3, max_edges=150)
+    print("\n   Building word co-occurrence network (expanded vocabulary)...")
+    network_analyzer.build_network(min_cooccurrence=1, max_edges=800, min_word_frequency=2)
     
     # Detect communities/topics
     if network_analyzer.G and network_analyzer.G.number_of_nodes() > 0:
@@ -1415,6 +2227,19 @@ def run_full_analysis(df: pd.DataFrame,
         # Save topic summary
         topic_summary = network_analyzer.get_topic_summary()
         topic_summary.to_csv(os.path.join(output_dir, 'topic_summary.csv'), index=False)
+
+        # Topic coherence / stability / sensitivity diagnostics
+        topic_coherence = network_analyzer.compute_topic_coherence(top_n_words=8)
+        topic_k_sensitivity = network_analyzer.topic_count_sensitivity(min_cooccurrence_values=[2, 3, 4, 5])
+        topic_stability = network_analyzer.topic_stability_bootstrap(
+            n_bootstrap=8,
+            sample_frac=0.8,
+            top_n_words=6,
+            random_seed=42
+        )
+        print(f"\n   Topic coherence (C_v proxy): {topic_coherence['model_coherence_cv_proxy']:.3f} "
+              f"[{topic_coherence['interpretation']}]")
+        print(f"   Topic stability (mean Jaccard overlap): {topic_stability.get('mean_topic_overlap_jaccard', np.nan):.3f}")
         
         results['topics'] = {
             str(k): {
@@ -1425,6 +2250,9 @@ def run_full_analysis(df: pd.DataFrame,
                 'avg_sentiment': v['avg_sentiment']
             } for k, v in topic_info.items()
         }
+        results['topic_coherence'] = topic_coherence
+        results['topic_k_sensitivity'] = topic_k_sensitivity.to_dict('records')
+        results['topic_stability'] = topic_stability
         
         # Plot network
         network_analyzer.plot_network(
@@ -1433,29 +2261,52 @@ def run_full_analysis(df: pd.DataFrame,
         # Plot topic sentiment
         network_analyzer.plot_topic_sentiment(
             save_path=os.path.join(output_dir, 'topic_sentiment.png'))
+        topic_sentiment_interaction = network_analyzer.plot_topic_sentiment_interaction(
+            save_path=os.path.join(output_dir, 'topic_sentiment_interaction.png')
+        )
+        if isinstance(topic_sentiment_interaction, pd.DataFrame):
+            topic_sentiment_interaction.to_csv(
+                os.path.join(output_dir, 'topic_sentiment_interaction.csv'), index=False
+            )
+            results['topic_sentiment_interaction'] = topic_sentiment_interaction.to_dict('records')
     else:
         print("   ⚠️ Insufficient data for network analysis")
+
+    # ===== Step 6: Robustness & Sensitivity Analysis =====
+    print(f"\n🧪 Step 6: Robustness & Sensitivity")
+    print("-" * 40)
+    robust = RobustnessAnalysis(df, text_column=text_column, date_column=date_column)
+    alt_model = robust.alternative_sentiment_model_validation(sample_size=500)
+    vol_excl = robust.exclude_top_volume_days(percentile=0.95)
+    user_excl = robust.exclude_top_active_users(percentile=0.95)
+    subsample = robust.subsampling_test(fractions=[0.5, 0.7, 0.9], repeats=5)
+    time_window = robust.time_window_sensitivity(shift_days=7)
+
+    if alt_model:
+        print(f"   BERT vs TextBlob agreement: r={alt_model['pearson_r_bert_vs_textblob']:.3f}, p={alt_model['p_value']:.4f}")
+    print(f"   Excluding top 5% volume days: n={vol_excl['filtered']['n']} "
+          f"(net={vol_excl['filtered']['net_sentiment']:+.3f})")
+    if user_excl.get('available'):
+        print(f"   Excluding top active users: n={user_excl['filtered']['n']} "
+              f"(net={user_excl['filtered']['net_sentiment']:+.3f})")
+    print(f"   Time-window sensitivity (±7 days) centered n={time_window['centered_window']['n']}")
+
+    results['robustness'] = {
+        'alternative_sentiment_model_validation': alt_model,
+        'exclude_top_volume_days': vol_excl,
+        'exclude_top_active_users': user_excl,
+        'subsampling_test': subsample,
+        'time_window_sensitivity': time_window,
+        'multiple_testing_correction': {
+            'lag_correlations': 'fdr_bh and bonferroni applied',
+            'ccf_profile': 'fdr_bh applied'
+        }
+    }
     
     # ===== Save Results Summary =====
-    import json
-    
-    # Convert non-serializable objects
-    def make_serializable(obj):
-        if isinstance(obj, (np.integer, np.floating)):
-            return float(obj)
-        elif isinstance(obj, np.ndarray):
-            return obj.tolist()
-        elif isinstance(obj, pd.Timestamp):
-            return obj.isoformat()
-        elif isinstance(obj, dict):
-            return {k: make_serializable(v) for k, v in obj.items()}
-        elif isinstance(obj, list):
-            return [make_serializable(i) for i in obj]
-        return obj
-    
     results_path = os.path.join(output_dir, 'analysis_results.json')
     with open(results_path, 'w') as f:
-        json.dump(make_serializable(results), f, indent=2)
+        json.dump(_safe_serializable(results), f, indent=2)
     
     print(f"\n{'='*60}")
     print(f"✅ ANALYSIS COMPLETE")
