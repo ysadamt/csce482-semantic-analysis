@@ -58,7 +58,7 @@ def step_1_scrape_reddit():
         target = 3000
         seen_ids = set()
         data = []
-        cutoff_date = datetime(2016, 1, 1)
+        cutoff_date = datetime(2018, 1, 1)
         
         print(f"Searching Reddit with multiple queries to reach {target} posts (2016 onwards)...")
         

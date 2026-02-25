@@ -556,19 +556,36 @@ class OddsRatioAnalysis:
         self.df = df.copy()
         self.text_column = text_column
         self.sentiment_column = sentiment_column
+        self.stopwords = {
+            'the', 'and', 'for', 'that', 'with', 'this', 'from', 'have', 'were',
+            'their', 'they', 'them', 'about', 'would', 'could', 'should', 'there',
+            'which', 'when', 'where', 'what', 'your', 'just', 'into', 'over',
+            'than', 'also', 'http', 'https', 'www', 'com', 'amp', 'reddit',
+            'post', 'comment', 'people', 'thing', 'things', 'make', 'made',
+            'know', 'like', 'really', 'still', 'much', 'many', 'some', 'more',
+            'most', 'other', 'because', 'going', 'want', 'need', 'take', 'come',
+            'said', 'dont', 'doesnt', 'didnt', 'cant', 'wont', 'ive', 'youre',
+            'im', 'get', 'got', 'one', 'two', 'first', 'last', 'new', 'use',
+            'used', 'using', 'well', 'back', 'look', 'long', 'even', 'say'
+        }
+
+    def _tokenize_text(self, text: str) -> List[str]:
+        """Tokenize and filter words for semantic odds analysis."""
+        text = str(text).lower()
+        tokens = re.findall(r'\b[a-z]{3,}\b', text)
+        tokens = [t for t in tokens if t not in self.stopwords]
+        return tokens
     
     def compute_word_frequencies(self) -> Tuple[Counter, Counter, Counter]:
-        """Compute word frequencies by sentiment class."""
-        from collections import Counter
-        import re
+        """Compute per-document word frequencies by sentiment class."""
         
         positive_words = Counter()
         negative_words = Counter()
         all_words = Counter()
         
         for _, row in self.df.iterrows():
-            text = str(row[self.text_column]).lower()
-            words = re.findall(r'\b[a-z]{3,}\b', text)
+            words = self._tokenize_text(row[self.text_column])
+            words = list(set(words))
             sentiment = row[self.sentiment_column]
             
             all_words.update(words)
@@ -581,7 +598,8 @@ class OddsRatioAnalysis:
         return positive_words, negative_words, all_words
     
     def compute_log_odds_ratio(self, min_count: int = 10,
-                               prior_count: float = 0.5) -> pd.DataFrame:
+                               prior_count: float = 0.5,
+                               max_doc_frequency: float = 0.8) -> pd.DataFrame:
         """
         Compute log-odds ratio with informative Dirichlet prior.
         
@@ -595,6 +613,8 @@ class OddsRatioAnalysis:
             DataFrame with words ranked by log-odds
         """
         positive_words, negative_words, all_words = self.compute_word_frequencies()
+
+        total_docs = max(1, len(self.df))
         
         # Total counts
         total_positive = sum(positive_words.values())
@@ -604,6 +624,8 @@ class OddsRatioAnalysis:
         
         for word, total_count in all_words.items():
             if total_count < min_count:
+                continue
+            if (total_count / total_docs) > max_doc_frequency:
                 continue
             
             # Counts with prior smoothing
@@ -1320,8 +1342,13 @@ def run_full_analysis(df: pd.DataFrame,
     # ===== Step 4: Odds Ratio Analysis =====
     print(f"\n📐 Step 4: Odds Ratio / Log-Odds Analysis")
     print("-" * 40)
-    
-    odds_analyzer = OddsRatioAnalysis(df, text_column=text_column, sentiment_column='sentiment')
+
+    odds_text_column = text_column
+    if 'topic_text' in df.columns and df['topic_text'].astype(str).str.len().gt(0).any():
+        odds_text_column = 'topic_text'
+    print(f"   Using text column for log-odds: {odds_text_column}")
+
+    odds_analyzer = OddsRatioAnalysis(df, text_column=odds_text_column, sentiment_column='sentiment')
     
     # Sentiment probabilities
     sent_probs = odds_analyzer.compute_sentiment_probabilities()
@@ -1333,7 +1360,7 @@ def run_full_analysis(df: pd.DataFrame,
     print(f"      Net Sentiment: {sent_probs['net_sentiment']:+.3f}")
     
     # Log-odds analysis
-    log_odds_df = odds_analyzer.compute_log_odds_ratio(min_count=10)
+    log_odds_df = odds_analyzer.compute_log_odds_ratio(min_count=10, max_doc_frequency=0.8)
     if len(log_odds_df) > 0:
         drivers = odds_analyzer.get_top_drivers(log_odds_df, n=10)
         
