@@ -131,7 +131,7 @@ def _safe_serializable(obj):
     if isinstance(obj, pd.Period):
         return str(obj)
     if isinstance(obj, dict):
-        return {k: _safe_serializable(v) for k, v in obj.items()}
+        return {str(k) if not isinstance(k, (str, int, float, bool)) else k: _safe_serializable(v) for k, v in obj.items()}
     if isinstance(obj, list):
         return [_safe_serializable(v) for v in obj]
     return obj

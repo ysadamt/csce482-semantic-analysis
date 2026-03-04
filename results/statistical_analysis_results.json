@@ -1,0 +1,4521 @@
+{
+  "data_quality": {
+    "duplicates": {
+      "total_rows": 2878,
+      "exact_duplicates": 6,
+      "duplicate_pct": 0.21,
+      "clean": false
+    },
+    "missing_values": {
+      "columns_with_missing": {
+        "body": 1783
+      },
+      "total_missing_cells": 1783,
+      "clean": false
+    },
+    "relevance": {
+      "keyword_hit_count": 2784,
+      "keyword_hit_pct": 96.73,
+      "keywords_checked": [
+        "methane",
+        "dairy",
+        "cow",
+        "cows",
+        "cattle",
+        "livestock",
+        "emission",
+        "emissions",
+        "climate",
+        "greenhouse",
+        "farming",
+        "farm",
+        "enteric",
+        "manure"
+      ],
+      "relevant": true
+    },
+    "comparison_groups": {
+      "policy_date": "2024-01-01",
+      "before": {
+        "n": 1921,
+        "date_range": [
+          "2018-01-01",
+          "2023-12-31"
+        ]
+      },
+      "after": {
+        "n": 957,
+        "date_range": [
+          "2024-01-01",
+          "2026-03-04"
+        ]
+      },
+      "balanced": true
+    },
+    "all_clean": false
+  },
+  "hypothesis_testing": {
+    "hypotheses": {
+      "H0": "There is no significant difference in mean sentiment score between the Before-policy and After-policy periods (\u03bc_before = \u03bc_after).",
+      "H1": "There is a significant difference in mean sentiment score between the Before-policy and After-policy periods (\u03bc_before \u2260 \u03bc_after).",
+      "alpha": 0.05,
+      "two_tailed": true
+    },
+    "normality_tests": {
+      "before": {
+        "n": 1921,
+        "shapiro_W": 0.965411,
+        "p_value": 4.782413863260919e-21,
+        "normal_at_0_05": false,
+        "sample_used": 1921
+      },
+      "after": {
+        "n": 957,
+        "shapiro_W": 0.960491,
+        "p_value": 2.0820569753018102e-15,
+        "normal_at_0_05": false,
+        "sample_used": 957
+      },
+      "both_normal": false
+    },
+    "test_result": {
+      "test_name": "Mann-Whitney U test",
+      "test_selected_because": "At least one group failed Shapiro-Wilk normality test (p \u2264 .05)",
+      "statistic_label": "U",
+      "statistic_value": 962316.0,
+      "p_value": 0.04006811861618969,
+      "significant_at_0_05": true,
+      "cohens_d": 0.0811,
+      "cohens_d_interpretation": "negligible",
+      "mean_before": -0.1511,
+      "mean_after": -0.1887,
+      "mean_difference": 0.0377,
+      "ci_95_lower": 0.0018,
+      "ci_95_upper": 0.0735,
+      "n_before": 1921,
+      "n_after": 957
+    }
+  },
+  "bias_assessment": {
+    "geographic_imbalance": {
+      "available": true,
+      "n_unique_subreddits": 22,
+      "top_10_subreddits": {
+        "climate": 372,
+        "environment": 326,
+        "vegan": 233,
+        "climatechange": 220,
+        "Futurology": 186,
+        "ClimateOffensive": 178,
+        "energy": 176,
+        "sustainability": 161,
+        "environmental_science": 121,
+        "Green": 120
+      },
+      "hhi": 0.0685,
+      "hhi_interpretation": "low concentration",
+      "concern": "Subreddit distribution shows reasonable diversity."
+    },
+    "platform_algorithm_bias": {
+      "platform": "Reddit",
+      "known_biases": [
+        "Reddit's search API returns results ranked by 'relevance' or 'hot', biasing towards high-engagement content.",
+        "Highly upvoted posts are over-represented in search results; low-score posts may be systematically excluded.",
+        "Subreddit moderation policies may remove content, creating survivorship bias in the collected corpus.",
+        "Reddit's user base skews younger, male, and US-centric (Pew Research, 2021), limiting demographic generalisability."
+      ],
+      "mitigation_steps": [
+        "Used multiple search queries across diverse subreddits.",
+        "Collected data across a multi-year time span to reduce recency bias.",
+        "Reported attrition at every preprocessing stage."
+      ]
+    },
+    "time_window_bias": {
+      "date_range": {
+        "start": "2018-01-01",
+        "end": "2026-03-04",
+        "span_days": 2984
+      },
+      "coverage": {
+        "total_days_in_range": 2985,
+        "days_with_data": 1722,
+        "coverage_pct": 57.7,
+        "missing_day_count": 1263
+      },
+      "weekday_distribution": {
+        "Tuesday": 0.16921473245309243,
+        "Monday": 0.16052814454482278,
+        "Wednesday": 0.15427380125086865,
+        "Thursday": 0.14975677553856845,
+        "Friday": 0.14489228630993745,
+        "Saturday": 0.11188325225851285,
+        "Sunday": 0.10945100764419737
+      },
+      "year_distribution": {
+        "2018": 319,
+        "2019": 326,
+        "2020": 325,
+        "2021": 318,
+        "2022": 319,
+        "2023": 314,
+        "2024": 316,
+        "2025": 323,
+        "2026": 318
+      },
+      "concern": "Significant temporal gaps detected; results may miss important events in uncovered periods."
+    },
+    "high_activity_user_bias": {
+      "available": true,
+      "n_unique_users": 1653,
+      "total_posts": 2878,
+      "posts_per_user_mean": 1.74,
+      "posts_per_user_median": 1.0,
+      "posts_per_user_max": 124,
+      "top_5pct_threshold": 3.0,
+      "top_5pct_user_count": 113,
+      "top_5pct_post_share": 41.97,
+      "gini_coefficient": 0.4062,
+      "concern": "Top 5 % of users contribute 42.0 % of posts. High user concentration may bias aggregate sentiment."
+    }
+  },
+  "sensitivity_analysis": {
+    "top_users": {
+      "available": true,
+      "percentile": 0.95,
+      "threshold_posts": 3.0,
+      "n_top_users": 113,
+      "n_total_users": 1653,
+      "posts_from_top_users": 1208,
+      "top_user_ids": [
+        "0151ce0148c3861c",
+        "6389f44693d6210c",
+        "442907710b3fdd5b",
+        "1defd313a8658f92",
+        "4bc5edbdd10338d7",
+        "1cc274dbe258241a",
+        "c6e6849904b0de4c",
+        "4d108fd9687a35f3",
+        "e67f43ecc9907de3",
+        "3c761287c495c7d2",
+        "3fbf8d185fe2068a",
+        "7b945f78bed8f87e",
+        "931e778f7cda5ae7",
+        "16603d4e72b852da",
+        "19241cfe423dee73",
+        "53a0d492f0b86b41",
+        "41103e2bd518c7f0",
+        "cd17f5c82dc814f2",
+        "5ec7642bf51cf6bc",
+        "1eac5537bfa9515b"
+      ]
+    },
+    "full_dataset": {
+      "summary": {
+        "n": 2878,
+        "positive_pct": 11.78,
+        "neutral_pct": 54.73,
+        "negative_pct": 33.5,
+        "mean_sentiment_score": -0.1636,
+        "std_sentiment_score": 0.4672
+      },
+      "hypothesis_test": {
+        "test": "Mann-Whitney U",
+        "U": 962316.0,
+        "p_value": 0.04006811861618969,
+        "significant": true,
+        "cohens_d": 0.0811,
+        "ci_95": [
+          0.0018,
+          0.0735
+        ],
+        "n_before": 1921,
+        "n_after": 957
+      }
+    },
+    "filtered_dataset": {
+      "summary": {
+        "n": 1670,
+        "positive_pct": 13.59,
+        "neutral_pct": 55.27,
+        "negative_pct": 31.14,
+        "mean_sentiment_score": -0.1317,
+        "std_sentiment_score": 0.4758
+      },
+      "hypothesis_test": {
+        "test": "Mann-Whitney U",
+        "U": 284295.0,
+        "p_value": 0.21782230724472307,
+        "significant": false,
+        "cohens_d": -0.0667,
+        "ci_95": [
+          -0.0809,
+          0.0177
+        ],
+        "n_before": 1161,
+        "n_after": 509
+      }
+    },
+    "comparison": {
+      "mean_score_difference": -0.0319,
+      "conclusion_changed": true,
+      "interpretation": "Excluding the top 5 % most-active users CHANGES the statistical conclusion. Results are sensitive to high-activity users."
+    }
+  },
+  "sentiment_drivers": {
+    "method": "Logistic Regression (L2, sklearn)",
+    "n_samples": 1303,
+    "n_features": 500,
+    "intercept": -2.0933,
+    "accuracy": 0.9862,
+    "positive_drivers": [
+      {
+        "word": "best",
+        "coefficient": 1.5384,
+        "odds_ratio": 4.6573,
+        "or_ci_95_lower": 3.3567,
+        "or_ci_95_upper": 6.4618,
+        "significant": true
+      },
+      {
+        "word": "hope",
+        "coefficient": 1.4196,
+        "odds_ratio": 4.1354,
+        "or_ci_95_lower": 2.8568,
+        "or_ci_95_upper": 5.9861,
+        "significant": true
+      },
+      {
+        "word": "sustainable",
+        "coefficient": 1.226,
+        "odds_ratio": 3.4076,
+        "or_ci_95_lower": 2.3547,
+        "or_ci_95_upper": 4.9314,
+        "significant": true
+      },
+      {
+        "word": "love",
+        "coefficient": 1.159,
+        "odds_ratio": 3.1867,
+        "or_ci_95_lower": 2.2796,
+        "or_ci_95_upper": 4.4547,
+        "significant": true
+      },
+      {
+        "word": "reducing",
+        "coefficient": 1.148,
+        "odds_ratio": 3.1518,
+        "or_ci_95_lower": 2.1503,
+        "or_ci_95_upper": 4.6196,
+        "significant": true
+      },
+      {
+        "word": "working",
+        "coefficient": 1.0776,
+        "odds_ratio": 2.9377,
+        "or_ci_95_lower": 2.0788,
+        "or_ci_95_upper": 4.1515,
+        "significant": true
+      },
+      {
+        "word": "yet",
+        "coefficient": 1.0094,
+        "odds_ratio": 2.7439,
+        "or_ci_95_lower": 1.8795,
+        "or_ci_95_upper": 4.0057,
+        "significant": true
+      },
+      {
+        "word": "thank",
+        "coefficient": 0.9921,
+        "odds_ratio": 2.6968,
+        "or_ci_95_lower": 1.9011,
+        "or_ci_95_upper": 3.8255,
+        "significant": true
+      },
+      {
+        "word": "make",
+        "coefficient": 0.954,
+        "odds_ratio": 2.5961,
+        "or_ci_95_lower": 1.8595,
+        "or_ci_95_upper": 3.6244,
+        "significant": true
+      },
+      {
+        "word": "positive",
+        "coefficient": 0.9271,
+        "odds_ratio": 2.5271,
+        "or_ci_95_lower": 1.7109,
+        "or_ci_95_upper": 3.7325,
+        "significant": true
+      },
+      {
+        "word": "products",
+        "coefficient": 0.8836,
+        "odds_ratio": 2.4197,
+        "or_ci_95_lower": 1.6779,
+        "or_ci_95_upper": 3.4894,
+        "significant": true
+      },
+      {
+        "word": "sources",
+        "coefficient": 0.8799,
+        "odds_ratio": 2.4107,
+        "or_ci_95_lower": 1.6167,
+        "or_ci_95_upper": 3.5948,
+        "significant": true
+      },
+      {
+        "word": "better",
+        "coefficient": 0.8562,
+        "odds_ratio": 2.3543,
+        "or_ci_95_lower": 1.7531,
+        "or_ci_95_upper": 3.1617,
+        "significant": true
+      },
+      {
+        "word": "experience",
+        "coefficient": 0.8553,
+        "odds_ratio": 2.3521,
+        "or_ci_95_lower": 1.5855,
+        "or_ci_95_upper": 3.4894,
+        "significant": true
+      },
+      {
+        "word": "share",
+        "coefficient": 0.8493,
+        "odds_ratio": 2.338,
+        "or_ci_95_lower": 1.5013,
+        "or_ci_95_upper": 3.6411,
+        "significant": true
+      }
+    ],
+    "negative_drivers": [
+      {
+        "word": "not",
+        "coefficient": -1.5681,
+        "odds_ratio": 0.2084,
+        "or_ci_95_lower": 0.1502,
+        "or_ci_95_upper": 0.2892,
+        "significant": true
+      },
+      {
+        "word": "only",
+        "coefficient": -1.305,
+        "odds_ratio": 0.2712,
+        "or_ci_95_lower": 0.1854,
+        "or_ci_95_upper": 0.3966,
+        "significant": true
+      },
+      {
+        "word": "understand",
+        "coefficient": -1.0502,
+        "odds_ratio": 0.3499,
+        "or_ci_95_lower": 0.2213,
+        "or_ci_95_upper": 0.5531,
+        "significant": true
+      },
+      {
+        "word": "their",
+        "coefficient": -1.0491,
+        "odds_ratio": 0.3503,
+        "or_ci_95_lower": 0.2478,
+        "or_ci_95_upper": 0.4951,
+        "significant": true
+      },
+      {
+        "word": "aren",
+        "coefficient": -1.0002,
+        "odds_ratio": 0.3678,
+        "or_ci_95_lower": 0.2218,
+        "or_ci_95_upper": 0.6098,
+        "significant": true
+      },
+      {
+        "word": "trump",
+        "coefficient": -0.9839,
+        "odds_ratio": 0.3739,
+        "or_ci_95_lower": 0.2484,
+        "or_ci_95_upper": 0.5627,
+        "significant": true
+      },
+      {
+        "word": "but",
+        "coefficient": -0.9752,
+        "odds_ratio": 0.3771,
+        "or_ci_95_lower": 0.2747,
+        "or_ci_95_upper": 0.5178,
+        "significant": true
+      },
+      {
+        "word": "between",
+        "coefficient": -0.9478,
+        "odds_ratio": 0.3876,
+        "or_ci_95_lower": 0.2319,
+        "or_ci_95_upper": 0.6477,
+        "significant": true
+      },
+      {
+        "word": "oil",
+        "coefficient": -0.9397,
+        "odds_ratio": 0.3908,
+        "or_ci_95_lower": 0.2542,
+        "or_ci_95_upper": 0.6006,
+        "significant": true
+      },
+      {
+        "word": "bad",
+        "coefficient": -0.8643,
+        "odds_ratio": 0.4214,
+        "or_ci_95_lower": 0.2879,
+        "or_ci_95_upper": 0.6167,
+        "significant": true
+      },
+      {
+        "word": "either",
+        "coefficient": -0.8379,
+        "odds_ratio": 0.4326,
+        "or_ci_95_lower": 0.2874,
+        "or_ci_95_upper": 0.6511,
+        "significant": true
+      },
+      {
+        "word": "enough",
+        "coefficient": -0.8237,
+        "odds_ratio": 0.4388,
+        "or_ci_95_lower": 0.2994,
+        "or_ci_95_upper": 0.643,
+        "significant": true
+      },
+      {
+        "word": "care",
+        "coefficient": -0.8224,
+        "odds_ratio": 0.4394,
+        "or_ci_95_lower": 0.2923,
+        "or_ci_95_upper": 0.6605,
+        "significant": true
+      },
+      {
+        "word": "demand",
+        "coefficient": -0.7938,
+        "odds_ratio": 0.4521,
+        "or_ci_95_lower": 0.3041,
+        "or_ci_95_upper": 0.6721,
+        "significant": true
+      },
+      {
+        "word": "methane",
+        "coefficient": -0.7867,
+        "odds_ratio": 0.4553,
+        "or_ci_95_lower": 0.3268,
+        "or_ci_95_upper": 0.6344,
+        "significant": true
+      }
+    ],
+    "interpretation": {
+      "how_identified": "A regularised (L2) logistic regression was fit to predict positive (1) vs negative (0) sentiment from binary word-occurrence features (500 words, min document frequency = 10). Coefficients represent the change in log-odds of positive sentiment associated with presence of each word.",
+      "odds_ratio_meaning": "An odds ratio > 1 means the word increases the odds of positive sentiment; < 1 means it increases the odds of negative sentiment."
+    },
+    "full_table": [
+      {
+        "word": "best",
+        "coefficient": 1.5384,
+        "odds_ratio": 4.6573,
+        "or_ci_95_lower": 3.3567,
+        "or_ci_95_upper": 6.4618,
+        "significant": true
+      },
+      {
+        "word": "hope",
+        "coefficient": 1.4196,
+        "odds_ratio": 4.1354,
+        "or_ci_95_lower": 2.8568,
+        "or_ci_95_upper": 5.9861,
+        "significant": true
+      },
+      {
+        "word": "sustainable",
+        "coefficient": 1.226,
+        "odds_ratio": 3.4076,
+        "or_ci_95_lower": 2.3547,
+        "or_ci_95_upper": 4.9314,
+        "significant": true
+      },
+      {
+        "word": "love",
+        "coefficient": 1.159,
+        "odds_ratio": 3.1867,
+        "or_ci_95_lower": 2.2796,
+        "or_ci_95_upper": 4.4547,
+        "significant": true
+      },
+      {
+        "word": "reducing",
+        "coefficient": 1.148,
+        "odds_ratio": 3.1518,
+        "or_ci_95_lower": 2.1503,
+        "or_ci_95_upper": 4.6196,
+        "significant": true
+      },
+      {
+        "word": "working",
+        "coefficient": 1.0776,
+        "odds_ratio": 2.9377,
+        "or_ci_95_lower": 2.0788,
+        "or_ci_95_upper": 4.1515,
+        "significant": true
+      },
+      {
+        "word": "yet",
+        "coefficient": 1.0094,
+        "odds_ratio": 2.7439,
+        "or_ci_95_lower": 1.8795,
+        "or_ci_95_upper": 4.0057,
+        "significant": true
+      },
+      {
+        "word": "thank",
+        "coefficient": 0.9921,
+        "odds_ratio": 2.6968,
+        "or_ci_95_lower": 1.9011,
+        "or_ci_95_upper": 3.8255,
+        "significant": true
+      },
+      {
+        "word": "make",
+        "coefficient": 0.954,
+        "odds_ratio": 2.5961,
+        "or_ci_95_lower": 1.8595,
+        "or_ci_95_upper": 3.6244,
+        "significant": true
+      },
+      {
+        "word": "positive",
+        "coefficient": 0.9271,
+        "odds_ratio": 2.5271,
+        "or_ci_95_lower": 1.7109,
+        "or_ci_95_upper": 3.7325,
+        "significant": true
+      },
+      {
+        "word": "products",
+        "coefficient": 0.8836,
+        "odds_ratio": 2.4197,
+        "or_ci_95_lower": 1.6779,
+        "or_ci_95_upper": 3.4894,
+        "significant": true
+      },
+      {
+        "word": "sources",
+        "coefficient": 0.8799,
+        "odds_ratio": 2.4107,
+        "or_ci_95_lower": 1.6167,
+        "or_ci_95_upper": 3.5948,
+        "significant": true
+      },
+      {
+        "word": "better",
+        "coefficient": 0.8562,
+        "odds_ratio": 2.3543,
+        "or_ci_95_lower": 1.7531,
+        "or_ci_95_upper": 3.1617,
+        "significant": true
+      },
+      {
+        "word": "experience",
+        "coefficient": 0.8553,
+        "odds_ratio": 2.3521,
+        "or_ci_95_lower": 1.5855,
+        "or_ci_95_upper": 3.4894,
+        "significant": true
+      },
+      {
+        "word": "share",
+        "coefficient": 0.8493,
+        "odds_ratio": 2.338,
+        "or_ci_95_lower": 1.5013,
+        "or_ci_95_upper": 3.6411,
+        "significant": true
+      },
+      {
+        "word": "most",
+        "coefficient": 0.8473,
+        "odds_ratio": 2.3334,
+        "or_ci_95_lower": 1.7456,
+        "or_ci_95_upper": 3.1191,
+        "significant": true
+      },
+      {
+        "word": "pretty",
+        "coefficient": 0.814,
+        "odds_ratio": 2.2569,
+        "or_ci_95_lower": 1.6356,
+        "or_ci_95_upper": 3.1142,
+        "significant": true
+      },
+      {
+        "word": "vegan",
+        "coefficient": 0.807,
+        "odds_ratio": 2.2411,
+        "or_ci_95_lower": 1.5957,
+        "or_ci_95_upper": 3.1475,
+        "significant": true
+      },
+      {
+        "word": "hear",
+        "coefficient": 0.8006,
+        "odds_ratio": 2.2269,
+        "or_ci_95_lower": 1.5384,
+        "or_ci_95_upper": 3.2236,
+        "significant": true
+      },
+      {
+        "word": "well",
+        "coefficient": 0.7941,
+        "odds_ratio": 2.2126,
+        "or_ci_95_lower": 1.577,
+        "or_ci_95_upper": 3.1042,
+        "significant": true
+      },
+      {
+        "word": "here",
+        "coefficient": 0.7869,
+        "odds_ratio": 2.1966,
+        "or_ci_95_lower": 1.5683,
+        "or_ci_95_upper": 3.0766,
+        "significant": true
+      },
+      {
+        "word": "week",
+        "coefficient": 0.7842,
+        "odds_ratio": 2.1906,
+        "or_ci_95_lower": 1.4787,
+        "or_ci_95_upper": 3.2454,
+        "significant": true
+      },
+      {
+        "word": "systems",
+        "coefficient": 0.7636,
+        "odds_ratio": 2.1461,
+        "or_ci_95_lower": 1.3659,
+        "or_ci_95_upper": 3.372,
+        "significant": true
+      },
+      {
+        "word": "effects",
+        "coefficient": 0.7351,
+        "odds_ratio": 2.0857,
+        "or_ci_95_lower": 1.4752,
+        "or_ci_95_upper": 2.9489,
+        "significant": true
+      },
+      {
+        "word": "great",
+        "coefficient": 0.7349,
+        "odds_ratio": 2.0852,
+        "or_ci_95_lower": 1.5333,
+        "or_ci_95_upper": 2.8358,
+        "significant": true
+      },
+      {
+        "word": "clean",
+        "coefficient": 0.7091,
+        "odds_ratio": 2.0322,
+        "or_ci_95_lower": 1.5708,
+        "or_ci_95_upper": 2.6292,
+        "significant": true
+      },
+      {
+        "word": "good",
+        "coefficient": 0.695,
+        "odds_ratio": 2.0037,
+        "or_ci_95_lower": 1.4518,
+        "or_ci_95_upper": 2.7653,
+        "significant": true
+      },
+      {
+        "word": "set",
+        "coefficient": 0.6862,
+        "odds_ratio": 1.9862,
+        "or_ci_95_lower": 1.5018,
+        "or_ci_95_upper": 2.6267,
+        "significant": true
+      },
+      {
+        "word": "solutions",
+        "coefficient": 0.6854,
+        "odds_ratio": 1.9847,
+        "or_ci_95_lower": 1.3645,
+        "or_ci_95_upper": 2.8867,
+        "significant": true
+      },
+      {
+        "word": "potential",
+        "coefficient": 0.6683,
+        "odds_ratio": 1.9509,
+        "or_ci_95_lower": 1.2752,
+        "or_ci_95_upper": 2.9848,
+        "significant": true
+      },
+      {
+        "word": "off",
+        "coefficient": 0.6583,
+        "odds_ratio": 1.9315,
+        "or_ci_95_lower": 1.4541,
+        "or_ci_95_upper": 2.5656,
+        "significant": true
+      },
+      {
+        "word": "seems",
+        "coefficient": 0.6485,
+        "odds_ratio": 1.9128,
+        "or_ci_95_lower": 1.3157,
+        "or_ci_95_upper": 2.7808,
+        "significant": true
+      },
+      {
+        "word": "cows",
+        "coefficient": 0.646,
+        "odds_ratio": 1.9079,
+        "or_ci_95_lower": 1.4322,
+        "or_ci_95_upper": 2.5416,
+        "significant": true
+      },
+      {
+        "word": "crops",
+        "coefficient": 0.6256,
+        "odds_ratio": 1.8693,
+        "or_ci_95_lower": 1.4708,
+        "or_ci_95_upper": 2.3759,
+        "significant": true
+      },
+      {
+        "word": "thanks",
+        "coefficient": 0.6219,
+        "odds_ratio": 1.8624,
+        "or_ci_95_lower": 1.3295,
+        "or_ci_95_upper": 2.6089,
+        "significant": true
+      },
+      {
+        "word": "see",
+        "coefficient": 0.612,
+        "odds_ratio": 1.8441,
+        "or_ci_95_lower": 1.2963,
+        "or_ci_95_upper": 2.6233,
+        "significant": true
+      },
+      {
+        "word": "eating",
+        "coefficient": 0.6016,
+        "odds_ratio": 1.825,
+        "or_ci_95_lower": 1.3281,
+        "or_ci_95_upper": 2.5078,
+        "significant": true
+      },
+      {
+        "word": "agriculture",
+        "coefficient": 0.5961,
+        "odds_ratio": 1.8151,
+        "or_ci_95_lower": 1.383,
+        "or_ci_95_upper": 2.3822,
+        "significant": true
+      },
+      {
+        "word": "very",
+        "coefficient": 0.5839,
+        "odds_ratio": 1.793,
+        "or_ci_95_lower": 1.3282,
+        "or_ci_95_upper": 2.4204,
+        "significant": true
+      },
+      {
+        "word": "able",
+        "coefficient": 0.5837,
+        "odds_ratio": 1.7927,
+        "or_ci_95_lower": 1.2822,
+        "or_ci_95_upper": 2.5064,
+        "significant": true
+      },
+      {
+        "word": "didn",
+        "coefficient": 0.5649,
+        "odds_ratio": 1.7593,
+        "or_ci_95_lower": 1.2539,
+        "or_ci_95_upper": 2.4683,
+        "significant": true
+      },
+      {
+        "word": "green",
+        "coefficient": 0.5593,
+        "odds_ratio": 1.7495,
+        "or_ci_95_lower": 1.2877,
+        "or_ci_95_upper": 2.377,
+        "significant": true
+      },
+      {
+        "word": "fight",
+        "coefficient": 0.5515,
+        "odds_ratio": 1.7359,
+        "or_ci_95_lower": 1.4037,
+        "or_ci_95_upper": 2.1468,
+        "significant": true
+      },
+      {
+        "word": "work",
+        "coefficient": 0.5434,
+        "odds_ratio": 1.7218,
+        "or_ci_95_lower": 1.2331,
+        "or_ci_95_upper": 2.4041,
+        "significant": true
+      },
+      {
+        "word": "today",
+        "coefficient": 0.537,
+        "odds_ratio": 1.7109,
+        "or_ci_95_lower": 1.1734,
+        "or_ci_95_upper": 2.4944,
+        "significant": true
+      },
+      {
+        "word": "until",
+        "coefficient": 0.5336,
+        "odds_ratio": 1.7051,
+        "or_ci_95_lower": 1.2446,
+        "or_ci_95_upper": 2.3359,
+        "significant": true
+      },
+      {
+        "word": "group",
+        "coefficient": 0.5292,
+        "odds_ratio": 1.6975,
+        "or_ci_95_lower": 1.1518,
+        "or_ci_95_upper": 2.5019,
+        "significant": true
+      },
+      {
+        "word": "much",
+        "coefficient": 0.5277,
+        "odds_ratio": 1.695,
+        "or_ci_95_lower": 1.2117,
+        "or_ci_95_upper": 2.3712,
+        "significant": true
+      },
+      {
+        "word": "once",
+        "coefficient": 0.5254,
+        "odds_ratio": 1.6912,
+        "or_ci_95_lower": 1.1701,
+        "or_ci_95_upper": 2.4442,
+        "significant": true
+      },
+      {
+        "word": "scale",
+        "coefficient": 0.5162,
+        "odds_ratio": 1.6756,
+        "or_ci_95_lower": 1.1526,
+        "or_ci_95_upper": 2.4358,
+        "significant": true
+      },
+      {
+        "word": "own",
+        "coefficient": 0.5116,
+        "odds_ratio": 1.6679,
+        "or_ci_95_lower": 1.155,
+        "or_ci_95_upper": 2.4084,
+        "significant": true
+      },
+      {
+        "word": "turn",
+        "coefficient": 0.5115,
+        "odds_ratio": 1.6677,
+        "or_ci_95_lower": 1.1769,
+        "or_ci_95_upper": 2.3632,
+        "significant": true
+      },
+      {
+        "word": "action",
+        "coefficient": 0.5089,
+        "odds_ratio": 1.6635,
+        "or_ci_95_lower": 1.2529,
+        "or_ci_95_upper": 2.2087,
+        "significant": true
+      },
+      {
+        "word": "reduction",
+        "coefficient": 0.5076,
+        "odds_ratio": 1.6613,
+        "or_ci_95_lower": 1.2032,
+        "or_ci_95_upper": 2.2937,
+        "significant": true
+      },
+      {
+        "word": "take",
+        "coefficient": 0.5075,
+        "odds_ratio": 1.6611,
+        "or_ci_95_lower": 1.1785,
+        "or_ci_95_upper": 2.3413,
+        "significant": true
+      },
+      {
+        "word": "now",
+        "coefficient": 0.5044,
+        "odds_ratio": 1.656,
+        "or_ci_95_lower": 1.234,
+        "or_ci_95_upper": 2.2224,
+        "significant": true
+      },
+      {
+        "word": "question",
+        "coefficient": 0.504,
+        "odds_ratio": 1.6553,
+        "or_ci_95_lower": 1.2209,
+        "or_ci_95_upper": 2.2442,
+        "significant": true
+      },
+      {
+        "word": "foods",
+        "coefficient": 0.5038,
+        "odds_ratio": 1.655,
+        "or_ci_95_lower": 1.2195,
+        "or_ci_95_upper": 2.246,
+        "significant": true
+      },
+      {
+        "word": "can",
+        "coefficient": 0.5007,
+        "odds_ratio": 1.65,
+        "or_ci_95_lower": 1.2736,
+        "or_ci_95_upper": 2.1376,
+        "significant": true
+      },
+      {
+        "word": "everything",
+        "coefficient": 0.4989,
+        "odds_ratio": 1.647,
+        "or_ci_95_lower": 1.2212,
+        "or_ci_95_upper": 2.2211,
+        "significant": true
+      },
+      {
+        "word": "years",
+        "coefficient": 0.4988,
+        "odds_ratio": 1.6467,
+        "or_ci_95_lower": 1.2117,
+        "or_ci_95_upper": 2.2379,
+        "significant": true
+      },
+      {
+        "word": "both",
+        "coefficient": 0.4837,
+        "odds_ratio": 1.6221,
+        "or_ci_95_lower": 1.1964,
+        "or_ci_95_upper": 2.1993,
+        "significant": true
+      },
+      {
+        "word": "made",
+        "coefficient": 0.4724,
+        "odds_ratio": 1.6038,
+        "or_ci_95_lower": 1.1183,
+        "or_ci_95_upper": 2.3,
+        "significant": true
+      },
+      {
+        "word": "small",
+        "coefficient": 0.4665,
+        "odds_ratio": 1.5945,
+        "or_ci_95_lower": 1.1762,
+        "or_ci_95_upper": 2.1614,
+        "significant": true
+      },
+      {
+        "word": "number",
+        "coefficient": 0.4614,
+        "odds_ratio": 1.5863,
+        "or_ci_95_lower": 0.9163,
+        "or_ci_95_upper": 2.7462,
+        "significant": false
+      },
+      {
+        "word": "carbon",
+        "coefficient": 0.4611,
+        "odds_ratio": 1.5859,
+        "or_ci_95_lower": 1.2118,
+        "or_ci_95_upper": 2.0754,
+        "significant": true
+      },
+      {
+        "word": "difference",
+        "coefficient": 0.4584,
+        "odds_ratio": 1.5816,
+        "or_ci_95_lower": 1.0567,
+        "or_ci_95_upper": 2.3673,
+        "significant": true
+      },
+      {
+        "word": "development",
+        "coefficient": 0.458,
+        "odds_ratio": 1.581,
+        "or_ci_95_lower": 1.054,
+        "or_ci_95_upper": 2.3713,
+        "significant": true
+      },
+      {
+        "word": "community",
+        "coefficient": 0.4556,
+        "odds_ratio": 1.577,
+        "or_ci_95_lower": 1.0676,
+        "or_ci_95_upper": 2.3297,
+        "significant": true
+      },
+      {
+        "word": "new",
+        "coefficient": 0.4499,
+        "odds_ratio": 1.5681,
+        "or_ci_95_lower": 1.2274,
+        "or_ci_95_upper": 2.0035,
+        "significant": true
+      },
+      {
+        "word": "technology",
+        "coefficient": 0.4485,
+        "odds_ratio": 1.566,
+        "or_ci_95_lower": 1.1811,
+        "or_ci_95_upper": 2.0763,
+        "significant": true
+      },
+      {
+        "word": "around",
+        "coefficient": 0.448,
+        "odds_ratio": 1.5652,
+        "or_ci_95_lower": 1.18,
+        "or_ci_95_upper": 2.0762,
+        "significant": true
+      },
+      {
+        "word": "part",
+        "coefficient": 0.448,
+        "odds_ratio": 1.5652,
+        "or_ci_95_lower": 1.0484,
+        "or_ci_95_upper": 2.3366,
+        "significant": true
+      },
+      {
+        "word": "money",
+        "coefficient": 0.4461,
+        "odds_ratio": 1.5621,
+        "or_ci_95_lower": 1.1323,
+        "or_ci_95_upper": 2.1552,
+        "significant": true
+      },
+      {
+        "word": "started",
+        "coefficient": 0.4414,
+        "odds_ratio": 1.5548,
+        "or_ci_95_lower": 1.134,
+        "or_ci_95_upper": 2.1317,
+        "significant": true
+      },
+      {
+        "word": "production",
+        "coefficient": 0.438,
+        "odds_ratio": 1.5496,
+        "or_ci_95_lower": 0.963,
+        "or_ci_95_upper": 2.4936,
+        "significant": false
+      },
+      {
+        "word": "support",
+        "coefficient": 0.4293,
+        "odds_ratio": 1.5361,
+        "or_ci_95_lower": 1.1492,
+        "or_ci_95_upper": 2.0534,
+        "significant": true
+      },
+      {
+        "word": "interested",
+        "coefficient": 0.4286,
+        "odds_ratio": 1.5351,
+        "or_ci_95_lower": 1.0901,
+        "or_ci_95_upper": 2.1619,
+        "significant": true
+      },
+      {
+        "word": "atmosphere",
+        "coefficient": 0.4275,
+        "odds_ratio": 1.5334,
+        "or_ci_95_lower": 1.1382,
+        "or_ci_95_upper": 2.066,
+        "significant": true
+      },
+      {
+        "word": "maybe",
+        "coefficient": 0.425,
+        "odds_ratio": 1.5295,
+        "or_ci_95_lower": 1.1144,
+        "or_ci_95_upper": 2.0992,
+        "significant": true
+      },
+      {
+        "word": "economy",
+        "coefficient": 0.4241,
+        "odds_ratio": 1.5281,
+        "or_ci_95_lower": 1.1517,
+        "or_ci_95_upper": 2.0277,
+        "significant": true
+      },
+      {
+        "word": "using",
+        "coefficient": 0.4166,
+        "odds_ratio": 1.5168,
+        "or_ci_95_lower": 1.0536,
+        "or_ci_95_upper": 2.1835,
+        "significant": true
+      },
+      {
+        "word": "use",
+        "coefficient": 0.4164,
+        "odds_ratio": 1.5165,
+        "or_ci_95_lower": 1.0926,
+        "or_ci_95_upper": 2.1047,
+        "significant": true
+      },
+      {
+        "word": "local",
+        "coefficient": 0.4147,
+        "odds_ratio": 1.5139,
+        "or_ci_95_lower": 1.1291,
+        "or_ci_95_upper": 2.0299,
+        "significant": true
+      },
+      {
+        "word": "farming",
+        "coefficient": 0.4138,
+        "odds_ratio": 1.5126,
+        "or_ci_95_lower": 1.1223,
+        "or_ci_95_upper": 2.0386,
+        "significant": true
+      },
+      {
+        "word": "believe",
+        "coefficient": 0.4125,
+        "odds_ratio": 1.5105,
+        "or_ci_95_lower": 1.0503,
+        "or_ci_95_upper": 2.1725,
+        "significant": true
+      },
+      {
+        "word": "per",
+        "coefficient": 0.4071,
+        "odds_ratio": 1.5025,
+        "or_ci_95_lower": 0.9627,
+        "or_ci_95_upper": 2.3448,
+        "significant": false
+      },
+      {
+        "word": "eat",
+        "coefficient": 0.4026,
+        "odds_ratio": 1.4957,
+        "or_ci_95_lower": 1.0009,
+        "or_ci_95_upper": 2.235,
+        "significant": true
+      },
+      {
+        "word": "long",
+        "coefficient": 0.3993,
+        "odds_ratio": 1.4907,
+        "or_ci_95_lower": 1.0579,
+        "or_ci_95_upper": 2.1007,
+        "significant": true
+      },
+      {
+        "word": "planet",
+        "coefficient": 0.3958,
+        "odds_ratio": 1.4856,
+        "or_ci_95_lower": 1.0705,
+        "or_ci_95_upper": 2.0616,
+        "significant": true
+      },
+      {
+        "word": "zero",
+        "coefficient": 0.393,
+        "odds_ratio": 1.4813,
+        "or_ci_95_lower": 1.1288,
+        "or_ci_95_upper": 1.9439,
+        "significant": true
+      },
+      {
+        "word": "vegetarian",
+        "coefficient": 0.3886,
+        "odds_ratio": 1.4749,
+        "or_ci_95_lower": 1.0161,
+        "or_ci_95_upper": 2.1409,
+        "significant": true
+      },
+      {
+        "word": "however",
+        "coefficient": 0.3822,
+        "odds_ratio": 1.4654,
+        "or_ci_95_lower": 1.0287,
+        "or_ci_95_upper": 2.0876,
+        "significant": true
+      },
+      {
+        "word": "really",
+        "coefficient": 0.3739,
+        "odds_ratio": 1.4535,
+        "or_ci_95_lower": 1.0579,
+        "or_ci_95_upper": 1.997,
+        "significant": true
+      },
+      {
+        "word": "important",
+        "coefficient": 0.3694,
+        "odds_ratio": 1.4469,
+        "or_ci_95_lower": 1.0387,
+        "or_ci_95_upper": 2.0156,
+        "significant": true
+      },
+      {
+        "word": "always",
+        "coefficient": 0.3675,
+        "odds_ratio": 1.4441,
+        "or_ci_95_lower": 1.0358,
+        "or_ci_95_upper": 2.0134,
+        "significant": true
+      },
+      {
+        "word": "think",
+        "coefficient": 0.365,
+        "odds_ratio": 1.4405,
+        "or_ci_95_lower": 1.0431,
+        "or_ci_95_upper": 1.9892,
+        "significant": true
+      },
+      {
+        "word": "pollution",
+        "coefficient": 0.3603,
+        "odds_ratio": 1.4337,
+        "or_ci_95_lower": 1.0206,
+        "or_ci_95_upper": 2.014,
+        "significant": true
+      },
+      {
+        "word": "issues",
+        "coefficient": 0.3542,
+        "odds_ratio": 1.4251,
+        "or_ci_95_lower": 1.037,
+        "or_ci_95_upper": 1.9584,
+        "significant": true
+      },
+      {
+        "word": "things",
+        "coefficient": 0.349,
+        "odds_ratio": 1.4177,
+        "or_ci_95_lower": 1.0138,
+        "or_ci_95_upper": 1.9826,
+        "significant": true
+      },
+      {
+        "word": "having",
+        "coefficient": 0.3458,
+        "odds_ratio": 1.4131,
+        "or_ci_95_lower": 1.0401,
+        "or_ci_95_upper": 1.9198,
+        "significant": true
+      },
+      {
+        "word": "instead",
+        "coefficient": 0.3422,
+        "odds_ratio": 1.408,
+        "or_ci_95_lower": 0.9915,
+        "or_ci_95_upper": 1.9995,
+        "significant": false
+      },
+      {
+        "word": "become",
+        "coefficient": 0.3406,
+        "odds_ratio": 1.4058,
+        "or_ci_95_lower": 0.982,
+        "or_ci_95_upper": 2.0124,
+        "significant": false
+      },
+      {
+        "word": "come",
+        "coefficient": 0.338,
+        "odds_ratio": 1.4021,
+        "or_ci_95_lower": 1.0466,
+        "or_ci_95_upper": 1.8784,
+        "significant": true
+      },
+      {
+        "word": "electric",
+        "coefficient": 0.3372,
+        "odds_ratio": 1.4011,
+        "or_ci_95_lower": 1.0487,
+        "or_ci_95_upper": 1.8719,
+        "significant": true
+      },
+      {
+        "word": "lot",
+        "coefficient": 0.3133,
+        "odds_ratio": 1.3679,
+        "or_ci_95_lower": 0.9681,
+        "or_ci_95_upper": 1.9328,
+        "significant": false
+      },
+      {
+        "word": "across",
+        "coefficient": 0.3069,
+        "odds_ratio": 1.3592,
+        "or_ci_95_lower": 0.9604,
+        "or_ci_95_upper": 1.9235,
+        "significant": false
+      },
+      {
+        "word": "living",
+        "coefficient": 0.3037,
+        "odds_ratio": 1.3548,
+        "or_ci_95_lower": 0.8664,
+        "or_ci_95_upper": 2.1187,
+        "significant": false
+      },
+      {
+        "word": "put",
+        "coefficient": 0.2968,
+        "odds_ratio": 1.3455,
+        "or_ci_95_lower": 0.9105,
+        "or_ci_95_upper": 1.9883,
+        "significant": false
+      },
+      {
+        "word": "how",
+        "coefficient": 0.2967,
+        "odds_ratio": 1.3454,
+        "or_ci_95_lower": 0.9894,
+        "or_ci_95_upper": 1.8295,
+        "significant": false
+      },
+      {
+        "word": "china",
+        "coefficient": 0.2947,
+        "odds_ratio": 1.3427,
+        "or_ci_95_lower": 0.8003,
+        "or_ci_95_upper": 2.2528,
+        "significant": false
+      },
+      {
+        "word": "few",
+        "coefficient": 0.2942,
+        "odds_ratio": 1.342,
+        "or_ci_95_lower": 0.9224,
+        "or_ci_95_upper": 1.9525,
+        "significant": false
+      },
+      {
+        "word": "solution",
+        "coefficient": 0.2939,
+        "odds_ratio": 1.3417,
+        "or_ci_95_lower": 0.968,
+        "or_ci_95_upper": 1.8596,
+        "significant": false
+      },
+      {
+        "word": "together",
+        "coefficient": 0.2926,
+        "odds_ratio": 1.34,
+        "or_ci_95_lower": 0.928,
+        "or_ci_95_upper": 1.9348,
+        "significant": false
+      },
+      {
+        "word": "efforts",
+        "coefficient": 0.2908,
+        "odds_ratio": 1.3375,
+        "or_ci_95_lower": 0.9184,
+        "or_ci_95_upper": 1.9479,
+        "significant": false
+      },
+      {
+        "word": "and",
+        "coefficient": 0.2875,
+        "odds_ratio": 1.3331,
+        "or_ci_95_lower": 1.1045,
+        "or_ci_95_upper": 1.609,
+        "significant": true
+      },
+      {
+        "word": "energy",
+        "coefficient": 0.2816,
+        "odds_ratio": 1.3253,
+        "or_ci_95_lower": 1.0231,
+        "or_ci_95_upper": 1.7167,
+        "significant": true
+      },
+      {
+        "word": "reading",
+        "coefficient": 0.2769,
+        "odds_ratio": 1.319,
+        "or_ci_95_lower": 0.9626,
+        "or_ci_95_upper": 1.8075,
+        "significant": false
+      },
+      {
+        "word": "among",
+        "coefficient": 0.2761,
+        "odds_ratio": 1.318,
+        "or_ci_95_lower": 0.9643,
+        "or_ci_95_upper": 1.8015,
+        "significant": false
+      },
+      {
+        "word": "free",
+        "coefficient": 0.2745,
+        "odds_ratio": 1.3158,
+        "or_ci_95_lower": 0.9566,
+        "or_ci_95_upper": 1.81,
+        "significant": false
+      },
+      {
+        "word": "avoid",
+        "coefficient": 0.2729,
+        "odds_ratio": 1.3138,
+        "or_ci_95_lower": 0.8834,
+        "or_ci_95_upper": 1.9538,
+        "significant": false
+      },
+      {
+        "word": "biden",
+        "coefficient": 0.2686,
+        "odds_ratio": 1.3082,
+        "or_ci_95_lower": 1.0725,
+        "or_ci_95_upper": 1.5957,
+        "significant": true
+      },
+      {
+        "word": "states",
+        "coefficient": 0.2668,
+        "odds_ratio": 1.3058,
+        "or_ci_95_lower": 0.9165,
+        "or_ci_95_upper": 1.8603,
+        "significant": false
+      },
+      {
+        "word": "three",
+        "coefficient": 0.2662,
+        "odds_ratio": 1.305,
+        "or_ci_95_lower": 0.9548,
+        "or_ci_95_upper": 1.7837,
+        "significant": false
+      },
+      {
+        "word": "way",
+        "coefficient": 0.2616,
+        "odds_ratio": 1.2989,
+        "or_ci_95_lower": 0.9131,
+        "or_ci_95_upper": 1.8479,
+        "significant": false
+      },
+      {
+        "word": "doesn",
+        "coefficient": 0.2592,
+        "odds_ratio": 1.2959,
+        "or_ci_95_lower": 0.8673,
+        "or_ci_95_upper": 1.9361,
+        "significant": false
+      },
+      {
+        "word": "point",
+        "coefficient": 0.2575,
+        "odds_ratio": 1.2936,
+        "or_ci_95_lower": 0.9073,
+        "or_ci_95_upper": 1.8445,
+        "significant": false
+      },
+      {
+        "word": "one",
+        "coefficient": 0.2539,
+        "odds_ratio": 1.289,
+        "or_ci_95_lower": 0.9475,
+        "or_ci_95_upper": 1.7535,
+        "significant": false
+      },
+      {
+        "word": "since",
+        "coefficient": 0.2537,
+        "odds_ratio": 1.2888,
+        "or_ci_95_lower": 0.9471,
+        "or_ci_95_upper": 1.7539,
+        "significant": false
+      },
+      {
+        "word": "help",
+        "coefficient": 0.2499,
+        "odds_ratio": 1.2839,
+        "or_ci_95_lower": 0.9403,
+        "or_ci_95_upper": 1.7531,
+        "significant": false
+      },
+      {
+        "word": "everyone",
+        "coefficient": 0.2492,
+        "odds_ratio": 1.283,
+        "or_ci_95_lower": 0.9068,
+        "or_ci_95_upper": 1.8153,
+        "significant": false
+      },
+      {
+        "word": "against",
+        "coefficient": 0.2487,
+        "odds_ratio": 1.2824,
+        "or_ci_95_lower": 0.9271,
+        "or_ci_95_upper": 1.7738,
+        "significant": false
+      },
+      {
+        "word": "risk",
+        "coefficient": 0.2468,
+        "odds_ratio": 1.28,
+        "or_ci_95_lower": 0.9593,
+        "or_ci_95_upper": 1.7079,
+        "significant": false
+      },
+      {
+        "word": "reduce",
+        "coefficient": 0.2465,
+        "odds_ratio": 1.2795,
+        "or_ci_95_lower": 0.8696,
+        "or_ci_95_upper": 1.8825,
+        "significant": false
+      },
+      {
+        "word": "half",
+        "coefficient": 0.246,
+        "odds_ratio": 1.2789,
+        "or_ci_95_lower": 0.9063,
+        "or_ci_95_upper": 1.8048,
+        "significant": false
+      },
+      {
+        "word": "project",
+        "coefficient": 0.2439,
+        "odds_ratio": 1.2762,
+        "or_ci_95_lower": 0.842,
+        "or_ci_95_upper": 1.9342,
+        "significant": false
+      },
+      {
+        "word": "renewable",
+        "coefficient": 0.2433,
+        "odds_ratio": 1.2754,
+        "or_ci_95_lower": 0.9255,
+        "or_ci_95_upper": 1.7577,
+        "significant": false
+      },
+      {
+        "word": "year",
+        "coefficient": 0.243,
+        "odds_ratio": 1.2751,
+        "or_ci_95_lower": 0.9212,
+        "or_ci_95_upper": 1.765,
+        "significant": false
+      },
+      {
+        "word": "million",
+        "coefficient": 0.2404,
+        "odds_ratio": 1.2717,
+        "or_ci_95_lower": 0.8837,
+        "or_ci_95_upper": 1.8301,
+        "significant": false
+      },
+      {
+        "word": "more",
+        "coefficient": 0.2403,
+        "odds_ratio": 1.2717,
+        "or_ci_95_lower": 0.953,
+        "or_ci_95_upper": 1.697,
+        "significant": false
+      },
+      {
+        "word": "fast",
+        "coefficient": 0.2375,
+        "odds_ratio": 1.268,
+        "or_ci_95_lower": 0.9618,
+        "or_ci_95_upper": 1.6719,
+        "significant": false
+      },
+      {
+        "word": "country",
+        "coefficient": 0.2366,
+        "odds_ratio": 1.267,
+        "or_ci_95_lower": 0.917,
+        "or_ci_95_upper": 1.7504,
+        "significant": false
+      },
+      {
+        "word": "veganism",
+        "coefficient": 0.2326,
+        "odds_ratio": 1.2619,
+        "or_ci_95_lower": 0.8964,
+        "or_ci_95_upper": 1.7763,
+        "significant": false
+      },
+      {
+        "word": "administration",
+        "coefficient": 0.2293,
+        "odds_ratio": 1.2577,
+        "or_ci_95_lower": 0.8978,
+        "or_ci_95_upper": 1.762,
+        "significant": false
+      },
+      {
+        "word": "same",
+        "coefficient": 0.226,
+        "odds_ratio": 1.2536,
+        "or_ci_95_lower": 0.8526,
+        "or_ci_95_upper": 1.8433,
+        "significant": false
+      },
+      {
+        "word": "looking",
+        "coefficient": 0.223,
+        "odds_ratio": 1.2499,
+        "or_ci_95_lower": 0.8576,
+        "or_ci_95_upper": 1.8215,
+        "significant": false
+      },
+      {
+        "word": "save",
+        "coefficient": 0.2224,
+        "odds_ratio": 1.2491,
+        "or_ci_95_lower": 0.8639,
+        "or_ci_95_upper": 1.8062,
+        "significant": false
+      },
+      {
+        "word": "like",
+        "coefficient": 0.2222,
+        "odds_ratio": 1.2489,
+        "or_ci_95_lower": 0.9045,
+        "or_ci_95_upper": 1.7243,
+        "significant": false
+      },
+      {
+        "word": "his",
+        "coefficient": 0.2212,
+        "odds_ratio": 1.2475,
+        "or_ci_95_lower": 0.9135,
+        "or_ci_95_upper": 1.7037,
+        "significant": false
+      },
+      {
+        "word": "right",
+        "coefficient": 0.2192,
+        "odds_ratio": 1.2451,
+        "or_ci_95_lower": 0.9232,
+        "or_ci_95_upper": 1.6793,
+        "significant": false
+      },
+      {
+        "word": "cattle",
+        "coefficient": 0.218,
+        "odds_ratio": 1.2435,
+        "or_ci_95_lower": 0.9639,
+        "or_ci_95_upper": 1.6044,
+        "significant": false
+      },
+      {
+        "word": "for",
+        "coefficient": 0.2173,
+        "odds_ratio": 1.2427,
+        "or_ci_95_lower": 0.9866,
+        "or_ci_95_upper": 1.5653,
+        "significant": false
+      },
+      {
+        "word": "ever",
+        "coefficient": 0.2152,
+        "odds_ratio": 1.2401,
+        "or_ci_95_lower": 0.8697,
+        "or_ci_95_upper": 1.7682,
+        "significant": false
+      },
+      {
+        "word": "solar",
+        "coefficient": 0.2115,
+        "odds_ratio": 1.2355,
+        "or_ci_95_lower": 0.902,
+        "or_ci_95_upper": 1.6923,
+        "significant": false
+      },
+      {
+        "word": "them",
+        "coefficient": 0.2109,
+        "odds_ratio": 1.2348,
+        "or_ci_95_lower": 0.8926,
+        "or_ci_95_upper": 1.7083,
+        "significant": false
+      },
+      {
+        "word": "little",
+        "coefficient": 0.2093,
+        "odds_ratio": 1.2328,
+        "or_ci_95_lower": 0.8728,
+        "or_ci_95_upper": 1.7414,
+        "significant": false
+      },
+      {
+        "word": "need",
+        "coefficient": 0.2084,
+        "odds_ratio": 1.2318,
+        "or_ci_95_lower": 0.8899,
+        "or_ci_95_upper": 1.705,
+        "significant": false
+      },
+      {
+        "word": "plants",
+        "coefficient": 0.2075,
+        "odds_ratio": 1.2306,
+        "or_ci_95_lower": 0.8787,
+        "or_ci_95_upper": 1.7235,
+        "significant": false
+      },
+      {
+        "word": "deal",
+        "coefficient": 0.2028,
+        "odds_ratio": 1.2248,
+        "or_ci_95_lower": 0.8499,
+        "or_ci_95_upper": 1.765,
+        "significant": false
+      },
+      {
+        "word": "big",
+        "coefficient": 0.2025,
+        "odds_ratio": 1.2245,
+        "or_ci_95_lower": 0.9105,
+        "or_ci_95_upper": 1.6467,
+        "significant": false
+      },
+      {
+        "word": "fossil",
+        "coefficient": 0.1989,
+        "odds_ratio": 1.2201,
+        "or_ci_95_lower": 0.8744,
+        "or_ci_95_upper": 1.7025,
+        "significant": false
+      },
+      {
+        "word": "gas",
+        "coefficient": 0.1963,
+        "odds_ratio": 1.2169,
+        "or_ci_95_lower": 0.9075,
+        "or_ci_95_upper": 1.6317,
+        "significant": false
+      },
+      {
+        "word": "trying",
+        "coefficient": 0.189,
+        "odds_ratio": 1.2081,
+        "or_ci_95_lower": 0.8793,
+        "or_ci_95_upper": 1.6598,
+        "significant": false
+      },
+      {
+        "word": "impacts",
+        "coefficient": 0.1881,
+        "odds_ratio": 1.2069,
+        "or_ci_95_lower": 0.8823,
+        "or_ci_95_upper": 1.6509,
+        "significant": false
+      },
+      {
+        "word": "also",
+        "coefficient": 0.1873,
+        "odds_ratio": 1.2059,
+        "or_ci_95_lower": 0.849,
+        "or_ci_95_upper": 1.713,
+        "significant": false
+      },
+      {
+        "word": "low",
+        "coefficient": 0.182,
+        "odds_ratio": 1.1996,
+        "or_ci_95_lower": 0.8489,
+        "or_ci_95_upper": 1.6951,
+        "significant": false
+      },
+      {
+        "word": "else",
+        "coefficient": 0.1763,
+        "odds_ratio": 1.1928,
+        "or_ci_95_lower": 0.8305,
+        "or_ci_95_upper": 1.7131,
+        "significant": false
+      },
+      {
+        "word": "levels",
+        "coefficient": 0.1755,
+        "odds_ratio": 1.1918,
+        "or_ci_95_lower": 0.7534,
+        "or_ci_95_upper": 1.8852,
+        "significant": false
+      },
+      {
+        "word": "from",
+        "coefficient": 0.1749,
+        "odds_ratio": 1.1912,
+        "or_ci_95_lower": 0.8993,
+        "or_ci_95_upper": 1.5778,
+        "significant": false
+      },
+      {
+        "word": "this",
+        "coefficient": 0.1749,
+        "odds_ratio": 1.1911,
+        "or_ci_95_lower": 0.8844,
+        "or_ci_95_upper": 1.6042,
+        "significant": false
+      },
+      {
+        "word": "becoming",
+        "coefficient": 0.1729,
+        "odds_ratio": 1.1887,
+        "or_ci_95_lower": 0.898,
+        "or_ci_95_upper": 1.5735,
+        "significant": false
+      },
+      {
+        "word": "day",
+        "coefficient": 0.1717,
+        "odds_ratio": 1.1873,
+        "or_ci_95_lower": 0.7795,
+        "or_ci_95_upper": 1.8083,
+        "significant": false
+      },
+      {
+        "word": "sure",
+        "coefficient": 0.1712,
+        "odds_ratio": 1.1868,
+        "or_ci_95_lower": 0.8228,
+        "or_ci_95_upper": 1.7117,
+        "significant": false
+      },
+      {
+        "word": "without",
+        "coefficient": 0.1701,
+        "odds_ratio": 1.1854,
+        "or_ci_95_lower": 0.8598,
+        "or_ci_95_upper": 1.6343,
+        "significant": false
+      },
+      {
+        "word": "nature",
+        "coefficient": 0.1701,
+        "odds_ratio": 1.1854,
+        "or_ci_95_lower": 0.7988,
+        "or_ci_95_upper": 1.759,
+        "significant": false
+      },
+      {
+        "word": "lead",
+        "coefficient": 0.166,
+        "odds_ratio": 1.1806,
+        "or_ci_95_lower": 0.8788,
+        "or_ci_95_upper": 1.5859,
+        "significant": false
+      },
+      {
+        "word": "would",
+        "coefficient": 0.164,
+        "odds_ratio": 1.1782,
+        "or_ci_95_lower": 0.8561,
+        "or_ci_95_upper": 1.6214,
+        "significant": false
+      },
+      {
+        "word": "grow",
+        "coefficient": 0.1632,
+        "odds_ratio": 1.1772,
+        "or_ci_95_lower": 0.8804,
+        "or_ci_95_upper": 1.5742,
+        "significant": false
+      },
+      {
+        "word": "farmers",
+        "coefficient": 0.1628,
+        "odds_ratio": 1.1768,
+        "or_ci_95_lower": 0.8402,
+        "or_ci_95_upper": 1.6482,
+        "significant": false
+      },
+      {
+        "word": "where",
+        "coefficient": 0.1596,
+        "odds_ratio": 1.173,
+        "or_ci_95_lower": 0.8329,
+        "or_ci_95_upper": 1.652,
+        "significant": false
+      },
+      {
+        "word": "some",
+        "coefficient": 0.1578,
+        "odds_ratio": 1.1709,
+        "or_ci_95_lower": 0.8349,
+        "or_ci_95_upper": 1.6423,
+        "significant": false
+      },
+      {
+        "word": "feel",
+        "coefficient": 0.1565,
+        "odds_ratio": 1.1695,
+        "or_ci_95_lower": 0.8256,
+        "or_ci_95_upper": 1.6566,
+        "significant": false
+      },
+      {
+        "word": "land",
+        "coefficient": 0.1559,
+        "odds_ratio": 1.1687,
+        "or_ci_95_lower": 0.8324,
+        "or_ci_95_upper": 1.6408,
+        "significant": false
+      },
+      {
+        "word": "reason",
+        "coefficient": 0.1505,
+        "odds_ratio": 1.1625,
+        "or_ci_95_lower": 0.7571,
+        "or_ci_95_upper": 1.7848,
+        "significant": false
+      },
+      {
+        "word": "environmental",
+        "coefficient": 0.1438,
+        "odds_ratio": 1.1547,
+        "or_ci_95_lower": 0.8181,
+        "or_ci_95_upper": 1.6297,
+        "significant": false
+      },
+      {
+        "word": "huge",
+        "coefficient": 0.1406,
+        "odds_ratio": 1.1509,
+        "or_ci_95_lower": 0.8398,
+        "or_ci_95_upper": 1.5773,
+        "significant": false
+      },
+      {
+        "word": "place",
+        "coefficient": 0.1292,
+        "odds_ratio": 1.138,
+        "or_ci_95_lower": 0.8238,
+        "or_ci_95_upper": 1.5719,
+        "significant": false
+      },
+      {
+        "word": "there",
+        "coefficient": 0.1281,
+        "odds_ratio": 1.1366,
+        "or_ci_95_lower": 0.8337,
+        "or_ci_95_upper": 1.5496,
+        "significant": false
+      },
+      {
+        "word": "cut",
+        "coefficient": 0.1255,
+        "odds_ratio": 1.1338,
+        "or_ci_95_lower": 0.8893,
+        "or_ci_95_upper": 1.4455,
+        "significant": false
+      },
+      {
+        "word": "despite",
+        "coefficient": 0.1253,
+        "odds_ratio": 1.1334,
+        "or_ci_95_lower": 0.8258,
+        "or_ci_95_upper": 1.5556,
+        "significant": false
+      },
+      {
+        "word": "been",
+        "coefficient": 0.1214,
+        "odds_ratio": 1.1291,
+        "or_ci_95_lower": 0.8077,
+        "or_ci_95_upper": 1.5783,
+        "significant": false
+      },
+      {
+        "word": "being",
+        "coefficient": 0.1213,
+        "odds_ratio": 1.1289,
+        "or_ci_95_lower": 0.807,
+        "or_ci_95_upper": 1.5793,
+        "significant": false
+      },
+      {
+        "word": "people",
+        "coefficient": 0.118,
+        "odds_ratio": 1.1252,
+        "or_ci_95_lower": 0.8299,
+        "or_ci_95_upper": 1.5255,
+        "significant": false
+      },
+      {
+        "word": "could",
+        "coefficient": 0.1129,
+        "odds_ratio": 1.1195,
+        "or_ci_95_lower": 0.8515,
+        "or_ci_95_upper": 1.4719,
+        "significant": false
+      },
+      {
+        "word": "every",
+        "coefficient": 0.1123,
+        "odds_ratio": 1.1188,
+        "or_ci_95_lower": 0.7151,
+        "or_ci_95_upper": 1.7503,
+        "significant": false
+      },
+      {
+        "word": "higher",
+        "coefficient": 0.1077,
+        "odds_ratio": 1.1138,
+        "or_ci_95_lower": 0.7595,
+        "or_ci_95_upper": 1.6334,
+        "significant": false
+      },
+      {
+        "word": "thing",
+        "coefficient": 0.1051,
+        "odds_ratio": 1.1108,
+        "or_ci_95_lower": 0.7227,
+        "or_ci_95_upper": 1.7072,
+        "significant": false
+      },
+      {
+        "word": "consider",
+        "coefficient": 0.105,
+        "odds_ratio": 1.1107,
+        "or_ci_95_lower": 0.7419,
+        "or_ci_95_upper": 1.6626,
+        "significant": false
+      },
+      {
+        "word": "electricity",
+        "coefficient": 0.1039,
+        "odds_ratio": 1.1095,
+        "or_ci_95_lower": 0.7241,
+        "or_ci_95_upper": 1.6998,
+        "significant": false
+      },
+      {
+        "word": "source",
+        "coefficient": 0.1037,
+        "odds_ratio": 1.1093,
+        "or_ci_95_lower": 0.7912,
+        "or_ci_95_upper": 1.5553,
+        "significant": false
+      },
+      {
+        "word": "short",
+        "coefficient": 0.1026,
+        "odds_ratio": 1.1081,
+        "or_ci_95_lower": 0.8285,
+        "or_ci_95_upper": 1.482,
+        "significant": false
+      },
+      {
+        "word": "doing",
+        "coefficient": 0.102,
+        "odds_ratio": 1.1074,
+        "or_ci_95_lower": 0.7785,
+        "or_ci_95_upper": 1.5753,
+        "significant": false
+      },
+      {
+        "word": "have",
+        "coefficient": 0.1013,
+        "odds_ratio": 1.1066,
+        "or_ci_95_lower": 0.8355,
+        "or_ci_95_upper": 1.4657,
+        "significant": false
+      },
+      {
+        "word": "climate",
+        "coefficient": 0.1008,
+        "odds_ratio": 1.106,
+        "or_ci_95_lower": 0.9874,
+        "or_ci_95_upper": 1.2389,
+        "significant": false
+      },
+      {
+        "word": "benefits",
+        "coefficient": 0.1003,
+        "odds_ratio": 1.1055,
+        "or_ci_95_lower": 0.8506,
+        "or_ci_95_upper": 1.4369,
+        "significant": false
+      },
+      {
+        "word": "responsible",
+        "coefficient": 0.1,
+        "odds_ratio": 1.1051,
+        "or_ci_95_lower": 0.7423,
+        "or_ci_95_upper": 1.6453,
+        "significant": false
+      },
+      {
+        "word": "mean",
+        "coefficient": 0.0989,
+        "odds_ratio": 1.1039,
+        "or_ci_95_lower": 0.7905,
+        "or_ci_95_upper": 1.5415,
+        "significant": false
+      },
+      {
+        "word": "act",
+        "coefficient": 0.0955,
+        "odds_ratio": 1.1002,
+        "or_ci_95_lower": 0.757,
+        "or_ci_95_upper": 1.5991,
+        "significant": false
+      },
+      {
+        "word": "full",
+        "coefficient": 0.0907,
+        "odds_ratio": 1.0949,
+        "or_ci_95_lower": 0.7844,
+        "or_ci_95_upper": 1.5284,
+        "significant": false
+      },
+      {
+        "word": "social",
+        "coefficient": 0.0898,
+        "odds_ratio": 1.0939,
+        "or_ci_95_lower": 0.8269,
+        "or_ci_95_upper": 1.4473,
+        "significant": false
+      },
+      {
+        "word": "about",
+        "coefficient": 0.0895,
+        "odds_ratio": 1.0936,
+        "or_ci_95_lower": 0.8065,
+        "or_ci_95_upper": 1.4831,
+        "significant": false
+      },
+      {
+        "word": "who",
+        "coefficient": 0.0831,
+        "odds_ratio": 1.0866,
+        "or_ci_95_lower": 0.7686,
+        "or_ci_95_upper": 1.5363,
+        "significant": false
+      },
+      {
+        "word": "massive",
+        "coefficient": 0.0805,
+        "odds_ratio": 1.0838,
+        "or_ci_95_lower": 0.7801,
+        "or_ci_95_upper": 1.5059,
+        "significant": false
+      },
+      {
+        "word": "comes",
+        "coefficient": 0.0804,
+        "odds_ratio": 1.0838,
+        "or_ci_95_lower": 0.7627,
+        "or_ci_95_upper": 1.54,
+        "significant": false
+      },
+      {
+        "word": "leading",
+        "coefficient": 0.0796,
+        "odds_ratio": 1.0829,
+        "or_ci_95_lower": 0.765,
+        "or_ci_95_upper": 1.5328,
+        "significant": false
+      },
+      {
+        "word": "plan",
+        "coefficient": 0.0796,
+        "odds_ratio": 1.0829,
+        "or_ci_95_lower": 0.8261,
+        "or_ci_95_upper": 1.4195,
+        "significant": false
+      },
+      {
+        "word": "coal",
+        "coefficient": 0.0743,
+        "odds_ratio": 1.0771,
+        "or_ci_95_lower": 0.7154,
+        "or_ci_95_upper": 1.6218,
+        "significant": false
+      },
+      {
+        "word": "hard",
+        "coefficient": 0.0725,
+        "odds_ratio": 1.0752,
+        "or_ci_95_lower": 0.751,
+        "or_ci_95_upper": 1.5394,
+        "significant": false
+      },
+      {
+        "word": "research",
+        "coefficient": 0.0604,
+        "odds_ratio": 1.0622,
+        "or_ci_95_lower": 0.7992,
+        "or_ci_95_upper": 1.4117,
+        "significant": false
+      },
+      {
+        "word": "growth",
+        "coefficient": 0.059,
+        "odds_ratio": 1.0608,
+        "or_ci_95_lower": 0.7815,
+        "or_ci_95_upper": 1.4398,
+        "significant": false
+      },
+      {
+        "word": "company",
+        "coefficient": 0.053,
+        "odds_ratio": 1.0544,
+        "or_ci_95_lower": 0.7524,
+        "or_ci_95_upper": 1.4775,
+        "significant": false
+      },
+      {
+        "word": "while",
+        "coefficient": 0.047,
+        "odds_ratio": 1.0482,
+        "or_ci_95_lower": 0.7053,
+        "or_ci_95_upper": 1.5578,
+        "significant": false
+      },
+      {
+        "word": "power",
+        "coefficient": 0.0457,
+        "odds_ratio": 1.0468,
+        "or_ci_95_lower": 0.7758,
+        "or_ci_95_upper": 1.4124,
+        "significant": false
+      },
+      {
+        "word": "produce",
+        "coefficient": 0.0432,
+        "odds_ratio": 1.0442,
+        "or_ci_95_lower": 0.7194,
+        "or_ci_95_upper": 1.5157,
+        "significant": false
+      },
+      {
+        "word": "shows",
+        "coefficient": 0.0397,
+        "odds_ratio": 1.0405,
+        "or_ci_95_lower": 0.8038,
+        "or_ci_95_upper": 1.3469,
+        "significant": false
+      },
+      {
+        "word": "just",
+        "coefficient": 0.0397,
+        "odds_ratio": 1.0405,
+        "or_ci_95_lower": 0.7435,
+        "or_ci_95_upper": 1.4564,
+        "significant": false
+      },
+      {
+        "word": "bit",
+        "coefficient": 0.0395,
+        "odds_ratio": 1.0403,
+        "or_ci_95_lower": 0.7185,
+        "or_ci_95_upper": 1.5061,
+        "significant": false
+      },
+      {
+        "word": "whether",
+        "coefficient": 0.0362,
+        "odds_ratio": 1.0369,
+        "or_ci_95_lower": 0.7544,
+        "or_ci_95_upper": 1.425,
+        "significant": false
+      },
+      {
+        "word": "billion",
+        "coefficient": 0.0346,
+        "odds_ratio": 1.0352,
+        "or_ci_95_lower": 0.7935,
+        "or_ci_95_upper": 1.3504,
+        "significant": false
+      },
+      {
+        "word": "general",
+        "coefficient": 0.0346,
+        "odds_ratio": 1.0352,
+        "or_ci_95_lower": 0.7168,
+        "or_ci_95_upper": 1.4951,
+        "significant": false
+      },
+      {
+        "word": "such",
+        "coefficient": 0.0338,
+        "odds_ratio": 1.0344,
+        "or_ci_95_lower": 0.7196,
+        "or_ci_95_upper": 1.4869,
+        "significant": false
+      },
+      {
+        "word": "might",
+        "coefficient": 0.0337,
+        "odds_ratio": 1.0342,
+        "or_ci_95_lower": 0.73,
+        "or_ci_95_upper": 1.4653,
+        "significant": false
+      },
+      {
+        "word": "area",
+        "coefficient": 0.03,
+        "odds_ratio": 1.0305,
+        "or_ci_95_lower": 0.7087,
+        "or_ci_95_upper": 1.4984,
+        "significant": false
+      },
+      {
+        "word": "coming",
+        "coefficient": 0.0272,
+        "odds_ratio": 1.0276,
+        "or_ci_95_lower": 0.7005,
+        "or_ci_95_upper": 1.5074,
+        "significant": false
+      },
+      {
+        "word": "first",
+        "coefficient": 0.0243,
+        "odds_ratio": 1.0246,
+        "or_ci_95_lower": 0.7316,
+        "or_ci_95_upper": 1.4349,
+        "significant": false
+      },
+      {
+        "word": "including",
+        "coefficient": 0.024,
+        "odds_ratio": 1.0242,
+        "or_ci_95_lower": 0.7507,
+        "or_ci_95_upper": 1.3975,
+        "significant": false
+      },
+      {
+        "word": "days",
+        "coefficient": 0.0222,
+        "odds_ratio": 1.0224,
+        "or_ci_95_lower": 0.7039,
+        "or_ci_95_upper": 1.4851,
+        "significant": false
+      },
+      {
+        "word": "into",
+        "coefficient": 0.0217,
+        "odds_ratio": 1.0219,
+        "or_ci_95_lower": 0.7487,
+        "or_ci_95_upper": 1.395,
+        "significant": false
+      },
+      {
+        "word": "before",
+        "coefficient": 0.0189,
+        "odds_ratio": 1.019,
+        "or_ci_95_lower": 0.731,
+        "or_ci_95_upper": 1.4206,
+        "significant": false
+      },
+      {
+        "word": "less",
+        "coefficient": 0.0113,
+        "odds_ratio": 1.0114,
+        "or_ci_95_lower": 0.7044,
+        "or_ci_95_upper": 1.4521,
+        "significant": false
+      },
+      {
+        "word": "through",
+        "coefficient": 0.0111,
+        "odds_ratio": 1.0111,
+        "or_ci_95_lower": 0.7236,
+        "or_ci_95_upper": 1.4129,
+        "significant": false
+      },
+      {
+        "word": "when",
+        "coefficient": 0.0094,
+        "odds_ratio": 1.0095,
+        "or_ci_95_lower": 0.7051,
+        "or_ci_95_upper": 1.4452,
+        "significant": false
+      },
+      {
+        "word": "show",
+        "coefficient": 0.009,
+        "odds_ratio": 1.0091,
+        "or_ci_95_lower": 0.737,
+        "or_ci_95_upper": 1.3815,
+        "significant": false
+      },
+      {
+        "word": "studies",
+        "coefficient": 0.0088,
+        "odds_ratio": 1.0088,
+        "or_ci_95_lower": 0.7239,
+        "or_ci_95_upper": 1.4059,
+        "significant": false
+      },
+      {
+        "word": "needs",
+        "coefficient": 0.0058,
+        "odds_ratio": 1.0058,
+        "or_ci_95_lower": 0.5997,
+        "or_ci_95_upper": 1.6871,
+        "significant": false
+      },
+      {
+        "word": "major",
+        "coefficient": 0.0055,
+        "odds_ratio": 1.0055,
+        "or_ci_95_lower": 0.7129,
+        "or_ci_95_upper": 1.4182,
+        "significant": false
+      },
+      {
+        "word": "plastic",
+        "coefficient": 0.0055,
+        "odds_ratio": 1.0055,
+        "or_ci_95_lower": 0.69,
+        "or_ci_95_upper": 1.4653,
+        "significant": false
+      },
+      {
+        "word": "build",
+        "coefficient": 0.0039,
+        "odds_ratio": 1.0039,
+        "or_ci_95_lower": 0.7346,
+        "or_ci_95_upper": 1.3718,
+        "significant": false
+      },
+      {
+        "word": "matter",
+        "coefficient": 0.0038,
+        "odds_ratio": 1.0038,
+        "or_ci_95_lower": 0.6408,
+        "or_ci_95_upper": 1.5726,
+        "significant": false
+      },
+      {
+        "word": "two",
+        "coefficient": 0.0022,
+        "odds_ratio": 1.0022,
+        "or_ci_95_lower": 0.7051,
+        "or_ci_95_upper": 1.4246,
+        "significant": false
+      },
+      {
+        "word": "under",
+        "coefficient": 0.0001,
+        "odds_ratio": 1.0001,
+        "or_ci_95_lower": 0.6173,
+        "or_ci_95_upper": 1.6202,
+        "significant": false
+      },
+      {
+        "word": "based",
+        "coefficient": -0.0008,
+        "odds_ratio": 0.9992,
+        "or_ci_95_lower": 0.7441,
+        "or_ci_95_upper": 1.3416,
+        "significant": false
+      },
+      {
+        "word": "heat",
+        "coefficient": -0.0059,
+        "odds_ratio": 0.9941,
+        "or_ci_95_lower": 0.6608,
+        "or_ci_95_upper": 1.4956,
+        "significant": false
+      },
+      {
+        "word": "nearly",
+        "coefficient": -0.0073,
+        "odds_ratio": 0.9927,
+        "or_ci_95_lower": 0.638,
+        "or_ci_95_upper": 1.5446,
+        "significant": false
+      },
+      {
+        "word": "was",
+        "coefficient": -0.0075,
+        "odds_ratio": 0.9925,
+        "or_ci_95_lower": 0.7191,
+        "or_ci_95_upper": 1.37,
+        "significant": false
+      },
+      {
+        "word": "resources",
+        "coefficient": -0.0077,
+        "odds_ratio": 0.9924,
+        "or_ci_95_lower": 0.7099,
+        "or_ci_95_upper": 1.3872,
+        "significant": false
+      },
+      {
+        "word": "world",
+        "coefficient": -0.0101,
+        "odds_ratio": 0.99,
+        "or_ci_95_lower": 0.712,
+        "or_ci_95_upper": 1.3764,
+        "significant": false
+      },
+      {
+        "word": "policy",
+        "coefficient": -0.0114,
+        "odds_ratio": 0.9886,
+        "or_ci_95_lower": 0.7381,
+        "or_ci_95_upper": 1.3243,
+        "significant": false
+      },
+      {
+        "word": "open",
+        "coefficient": -0.0132,
+        "odds_ratio": 0.9869,
+        "or_ci_95_lower": 0.6579,
+        "or_ci_95_upper": 1.4804,
+        "significant": false
+      },
+      {
+        "word": "news",
+        "coefficient": -0.0133,
+        "odds_ratio": 0.9868,
+        "or_ci_95_lower": 0.7572,
+        "or_ci_95_upper": 1.2859,
+        "significant": false
+      },
+      {
+        "word": "warming",
+        "coefficient": -0.0133,
+        "odds_ratio": 0.9868,
+        "or_ci_95_lower": 0.7298,
+        "or_ci_95_upper": 1.3341,
+        "significant": false
+      },
+      {
+        "word": "which",
+        "coefficient": -0.0161,
+        "odds_ratio": 0.984,
+        "or_ci_95_lower": 0.7027,
+        "or_ci_95_upper": 1.3779,
+        "significant": false
+      },
+      {
+        "word": "look",
+        "coefficient": -0.0175,
+        "odds_ratio": 0.9827,
+        "or_ci_95_lower": 0.707,
+        "or_ci_95_upper": 1.3658,
+        "significant": false
+      },
+      {
+        "word": "find",
+        "coefficient": -0.0214,
+        "odds_ratio": 0.9788,
+        "or_ci_95_lower": 0.6859,
+        "or_ci_95_upper": 1.3968,
+        "significant": false
+      },
+      {
+        "word": "than",
+        "coefficient": -0.0271,
+        "odds_ratio": 0.9733,
+        "or_ci_95_lower": 0.7009,
+        "or_ci_95_upper": 1.3515,
+        "significant": false
+      },
+      {
+        "word": "during",
+        "coefficient": -0.0271,
+        "odds_ratio": 0.9733,
+        "or_ci_95_lower": 0.6835,
+        "or_ci_95_upper": 1.3858,
+        "significant": false
+      },
+      {
+        "word": "high",
+        "coefficient": -0.0299,
+        "odds_ratio": 0.9705,
+        "or_ci_95_lower": 0.7129,
+        "or_ci_95_upper": 1.3213,
+        "significant": false
+      },
+      {
+        "word": "get",
+        "coefficient": -0.0305,
+        "odds_ratio": 0.9699,
+        "or_ci_95_lower": 0.7114,
+        "or_ci_95_upper": 1.3224,
+        "significant": false
+      },
+      {
+        "word": "humans",
+        "coefficient": -0.0307,
+        "odds_ratio": 0.9698,
+        "or_ci_95_lower": 0.663,
+        "or_ci_95_upper": 1.4186,
+        "significant": false
+      },
+      {
+        "word": "end",
+        "coefficient": -0.0324,
+        "odds_ratio": 0.9681,
+        "or_ci_95_lower": 0.6864,
+        "or_ci_95_upper": 1.3654,
+        "significant": false
+      },
+      {
+        "word": "talk",
+        "coefficient": -0.0333,
+        "odds_ratio": 0.9672,
+        "or_ci_95_lower": 0.6868,
+        "or_ci_95_upper": 1.3622,
+        "significant": false
+      },
+      {
+        "word": "trees",
+        "coefficient": -0.0339,
+        "odds_ratio": 0.9666,
+        "or_ci_95_lower": 0.7344,
+        "or_ci_95_upper": 1.2724,
+        "significant": false
+      },
+      {
+        "word": "already",
+        "coefficient": -0.0348,
+        "odds_ratio": 0.9658,
+        "or_ci_95_lower": 0.6796,
+        "or_ci_95_upper": 1.3725,
+        "significant": false
+      },
+      {
+        "word": "species",
+        "coefficient": -0.0409,
+        "odds_ratio": 0.9599,
+        "or_ci_95_lower": 0.6888,
+        "or_ci_95_upper": 1.3376,
+        "significant": false
+      },
+      {
+        "word": "top",
+        "coefficient": -0.0467,
+        "odds_ratio": 0.9544,
+        "or_ci_95_lower": 0.6116,
+        "or_ci_95_upper": 1.4891,
+        "significant": false
+      },
+      {
+        "word": "will",
+        "coefficient": -0.0476,
+        "odds_ratio": 0.9535,
+        "or_ci_95_lower": 0.7139,
+        "or_ci_95_upper": 1.2735,
+        "significant": false
+      },
+      {
+        "word": "seem",
+        "coefficient": -0.0478,
+        "odds_ratio": 0.9533,
+        "or_ci_95_lower": 0.6828,
+        "or_ci_95_upper": 1.3309,
+        "significant": false
+      },
+      {
+        "word": "keep",
+        "coefficient": -0.054,
+        "odds_ratio": 0.9475,
+        "or_ci_95_lower": 0.6817,
+        "or_ci_95_upper": 1.3168,
+        "significant": false
+      },
+      {
+        "word": "times",
+        "coefficient": -0.0543,
+        "odds_ratio": 0.9471,
+        "or_ci_95_lower": 0.6877,
+        "or_ci_95_upper": 1.3044,
+        "significant": false
+      },
+      {
+        "word": "others",
+        "coefficient": -0.0595,
+        "odds_ratio": 0.9422,
+        "or_ci_95_lower": 0.6766,
+        "or_ci_95_upper": 1.3121,
+        "significant": false
+      },
+      {
+        "word": "natural",
+        "coefficient": -0.06,
+        "odds_ratio": 0.9418,
+        "or_ci_95_lower": 0.6858,
+        "or_ci_95_upper": 1.2933,
+        "significant": false
+      },
+      {
+        "word": "cost",
+        "coefficient": -0.0633,
+        "odds_ratio": 0.9387,
+        "or_ci_95_lower": 0.6896,
+        "or_ci_95_upper": 1.2777,
+        "significant": false
+      },
+      {
+        "word": "system",
+        "coefficient": -0.0634,
+        "odds_ratio": 0.9386,
+        "or_ci_95_lower": 0.6566,
+        "or_ci_95_upper": 1.3416,
+        "significant": false
+      },
+      {
+        "word": "term",
+        "coefficient": -0.0656,
+        "odds_ratio": 0.9365,
+        "or_ci_95_lower": 0.6774,
+        "or_ci_95_upper": 1.2947,
+        "significant": false
+      },
+      {
+        "word": "possible",
+        "coefficient": -0.0666,
+        "odds_ratio": 0.9355,
+        "or_ci_95_lower": 0.6769,
+        "or_ci_95_upper": 1.293,
+        "significant": false
+      },
+      {
+        "word": "increase",
+        "coefficient": -0.0676,
+        "odds_ratio": 0.9346,
+        "or_ci_95_lower": 0.6631,
+        "or_ci_95_upper": 1.3174,
+        "significant": false
+      },
+      {
+        "word": "those",
+        "coefficient": -0.0683,
+        "odds_ratio": 0.9339,
+        "or_ci_95_lower": 0.6519,
+        "or_ci_95_upper": 1.3381,
+        "significant": false
+      },
+      {
+        "word": "goals",
+        "coefficient": -0.0685,
+        "odds_ratio": 0.9338,
+        "or_ci_95_lower": 0.7266,
+        "or_ci_95_upper": 1.2002,
+        "significant": false
+      },
+      {
+        "word": "above",
+        "coefficient": -0.0686,
+        "odds_ratio": 0.9337,
+        "or_ci_95_lower": 0.644,
+        "or_ci_95_upper": 1.3537,
+        "significant": false
+      },
+      {
+        "word": "tell",
+        "coefficient": -0.0732,
+        "odds_ratio": 0.9294,
+        "or_ci_95_lower": 0.6323,
+        "or_ci_95_upper": 1.3661,
+        "significant": false
+      },
+      {
+        "word": "millions",
+        "coefficient": -0.0761,
+        "odds_ratio": 0.9267,
+        "or_ci_95_lower": 0.6927,
+        "or_ci_95_upper": 1.2398,
+        "significant": false
+      },
+      {
+        "word": "means",
+        "coefficient": -0.0785,
+        "odds_ratio": 0.9245,
+        "or_ci_95_lower": 0.6103,
+        "or_ci_95_upper": 1.4006,
+        "significant": false
+      },
+      {
+        "word": "because",
+        "coefficient": -0.0797,
+        "odds_ratio": 0.9234,
+        "or_ci_95_lower": 0.6505,
+        "or_ci_95_upper": 1.3106,
+        "significant": false
+      },
+      {
+        "word": "data",
+        "coefficient": -0.0798,
+        "odds_ratio": 0.9233,
+        "or_ci_95_lower": 0.669,
+        "or_ci_95_upper": 1.2742,
+        "significant": false
+      },
+      {
+        "word": "something",
+        "coefficient": -0.0815,
+        "odds_ratio": 0.9217,
+        "or_ci_95_lower": 0.6391,
+        "or_ci_95_upper": 1.3294,
+        "significant": false
+      },
+      {
+        "word": "health",
+        "coefficient": -0.0824,
+        "odds_ratio": 0.9209,
+        "or_ci_95_lower": 0.6212,
+        "or_ci_95_upper": 1.3652,
+        "significant": false
+      },
+      {
+        "word": "biggest",
+        "coefficient": -0.0833,
+        "odds_ratio": 0.92,
+        "or_ci_95_lower": 0.6745,
+        "or_ci_95_upper": 1.255,
+        "significant": false
+      },
+      {
+        "word": "plant",
+        "coefficient": -0.0883,
+        "odds_ratio": 0.9155,
+        "or_ci_95_lower": 0.6819,
+        "or_ci_95_upper": 1.229,
+        "significant": false
+      },
+      {
+        "word": "many",
+        "coefficient": -0.0889,
+        "odds_ratio": 0.9149,
+        "or_ci_95_lower": 0.6607,
+        "or_ci_95_upper": 1.267,
+        "significant": false
+      },
+      {
+        "word": "our",
+        "coefficient": -0.0895,
+        "odds_ratio": 0.9144,
+        "or_ci_95_lower": 0.6764,
+        "or_ci_95_upper": 1.2362,
+        "significant": false
+      },
+      {
+        "word": "create",
+        "coefficient": -0.0916,
+        "odds_ratio": 0.9125,
+        "or_ci_95_lower": 0.591,
+        "or_ci_95_upper": 1.4089,
+        "significant": false
+      },
+      {
+        "word": "old",
+        "coefficient": -0.0925,
+        "odds_ratio": 0.9117,
+        "or_ci_95_lower": 0.6801,
+        "or_ci_95_upper": 1.2221,
+        "significant": false
+      },
+      {
+        "word": "government",
+        "coefficient": -0.0937,
+        "odds_ratio": 0.9106,
+        "or_ci_95_lower": 0.6309,
+        "or_ci_95_upper": 1.3143,
+        "significant": false
+      },
+      {
+        "word": "another",
+        "coefficient": -0.0954,
+        "odds_ratio": 0.909,
+        "or_ci_95_lower": 0.6585,
+        "or_ci_95_upper": 1.2548,
+        "significant": false
+      },
+      {
+        "word": "progress",
+        "coefficient": -0.0964,
+        "odds_ratio": 0.9081,
+        "or_ci_95_lower": 0.6282,
+        "or_ci_95_upper": 1.3128,
+        "significant": false
+      },
+      {
+        "word": "each",
+        "coefficient": -0.1034,
+        "odds_ratio": 0.9018,
+        "or_ci_95_lower": 0.6121,
+        "or_ci_95_upper": 1.3287,
+        "significant": false
+      },
+      {
+        "word": "scientists",
+        "coefficient": -0.1038,
+        "odds_ratio": 0.9014,
+        "or_ci_95_lower": 0.6472,
+        "or_ci_95_upper": 1.2556,
+        "significant": false
+      },
+      {
+        "word": "milk",
+        "coefficient": -0.1065,
+        "odds_ratio": 0.899,
+        "or_ci_95_lower": 0.6499,
+        "or_ci_95_upper": 1.2437,
+        "significant": false
+      },
+      {
+        "word": "making",
+        "coefficient": -0.1081,
+        "odds_ratio": 0.8976,
+        "or_ci_95_lower": 0.6538,
+        "or_ci_95_upper": 1.2321,
+        "significant": false
+      },
+      {
+        "word": "seen",
+        "coefficient": -0.1111,
+        "odds_ratio": 0.8949,
+        "or_ci_95_lower": 0.5985,
+        "or_ci_95_upper": 1.338,
+        "significant": false
+      },
+      {
+        "word": "damage",
+        "coefficient": -0.1114,
+        "odds_ratio": 0.8946,
+        "or_ci_95_lower": 0.612,
+        "or_ci_95_upper": 1.3077,
+        "significant": false
+      },
+      {
+        "word": "etc",
+        "coefficient": -0.1141,
+        "odds_ratio": 0.8922,
+        "or_ci_95_lower": 0.6338,
+        "or_ci_95_upper": 1.2559,
+        "significant": false
+      },
+      {
+        "word": "economic",
+        "coefficient": -0.1151,
+        "odds_ratio": 0.8913,
+        "or_ci_95_lower": 0.6377,
+        "or_ci_95_upper": 1.2458,
+        "significant": false
+      },
+      {
+        "word": "according",
+        "coefficient": -0.1177,
+        "odds_ratio": 0.889,
+        "or_ci_95_lower": 0.6042,
+        "or_ci_95_upper": 1.3081,
+        "significant": false
+      },
+      {
+        "word": "likely",
+        "coefficient": -0.1184,
+        "odds_ratio": 0.8883,
+        "or_ci_95_lower": 0.6063,
+        "or_ci_95_upper": 1.3016,
+        "significant": false
+      },
+      {
+        "word": "america",
+        "coefficient": -0.1185,
+        "odds_ratio": 0.8883,
+        "or_ci_95_lower": 0.6244,
+        "or_ci_95_upper": 1.2636,
+        "significant": false
+      },
+      {
+        "word": "start",
+        "coefficient": -0.1228,
+        "odds_ratio": 0.8844,
+        "or_ci_95_lower": 0.6337,
+        "or_ci_95_upper": 1.2344,
+        "significant": false
+      },
+      {
+        "word": "average",
+        "coefficient": -0.1234,
+        "odds_ratio": 0.8839,
+        "or_ci_95_lower": 0.5937,
+        "or_ci_95_upper": 1.316,
+        "significant": false
+      },
+      {
+        "word": "non",
+        "coefficient": -0.1248,
+        "odds_ratio": 0.8826,
+        "or_ci_95_lower": 0.6268,
+        "or_ci_95_upper": 1.2429,
+        "significant": false
+      },
+      {
+        "word": "meet",
+        "coefficient": -0.1253,
+        "odds_ratio": 0.8822,
+        "or_ci_95_lower": 0.6506,
+        "or_ci_95_upper": 1.1964,
+        "significant": false
+      },
+      {
+        "word": "related",
+        "coefficient": -0.1263,
+        "odds_ratio": 0.8813,
+        "or_ci_95_lower": 0.5768,
+        "or_ci_95_upper": 1.3467,
+        "significant": false
+      },
+      {
+        "word": "they",
+        "coefficient": -0.1265,
+        "odds_ratio": 0.8812,
+        "or_ci_95_lower": 0.6268,
+        "or_ci_95_upper": 1.2389,
+        "significant": false
+      },
+      {
+        "word": "had",
+        "coefficient": -0.1267,
+        "odds_ratio": 0.881,
+        "or_ci_95_lower": 0.6166,
+        "or_ci_95_upper": 1.2588,
+        "significant": false
+      },
+      {
+        "word": "your",
+        "coefficient": -0.129,
+        "odds_ratio": 0.8789,
+        "or_ci_95_lower": 0.6043,
+        "or_ci_95_upper": 1.2783,
+        "significant": false
+      },
+      {
+        "word": "large",
+        "coefficient": -0.1307,
+        "odds_ratio": 0.8775,
+        "or_ci_95_lower": 0.6121,
+        "or_ci_95_upper": 1.2581,
+        "significant": false
+      },
+      {
+        "word": "far",
+        "coefficient": -0.1315,
+        "odds_ratio": 0.8767,
+        "or_ci_95_lower": 0.6144,
+        "or_ci_95_upper": 1.251,
+        "significant": false
+      },
+      {
+        "word": "current",
+        "coefficient": -0.1377,
+        "odds_ratio": 0.8714,
+        "or_ci_95_lower": 0.618,
+        "or_ci_95_upper": 1.2285,
+        "significant": false
+      },
+      {
+        "word": "often",
+        "coefficient": -0.1395,
+        "odds_ratio": 0.8698,
+        "or_ci_95_lower": 0.6141,
+        "or_ci_95_upper": 1.232,
+        "significant": false
+      },
+      {
+        "word": "next",
+        "coefficient": -0.1431,
+        "odds_ratio": 0.8667,
+        "or_ci_95_lower": 0.6206,
+        "or_ci_95_upper": 1.2104,
+        "significant": false
+      },
+      {
+        "word": "live",
+        "coefficient": -0.1436,
+        "odds_ratio": 0.8662,
+        "or_ci_95_lower": 0.6057,
+        "or_ci_95_upper": 1.2388,
+        "significant": false
+      },
+      {
+        "word": "other",
+        "coefficient": -0.1439,
+        "odds_ratio": 0.866,
+        "or_ci_95_lower": 0.6216,
+        "or_ci_95_upper": 1.2066,
+        "significant": false
+      },
+      {
+        "word": "currently",
+        "coefficient": -0.1483,
+        "odds_ratio": 0.8622,
+        "or_ci_95_lower": 0.6349,
+        "or_ci_95_upper": 1.1708,
+        "significant": false
+      },
+      {
+        "word": "second",
+        "coefficient": -0.1497,
+        "odds_ratio": 0.861,
+        "or_ci_95_lower": 0.5314,
+        "or_ci_95_upper": 1.3949,
+        "significant": false
+      },
+      {
+        "word": "sustainability",
+        "coefficient": -0.1501,
+        "odds_ratio": 0.8606,
+        "or_ci_95_lower": 0.5737,
+        "or_ci_95_upper": 1.2911,
+        "significant": false
+      },
+      {
+        "word": "state",
+        "coefficient": -0.1507,
+        "odds_ratio": 0.8601,
+        "or_ci_95_lower": 0.638,
+        "or_ci_95_upper": 1.1596,
+        "significant": false
+      },
+      {
+        "word": "did",
+        "coefficient": -0.156,
+        "odds_ratio": 0.8556,
+        "or_ci_95_lower": 0.5974,
+        "or_ci_95_upper": 1.2253,
+        "significant": false
+      },
+      {
+        "word": "you",
+        "coefficient": -0.1561,
+        "odds_ratio": 0.8555,
+        "or_ci_95_lower": 0.6101,
+        "or_ci_95_upper": 1.1995,
+        "significant": false
+      },
+      {
+        "word": "example",
+        "coefficient": -0.1564,
+        "odds_ratio": 0.8553,
+        "or_ci_95_lower": 0.5862,
+        "or_ci_95_upper": 1.2478,
+        "significant": false
+      },
+      {
+        "word": "has",
+        "coefficient": -0.1582,
+        "odds_ratio": 0.8537,
+        "or_ci_95_lower": 0.6253,
+        "or_ci_95_upper": 1.1656,
+        "significant": false
+      },
+      {
+        "word": "water",
+        "coefficient": -0.1583,
+        "odds_ratio": 0.8536,
+        "or_ci_95_lower": 0.6057,
+        "or_ci_95_upper": 1.2029,
+        "significant": false
+      },
+      {
+        "word": "air",
+        "coefficient": -0.1658,
+        "odds_ratio": 0.8472,
+        "or_ci_95_lower": 0.6023,
+        "or_ci_95_upper": 1.1918,
+        "significant": false
+      },
+      {
+        "word": "continue",
+        "coefficient": -0.1748,
+        "odds_ratio": 0.8396,
+        "or_ci_95_lower": 0.5473,
+        "or_ci_95_upper": 1.288,
+        "significant": false
+      },
+      {
+        "word": "that",
+        "coefficient": -0.1755,
+        "odds_ratio": 0.839,
+        "or_ci_95_lower": 0.6393,
+        "or_ci_95_upper": 1.1012,
+        "significant": false
+      },
+      {
+        "word": "dairy",
+        "coefficient": -0.1793,
+        "odds_ratio": 0.8359,
+        "or_ci_95_lower": 0.6095,
+        "or_ci_95_upper": 1.1464,
+        "significant": false
+      },
+      {
+        "word": "impact",
+        "coefficient": -0.1868,
+        "odds_ratio": 0.8296,
+        "or_ci_95_lower": 0.5911,
+        "or_ci_95_upper": 1.1644,
+        "significant": false
+      },
+      {
+        "word": "growing",
+        "coefficient": -0.189,
+        "odds_ratio": 0.8278,
+        "or_ci_95_lower": 0.6216,
+        "or_ci_95_upper": 1.1023,
+        "significant": false
+      },
+      {
+        "word": "stop",
+        "coefficient": -0.1922,
+        "odds_ratio": 0.8251,
+        "or_ci_95_lower": 0.5801,
+        "or_ci_95_upper": 1.1735,
+        "significant": false
+      },
+      {
+        "word": "got",
+        "coefficient": -0.1991,
+        "odds_ratio": 0.8195,
+        "or_ci_95_lower": 0.5956,
+        "or_ci_95_upper": 1.1275,
+        "significant": false
+      },
+      {
+        "word": "process",
+        "coefficient": -0.2015,
+        "odds_ratio": 0.8175,
+        "or_ci_95_lower": 0.5394,
+        "or_ci_95_upper": 1.239,
+        "significant": false
+      },
+      {
+        "word": "please",
+        "coefficient": -0.2082,
+        "odds_ratio": 0.8121,
+        "or_ci_95_lower": 0.5177,
+        "or_ci_95_upper": 1.2738,
+        "significant": false
+      },
+      {
+        "word": "largest",
+        "coefficient": -0.2111,
+        "odds_ratio": 0.8097,
+        "or_ci_95_lower": 0.5979,
+        "or_ci_95_upper": 1.0966,
+        "significant": false
+      },
+      {
+        "word": "why",
+        "coefficient": -0.2125,
+        "odds_ratio": 0.8086,
+        "or_ci_95_lower": 0.5773,
+        "or_ci_95_upper": 1.1326,
+        "significant": false
+      },
+      {
+        "word": "footprint",
+        "coefficient": -0.213,
+        "odds_ratio": 0.8082,
+        "or_ci_95_lower": 0.5416,
+        "or_ci_95_upper": 1.2059,
+        "significant": false
+      },
+      {
+        "word": "towards",
+        "coefficient": -0.2137,
+        "odds_ratio": 0.8076,
+        "or_ci_95_lower": 0.5404,
+        "or_ci_95_upper": 1.207,
+        "significant": false
+      },
+      {
+        "word": "global",
+        "coefficient": -0.2157,
+        "odds_ratio": 0.806,
+        "or_ci_95_lower": 0.5834,
+        "or_ci_95_upper": 1.1136,
+        "significant": false
+      },
+      {
+        "word": "almost",
+        "coefficient": -0.216,
+        "odds_ratio": 0.8058,
+        "or_ci_95_lower": 0.5615,
+        "or_ci_95_upper": 1.1563,
+        "significant": false
+      },
+      {
+        "word": "changes",
+        "coefficient": -0.2176,
+        "odds_ratio": 0.8044,
+        "or_ci_95_lower": 0.5456,
+        "or_ci_95_upper": 1.1861,
+        "significant": false
+      },
+      {
+        "word": "problems",
+        "coefficient": -0.2179,
+        "odds_ratio": 0.8042,
+        "or_ci_95_lower": 0.5492,
+        "or_ci_95_upper": 1.1775,
+        "significant": false
+      },
+      {
+        "word": "let",
+        "coefficient": -0.2186,
+        "odds_ratio": 0.8036,
+        "or_ci_95_lower": 0.5384,
+        "or_ci_95_upper": 1.1995,
+        "significant": false
+      },
+      {
+        "word": "then",
+        "coefficient": -0.2245,
+        "odds_ratio": 0.799,
+        "or_ci_95_lower": 0.5309,
+        "or_ci_95_upper": 1.2022,
+        "significant": false
+      },
+      {
+        "word": "building",
+        "coefficient": -0.2263,
+        "odds_ratio": 0.7975,
+        "or_ci_95_lower": 0.54,
+        "or_ci_95_upper": 1.1776,
+        "significant": false
+      },
+      {
+        "word": "entire",
+        "coefficient": -0.2294,
+        "odds_ratio": 0.795,
+        "or_ci_95_lower": 0.5393,
+        "or_ci_95_upper": 1.172,
+        "significant": false
+      },
+      {
+        "word": "recently",
+        "coefficient": -0.2381,
+        "odds_ratio": 0.7881,
+        "or_ci_95_lower": 0.5118,
+        "or_ci_95_upper": 1.2137,
+        "significant": false
+      },
+      {
+        "word": "thinking",
+        "coefficient": -0.2419,
+        "odds_ratio": 0.7852,
+        "or_ci_95_lower": 0.5547,
+        "or_ci_95_upper": 1.1113,
+        "significant": false
+      },
+      {
+        "word": "rise",
+        "coefficient": -0.2447,
+        "odds_ratio": 0.783,
+        "or_ci_95_lower": 0.563,
+        "or_ci_95_upper": 1.0889,
+        "significant": false
+      },
+      {
+        "word": "family",
+        "coefficient": -0.2504,
+        "odds_ratio": 0.7785,
+        "or_ci_95_lower": 0.5624,
+        "or_ci_95_upper": 1.0775,
+        "significant": false
+      },
+      {
+        "word": "know",
+        "coefficient": -0.2538,
+        "odds_ratio": 0.7758,
+        "or_ci_95_lower": 0.5463,
+        "or_ci_95_upper": 1.1018,
+        "significant": false
+      },
+      {
+        "word": "out",
+        "coefficient": -0.2615,
+        "odds_ratio": 0.7699,
+        "or_ci_95_lower": 0.5643,
+        "or_ci_95_upper": 1.0502,
+        "significant": false
+      },
+      {
+        "word": "makes",
+        "coefficient": -0.2641,
+        "odds_ratio": 0.7679,
+        "or_ci_95_lower": 0.5639,
+        "or_ci_95_upper": 1.0455,
+        "significant": false
+      },
+      {
+        "word": "should",
+        "coefficient": -0.2641,
+        "odds_ratio": 0.7679,
+        "or_ci_95_lower": 0.5442,
+        "or_ci_95_upper": 1.0835,
+        "significant": false
+      },
+      {
+        "word": "farm",
+        "coefficient": -0.2692,
+        "odds_ratio": 0.764,
+        "or_ci_95_lower": 0.575,
+        "or_ci_95_upper": 1.0152,
+        "significant": false
+      },
+      {
+        "word": "found",
+        "coefficient": -0.2711,
+        "odds_ratio": 0.7625,
+        "or_ci_95_lower": 0.5212,
+        "or_ci_95_upper": 1.1156,
+        "significant": false
+      },
+      {
+        "word": "amount",
+        "coefficient": -0.2722,
+        "odds_ratio": 0.7617,
+        "or_ci_95_lower": 0.526,
+        "or_ci_95_upper": 1.1028,
+        "significant": false
+      },
+      {
+        "word": "whole",
+        "coefficient": -0.2769,
+        "odds_ratio": 0.7581,
+        "or_ci_95_lower": 0.5258,
+        "or_ci_95_upper": 1.093,
+        "significant": false
+      },
+      {
+        "word": "report",
+        "coefficient": -0.2808,
+        "odds_ratio": 0.7551,
+        "or_ci_95_lower": 0.5528,
+        "or_ci_95_upper": 1.0315,
+        "significant": false
+      },
+      {
+        "word": "down",
+        "coefficient": -0.281,
+        "odds_ratio": 0.755,
+        "or_ci_95_lower": 0.5237,
+        "or_ci_95_upper": 1.0884,
+        "significant": false
+      },
+      {
+        "word": "public",
+        "coefficient": -0.2855,
+        "odds_ratio": 0.7517,
+        "or_ci_95_lower": 0.501,
+        "or_ci_95_upper": 1.1277,
+        "significant": false
+      },
+      {
+        "word": "humanity",
+        "coefficient": -0.2887,
+        "odds_ratio": 0.7492,
+        "or_ci_95_lower": 0.4341,
+        "or_ci_95_upper": 1.2932,
+        "significant": false
+      },
+      {
+        "word": "meat",
+        "coefficient": -0.2908,
+        "odds_ratio": 0.7476,
+        "or_ci_95_lower": 0.5329,
+        "or_ci_95_upper": 1.0489,
+        "significant": false
+      },
+      {
+        "word": "thoughts",
+        "coefficient": -0.2946,
+        "odds_ratio": 0.7448,
+        "or_ci_95_lower": 0.5394,
+        "or_ci_95_upper": 1.0285,
+        "significant": false
+      },
+      {
+        "word": "earth",
+        "coefficient": -0.2949,
+        "odds_ratio": 0.7446,
+        "or_ci_95_lower": 0.507,
+        "or_ci_95_upper": 1.0936,
+        "significant": false
+      },
+      {
+        "word": "record",
+        "coefficient": -0.2966,
+        "odds_ratio": 0.7433,
+        "or_ci_95_lower": 0.5567,
+        "or_ci_95_upper": 0.9926,
+        "significant": true
+      },
+      {
+        "word": "after",
+        "coefficient": -0.297,
+        "odds_ratio": 0.743,
+        "or_ci_95_lower": 0.5491,
+        "or_ci_95_upper": 1.0054,
+        "significant": false
+      },
+      {
+        "word": "though",
+        "coefficient": -0.2972,
+        "odds_ratio": 0.7429,
+        "or_ci_95_lower": 0.5406,
+        "or_ci_95_upper": 1.021,
+        "significant": false
+      },
+      {
+        "word": "greenhouse",
+        "coefficient": -0.2982,
+        "odds_ratio": 0.7422,
+        "or_ci_95_lower": 0.5595,
+        "or_ci_95_upper": 0.9844,
+        "significant": true
+      },
+      {
+        "word": "level",
+        "coefficient": -0.3046,
+        "odds_ratio": 0.7374,
+        "or_ci_95_lower": 0.5118,
+        "or_ci_95_upper": 1.0625,
+        "significant": false
+      },
+      {
+        "word": "may",
+        "coefficient": -0.3052,
+        "odds_ratio": 0.737,
+        "or_ci_95_lower": 0.499,
+        "or_ci_95_upper": 1.0885,
+        "significant": false
+      },
+      {
+        "word": "healthy",
+        "coefficient": -0.3111,
+        "odds_ratio": 0.7326,
+        "or_ci_95_lower": 0.4679,
+        "or_ci_95_upper": 1.1471,
+        "significant": false
+      },
+      {
+        "word": "wrong",
+        "coefficient": -0.3149,
+        "odds_ratio": 0.7299,
+        "or_ci_95_lower": 0.4406,
+        "or_ci_95_upper": 1.2091,
+        "significant": false
+      },
+      {
+        "word": "these",
+        "coefficient": -0.3171,
+        "odds_ratio": 0.7283,
+        "or_ci_95_lower": 0.5028,
+        "or_ci_95_upper": 1.0549,
+        "significant": false
+      },
+      {
+        "word": "said",
+        "coefficient": -0.319,
+        "odds_ratio": 0.7269,
+        "or_ci_95_lower": 0.4885,
+        "or_ci_95_upper": 1.0816,
+        "significant": false
+      },
+      {
+        "word": "least",
+        "coefficient": -0.3245,
+        "odds_ratio": 0.7229,
+        "or_ci_95_lower": 0.4869,
+        "or_ci_95_upper": 1.0732,
+        "significant": false
+      },
+      {
+        "word": "give",
+        "coefficient": -0.3246,
+        "odds_ratio": 0.7228,
+        "or_ci_95_lower": 0.5054,
+        "or_ci_95_upper": 1.0338,
+        "significant": false
+      },
+      {
+        "word": "must",
+        "coefficient": -0.331,
+        "odds_ratio": 0.7182,
+        "or_ci_95_lower": 0.4631,
+        "or_ci_95_upper": 1.114,
+        "significant": false
+      },
+      {
+        "word": "going",
+        "coefficient": -0.3324,
+        "odds_ratio": 0.7172,
+        "or_ci_95_lower": 0.524,
+        "or_ci_95_upper": 0.9817,
+        "significant": true
+      },
+      {
+        "word": "called",
+        "coefficient": -0.3331,
+        "odds_ratio": 0.7167,
+        "or_ci_95_lower": 0.5087,
+        "or_ci_95_upper": 1.0099,
+        "significant": false
+      },
+      {
+        "word": "waste",
+        "coefficient": -0.3404,
+        "odds_ratio": 0.7115,
+        "or_ci_95_lower": 0.4705,
+        "or_ci_95_upper": 1.0758,
+        "significant": false
+      },
+      {
+        "word": "food",
+        "coefficient": -0.3435,
+        "odds_ratio": 0.7093,
+        "or_ci_95_lower": 0.5063,
+        "or_ci_95_upper": 0.9937,
+        "significant": true
+      },
+      {
+        "word": "does",
+        "coefficient": -0.3465,
+        "odds_ratio": 0.7072,
+        "or_ci_95_lower": 0.4982,
+        "or_ci_95_upper": 1.0038,
+        "significant": false
+      },
+      {
+        "word": "study",
+        "coefficient": -0.3488,
+        "odds_ratio": 0.7055,
+        "or_ci_95_lower": 0.5247,
+        "or_ci_95_upper": 0.9486,
+        "significant": true
+      },
+      {
+        "word": "fuels",
+        "coefficient": -0.3525,
+        "odds_ratio": 0.7029,
+        "or_ci_95_lower": 0.5048,
+        "or_ci_95_upper": 0.9788,
+        "significant": true
+      },
+      {
+        "word": "away",
+        "coefficient": -0.3586,
+        "odds_ratio": 0.6987,
+        "or_ci_95_lower": 0.4968,
+        "or_ci_95_upper": 0.9825,
+        "significant": true
+      },
+      {
+        "word": "problem",
+        "coefficient": -0.361,
+        "odds_ratio": 0.697,
+        "or_ci_95_lower": 0.4739,
+        "or_ci_95_upper": 1.025,
+        "significant": false
+      },
+      {
+        "word": "last",
+        "coefficient": -0.3617,
+        "odds_ratio": 0.6965,
+        "or_ci_95_lower": 0.4986,
+        "or_ci_95_upper": 0.9729,
+        "significant": true
+      },
+      {
+        "word": "are",
+        "coefficient": -0.3645,
+        "odds_ratio": 0.6946,
+        "or_ci_95_lower": 0.5316,
+        "or_ci_95_upper": 0.9074,
+        "significant": true
+      },
+      {
+        "word": "ago",
+        "coefficient": -0.3648,
+        "odds_ratio": 0.6944,
+        "or_ci_95_lower": 0.4979,
+        "or_ci_95_upper": 0.9684,
+        "significant": true
+      },
+      {
+        "word": "issue",
+        "coefficient": -0.3737,
+        "odds_ratio": 0.6882,
+        "or_ci_95_lower": 0.4942,
+        "or_ci_95_upper": 0.9583,
+        "significant": true
+      },
+      {
+        "word": "sea",
+        "coefficient": -0.3769,
+        "odds_ratio": 0.686,
+        "or_ci_95_lower": 0.4794,
+        "or_ci_95_upper": 0.9817,
+        "significant": true
+      },
+      {
+        "word": "probably",
+        "coefficient": -0.3816,
+        "odds_ratio": 0.6827,
+        "or_ci_95_lower": 0.4432,
+        "or_ci_95_upper": 1.0517,
+        "significant": false
+      },
+      {
+        "word": "past",
+        "coefficient": -0.3868,
+        "odds_ratio": 0.6792,
+        "or_ci_95_lower": 0.4865,
+        "or_ci_95_upper": 0.9482,
+        "significant": true
+      },
+      {
+        "word": "with",
+        "coefficient": -0.3915,
+        "odds_ratio": 0.6761,
+        "or_ci_95_lower": 0.5109,
+        "or_ci_95_upper": 0.8946,
+        "significant": true
+      },
+      {
+        "word": "want",
+        "coefficient": -0.3969,
+        "odds_ratio": 0.6724,
+        "or_ci_95_lower": 0.4611,
+        "or_ci_95_upper": 0.9805,
+        "significant": true
+      },
+      {
+        "word": "ways",
+        "coefficient": -0.4022,
+        "odds_ratio": 0.6688,
+        "or_ci_95_lower": 0.4708,
+        "or_ci_95_upper": 0.95,
+        "significant": true
+      },
+      {
+        "word": "future",
+        "coefficient": -0.4085,
+        "odds_ratio": 0.6647,
+        "or_ci_95_lower": 0.4498,
+        "or_ci_95_upper": 0.9821,
+        "significant": true
+      },
+      {
+        "word": "says",
+        "coefficient": -0.4112,
+        "odds_ratio": 0.6628,
+        "or_ci_95_lower": 0.4575,
+        "or_ci_95_upper": 0.9603,
+        "significant": true
+      },
+      {
+        "word": "any",
+        "coefficient": -0.4141,
+        "odds_ratio": 0.6609,
+        "or_ci_95_lower": 0.4768,
+        "or_ci_95_upper": 0.9162,
+        "significant": true
+      },
+      {
+        "word": "post",
+        "coefficient": -0.4242,
+        "odds_ratio": 0.6543,
+        "or_ci_95_lower": 0.4573,
+        "or_ci_95_upper": 0.9362,
+        "significant": true
+      },
+      {
+        "word": "getting",
+        "coefficient": -0.4261,
+        "odds_ratio": 0.653,
+        "or_ci_95_lower": 0.4844,
+        "or_ci_95_upper": 0.8803,
+        "significant": true
+      },
+      {
+        "word": "all",
+        "coefficient": -0.4274,
+        "odds_ratio": 0.6522,
+        "or_ci_95_lower": 0.4855,
+        "or_ci_95_upper": 0.8761,
+        "significant": true
+      },
+      {
+        "word": "over",
+        "coefficient": -0.4302,
+        "odds_ratio": 0.6504,
+        "or_ci_95_lower": 0.4559,
+        "or_ci_95_upper": 0.9277,
+        "significant": true
+      },
+      {
+        "word": "farms",
+        "coefficient": -0.4401,
+        "odds_ratio": 0.6439,
+        "or_ci_95_lower": 0.4304,
+        "or_ci_95_upper": 0.9634,
+        "significant": true
+      },
+      {
+        "word": "used",
+        "coefficient": -0.4418,
+        "odds_ratio": 0.6429,
+        "or_ci_95_lower": 0.4439,
+        "or_ci_95_upper": 0.931,
+        "significant": true
+      },
+      {
+        "word": "especially",
+        "coefficient": -0.4422,
+        "odds_ratio": 0.6426,
+        "or_ci_95_lower": 0.4366,
+        "or_ci_95_upper": 0.946,
+        "significant": true
+      },
+      {
+        "word": "companies",
+        "coefficient": -0.4478,
+        "odds_ratio": 0.639,
+        "or_ci_95_lower": 0.4091,
+        "or_ci_95_upper": 0.9982,
+        "significant": true
+      },
+      {
+        "word": "life",
+        "coefficient": -0.4521,
+        "odds_ratio": 0.6363,
+        "or_ci_95_lower": 0.4106,
+        "or_ci_95_upper": 0.9862,
+        "significant": true
+      },
+      {
+        "word": "its",
+        "coefficient": -0.4579,
+        "odds_ratio": 0.6326,
+        "or_ci_95_lower": 0.455,
+        "or_ci_95_upper": 0.8796,
+        "significant": true
+      },
+      {
+        "word": "won",
+        "coefficient": -0.4625,
+        "odds_ratio": 0.6297,
+        "or_ci_95_lower": 0.4123,
+        "or_ci_95_upper": 0.9618,
+        "significant": true
+      },
+      {
+        "word": "actually",
+        "coefficient": -0.4633,
+        "odds_ratio": 0.6292,
+        "or_ci_95_lower": 0.4167,
+        "or_ci_95_upper": 0.95,
+        "significant": true
+      },
+      {
+        "word": "crisis",
+        "coefficient": -0.4661,
+        "odds_ratio": 0.6274,
+        "or_ci_95_lower": 0.426,
+        "or_ci_95_upper": 0.9241,
+        "significant": true
+      },
+      {
+        "word": "what",
+        "coefficient": -0.4735,
+        "odds_ratio": 0.6228,
+        "or_ci_95_lower": 0.4525,
+        "or_ci_95_upper": 0.8573,
+        "significant": true
+      },
+      {
+        "word": "environment",
+        "coefficient": -0.475,
+        "odds_ratio": 0.6219,
+        "or_ci_95_lower": 0.4351,
+        "or_ci_95_upper": 0.889,
+        "significant": true
+      },
+      {
+        "word": "emissions",
+        "coefficient": -0.4751,
+        "odds_ratio": 0.6218,
+        "or_ci_95_lower": 0.4648,
+        "or_ci_95_upper": 0.8319,
+        "significant": true
+      },
+      {
+        "word": "fact",
+        "coefficient": -0.4789,
+        "odds_ratio": 0.6195,
+        "or_ci_95_lower": 0.3957,
+        "or_ci_95_upper": 0.9698,
+        "significant": true
+      },
+      {
+        "word": "too",
+        "coefficient": -0.4802,
+        "odds_ratio": 0.6187,
+        "or_ci_95_lower": 0.434,
+        "or_ci_95_upper": 0.8821,
+        "significant": true
+      },
+      {
+        "word": "try",
+        "coefficient": -0.4871,
+        "odds_ratio": 0.6144,
+        "or_ci_95_lower": 0.4399,
+        "or_ci_95_upper": 0.8582,
+        "significant": true
+      },
+      {
+        "word": "real",
+        "coefficient": -0.4925,
+        "odds_ratio": 0.6111,
+        "or_ci_95_lower": 0.4186,
+        "or_ci_95_upper": 0.8921,
+        "significant": true
+      },
+      {
+        "word": "face",
+        "coefficient": -0.4931,
+        "odds_ratio": 0.6107,
+        "or_ci_95_lower": 0.3592,
+        "or_ci_95_upper": 1.0384,
+        "significant": false
+      },
+      {
+        "word": "animals",
+        "coefficient": -0.5002,
+        "odds_ratio": 0.6064,
+        "or_ci_95_lower": 0.4205,
+        "or_ci_95_upper": 0.8743,
+        "significant": true
+      },
+      {
+        "word": "cannot",
+        "coefficient": -0.5142,
+        "odds_ratio": 0.598,
+        "or_ci_95_lower": 0.3871,
+        "or_ci_95_upper": 0.9238,
+        "significant": true
+      },
+      {
+        "word": "consumption",
+        "coefficient": -0.5147,
+        "odds_ratio": 0.5977,
+        "or_ci_95_lower": 0.3804,
+        "or_ci_95_upper": 0.939,
+        "significant": true
+      },
+      {
+        "word": "significant",
+        "coefficient": -0.517,
+        "odds_ratio": 0.5963,
+        "or_ci_95_lower": 0.4312,
+        "or_ci_95_upper": 0.8246,
+        "significant": true
+      },
+      {
+        "word": "say",
+        "coefficient": -0.5203,
+        "odds_ratio": 0.5943,
+        "or_ci_95_lower": 0.4227,
+        "or_ci_95_upper": 0.8357,
+        "significant": true
+      },
+      {
+        "word": "person",
+        "coefficient": -0.5209,
+        "odds_ratio": 0.594,
+        "or_ci_95_lower": 0.3562,
+        "or_ci_95_upper": 0.9906,
+        "significant": true
+      },
+      {
+        "word": "population",
+        "coefficient": -0.5281,
+        "odds_ratio": 0.5897,
+        "or_ci_95_lower": 0.4266,
+        "or_ci_95_upper": 0.8152,
+        "significant": true
+      },
+      {
+        "word": "still",
+        "coefficient": -0.5316,
+        "odds_ratio": 0.5877,
+        "or_ci_95_lower": 0.4131,
+        "or_ci_95_upper": 0.8361,
+        "significant": true
+      },
+      {
+        "word": "the",
+        "coefficient": -0.5327,
+        "odds_ratio": 0.587,
+        "or_ci_95_lower": 0.4969,
+        "or_ci_95_upper": 0.6935,
+        "significant": true
+      },
+      {
+        "word": "idea",
+        "coefficient": -0.54,
+        "odds_ratio": 0.5827,
+        "or_ci_95_lower": 0.4222,
+        "or_ci_95_upper": 0.8043,
+        "significant": true
+      },
+      {
+        "word": "weather",
+        "coefficient": -0.5412,
+        "odds_ratio": 0.582,
+        "or_ci_95_lower": 0.3332,
+        "or_ci_95_upper": 1.0168,
+        "significant": false
+      },
+      {
+        "word": "american",
+        "coefficient": -0.5491,
+        "odds_ratio": 0.5775,
+        "or_ci_95_lower": 0.4054,
+        "or_ci_95_upper": 0.8226,
+        "significant": true
+      },
+      {
+        "word": "countries",
+        "coefficient": -0.5531,
+        "odds_ratio": 0.5751,
+        "or_ci_95_lower": 0.3522,
+        "or_ci_95_upper": 0.9391,
+        "significant": true
+      },
+      {
+        "word": "human",
+        "coefficient": -0.5535,
+        "odds_ratio": 0.5749,
+        "or_ci_95_lower": 0.3634,
+        "or_ci_95_upper": 0.9096,
+        "significant": true
+      },
+      {
+        "word": "extreme",
+        "coefficient": -0.5557,
+        "odds_ratio": 0.5737,
+        "or_ci_95_lower": 0.3448,
+        "or_ci_95_upper": 0.9543,
+        "significant": true
+      },
+      {
+        "word": "never",
+        "coefficient": -0.5681,
+        "odds_ratio": 0.5666,
+        "or_ci_95_lower": 0.3869,
+        "or_ci_95_upper": 0.8299,
+        "significant": true
+      },
+      {
+        "word": "cause",
+        "coefficient": -0.5748,
+        "odds_ratio": 0.5628,
+        "or_ci_95_lower": 0.3494,
+        "or_ci_95_upper": 0.9065,
+        "significant": true
+      },
+      {
+        "word": "rather",
+        "coefficient": -0.5764,
+        "odds_ratio": 0.5619,
+        "or_ci_95_lower": 0.4053,
+        "or_ci_95_upper": 0.7791,
+        "significant": true
+      },
+      {
+        "word": "science",
+        "coefficient": -0.5795,
+        "odds_ratio": 0.5602,
+        "or_ci_95_lower": 0.3493,
+        "or_ci_95_upper": 0.8984,
+        "significant": true
+      },
+      {
+        "word": "net",
+        "coefficient": -0.5866,
+        "odds_ratio": 0.5562,
+        "or_ci_95_lower": 0.39,
+        "or_ci_95_upper": 0.7932,
+        "significant": true
+      },
+      {
+        "word": "due",
+        "coefficient": -0.5928,
+        "odds_ratio": 0.5528,
+        "or_ci_95_lower": 0.3578,
+        "or_ci_95_upper": 0.8541,
+        "significant": true
+      },
+      {
+        "word": "reality",
+        "coefficient": -0.5961,
+        "odds_ratio": 0.551,
+        "or_ci_95_lower": 0.3235,
+        "or_ci_95_upper": 0.9384,
+        "significant": true
+      },
+      {
+        "word": "areas",
+        "coefficient": -0.606,
+        "odds_ratio": 0.5455,
+        "or_ci_95_lower": 0.3775,
+        "or_ci_95_upper": 0.7883,
+        "significant": true
+      },
+      {
+        "word": "fuel",
+        "coefficient": -0.6133,
+        "odds_ratio": 0.5416,
+        "or_ci_95_lower": 0.3623,
+        "or_ci_95_upper": 0.8095,
+        "significant": true
+      },
+      {
+        "word": "even",
+        "coefficient": -0.6216,
+        "odds_ratio": 0.5371,
+        "or_ci_95_lower": 0.3776,
+        "or_ci_95_upper": 0.7639,
+        "significant": true
+      },
+      {
+        "word": "anything",
+        "coefficient": -0.6444,
+        "odds_ratio": 0.525,
+        "or_ci_95_lower": 0.3422,
+        "or_ci_95_upper": 0.8054,
+        "significant": true
+      },
+      {
+        "word": "lower",
+        "coefficient": -0.6447,
+        "odds_ratio": 0.5248,
+        "or_ci_95_lower": 0.3501,
+        "or_ci_95_upper": 0.7866,
+        "significant": true
+      },
+      {
+        "word": "diet",
+        "coefficient": -0.6519,
+        "odds_ratio": 0.5211,
+        "or_ci_95_lower": 0.3665,
+        "or_ci_95_upper": 0.7408,
+        "significant": true
+      },
+      {
+        "word": "industry",
+        "coefficient": -0.6521,
+        "odds_ratio": 0.5209,
+        "or_ci_95_lower": 0.3756,
+        "or_ci_95_upper": 0.7224,
+        "significant": true
+      },
+      {
+        "word": "time",
+        "coefficient": -0.6588,
+        "odds_ratio": 0.5175,
+        "or_ci_95_lower": 0.3669,
+        "or_ci_95_upper": 0.7299,
+        "significant": true
+      },
+      {
+        "word": "change",
+        "coefficient": -0.6619,
+        "odds_ratio": 0.5158,
+        "or_ci_95_lower": 0.4085,
+        "or_ci_95_upper": 0.6514,
+        "significant": true
+      },
+      {
+        "word": "myself",
+        "coefficient": -0.674,
+        "odds_ratio": 0.5097,
+        "or_ci_95_lower": 0.3456,
+        "or_ci_95_upper": 0.7515,
+        "significant": true
+      },
+      {
+        "word": "different",
+        "coefficient": -0.6819,
+        "odds_ratio": 0.5057,
+        "or_ci_95_lower": 0.3308,
+        "or_ci_95_upper": 0.773,
+        "significant": true
+      },
+      {
+        "word": "house",
+        "coefficient": -0.6871,
+        "odds_ratio": 0.5031,
+        "or_ci_95_lower": 0.3725,
+        "or_ci_95_upper": 0.6793,
+        "significant": true
+      },
+      {
+        "word": "again",
+        "coefficient": -0.6898,
+        "odds_ratio": 0.5017,
+        "or_ci_95_lower": 0.3304,
+        "or_ci_95_upper": 0.7617,
+        "significant": true
+      },
+      {
+        "word": "someone",
+        "coefficient": -0.7076,
+        "odds_ratio": 0.4928,
+        "or_ci_95_lower": 0.3386,
+        "or_ci_95_upper": 0.7173,
+        "significant": true
+      },
+      {
+        "word": "animal",
+        "coefficient": -0.7144,
+        "odds_ratio": 0.4895,
+        "or_ci_95_lower": 0.3336,
+        "or_ci_95_upper": 0.7181,
+        "significant": true
+      },
+      {
+        "word": "back",
+        "coefficient": -0.7146,
+        "odds_ratio": 0.4894,
+        "or_ci_95_lower": 0.3377,
+        "or_ci_95_upper": 0.7091,
+        "significant": true
+      },
+      {
+        "word": "don",
+        "coefficient": -0.7214,
+        "odds_ratio": 0.4861,
+        "or_ci_95_lower": 0.3226,
+        "or_ci_95_upper": 0.7324,
+        "significant": true
+      },
+      {
+        "word": "read",
+        "coefficient": -0.7282,
+        "odds_ratio": 0.4828,
+        "or_ci_95_lower": 0.3607,
+        "or_ci_95_upper": 0.6462,
+        "significant": true
+      },
+      {
+        "word": "mass",
+        "coefficient": -0.7339,
+        "odds_ratio": 0.48,
+        "or_ci_95_lower": 0.2932,
+        "or_ci_95_upper": 0.7858,
+        "significant": true
+      },
+      {
+        "word": "worse",
+        "coefficient": -0.7439,
+        "odds_ratio": 0.4752,
+        "or_ci_95_lower": 0.2855,
+        "or_ci_95_upper": 0.7911,
+        "significant": true
+      },
+      {
+        "word": "were",
+        "coefficient": -0.7477,
+        "odds_ratio": 0.4734,
+        "or_ci_95_lower": 0.3243,
+        "or_ci_95_upper": 0.6911,
+        "significant": true
+      },
+      {
+        "word": "caused",
+        "coefficient": -0.748,
+        "odds_ratio": 0.4733,
+        "or_ci_95_lower": 0.3042,
+        "or_ci_95_upper": 0.7365,
+        "significant": true
+      },
+      {
+        "word": "thought",
+        "coefficient": -0.7557,
+        "odds_ratio": 0.4697,
+        "or_ci_95_lower": 0.3211,
+        "or_ci_95_upper": 0.687,
+        "significant": true
+      },
+      {
+        "word": "nothing",
+        "coefficient": -0.7715,
+        "odds_ratio": 0.4623,
+        "or_ci_95_lower": 0.3047,
+        "or_ci_95_upper": 0.7016,
+        "significant": true
+      },
+      {
+        "word": "anyone",
+        "coefficient": -0.7755,
+        "odds_ratio": 0.4605,
+        "or_ci_95_lower": 0.3301,
+        "or_ci_95_upper": 0.6423,
+        "significant": true
+      },
+      {
+        "word": "isn",
+        "coefficient": -0.7755,
+        "odds_ratio": 0.4605,
+        "or_ci_95_lower": 0.3161,
+        "or_ci_95_upper": 0.6708,
+        "significant": true
+      },
+      {
+        "word": "methane",
+        "coefficient": -0.7867,
+        "odds_ratio": 0.4553,
+        "or_ci_95_lower": 0.3268,
+        "or_ci_95_upper": 0.6344,
+        "significant": true
+      },
+      {
+        "word": "demand",
+        "coefficient": -0.7938,
+        "odds_ratio": 0.4521,
+        "or_ci_95_lower": 0.3041,
+        "or_ci_95_upper": 0.6721,
+        "significant": true
+      },
+      {
+        "word": "care",
+        "coefficient": -0.8224,
+        "odds_ratio": 0.4394,
+        "or_ci_95_lower": 0.2923,
+        "or_ci_95_upper": 0.6605,
+        "significant": true
+      },
+      {
+        "word": "enough",
+        "coefficient": -0.8237,
+        "odds_ratio": 0.4388,
+        "or_ci_95_lower": 0.2994,
+        "or_ci_95_upper": 0.643,
+        "significant": true
+      },
+      {
+        "word": "either",
+        "coefficient": -0.8379,
+        "odds_ratio": 0.4326,
+        "or_ci_95_lower": 0.2874,
+        "or_ci_95_upper": 0.6511,
+        "significant": true
+      },
+      {
+        "word": "bad",
+        "coefficient": -0.8643,
+        "odds_ratio": 0.4214,
+        "or_ci_95_lower": 0.2879,
+        "or_ci_95_upper": 0.6167,
+        "significant": true
+      },
+      {
+        "word": "oil",
+        "coefficient": -0.9397,
+        "odds_ratio": 0.3908,
+        "or_ci_95_lower": 0.2542,
+        "or_ci_95_upper": 0.6006,
+        "significant": true
+      },
+      {
+        "word": "between",
+        "coefficient": -0.9478,
+        "odds_ratio": 0.3876,
+        "or_ci_95_lower": 0.2319,
+        "or_ci_95_upper": 0.6477,
+        "significant": true
+      },
+      {
+        "word": "but",
+        "coefficient": -0.9752,
+        "odds_ratio": 0.3771,
+        "or_ci_95_lower": 0.2747,
+        "or_ci_95_upper": 0.5178,
+        "significant": true
+      },
+      {
+        "word": "trump",
+        "coefficient": -0.9839,
+        "odds_ratio": 0.3739,
+        "or_ci_95_lower": 0.2484,
+        "or_ci_95_upper": 0.5627,
+        "significant": true
+      },
+      {
+        "word": "aren",
+        "coefficient": -1.0002,
+        "odds_ratio": 0.3678,
+        "or_ci_95_lower": 0.2218,
+        "or_ci_95_upper": 0.6098,
+        "significant": true
+      },
+      {
+        "word": "their",
+        "coefficient": -1.0491,
+        "odds_ratio": 0.3503,
+        "or_ci_95_lower": 0.2478,
+        "or_ci_95_upper": 0.4951,
+        "significant": true
+      },
+      {
+        "word": "understand",
+        "coefficient": -1.0502,
+        "odds_ratio": 0.3499,
+        "or_ci_95_lower": 0.2213,
+        "or_ci_95_upper": 0.5531,
+        "significant": true
+      },
+      {
+        "word": "only",
+        "coefficient": -1.305,
+        "odds_ratio": 0.2712,
+        "or_ci_95_lower": 0.1854,
+        "or_ci_95_upper": 0.3966,
+        "significant": true
+      },
+      {
+        "word": "not",
+        "coefficient": -1.5681,
+        "odds_ratio": 0.2084,
+        "or_ci_95_lower": 0.1502,
+        "or_ci_95_upper": 0.2892,
+        "significant": true
+      }
+    ]
+  }
+}

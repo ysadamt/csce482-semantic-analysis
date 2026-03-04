@@ -26,6 +26,7 @@ import sys
 from data_extractor import RedditDataExtractor, create_methane_dairy_queries, extract_reddit_data
 from preprocessor import DataPreprocessor, preprocess_reddit_data
 from analysis import run_full_analysis, SentimentAnalyzer
+from statistical_analysis import run_statistical_analysis
 
 
 def setup_directories():
@@ -134,13 +135,15 @@ def phase2_preprocessing(df: pd.DataFrame,
 
 
 def phase3_analysis(df: pd.DataFrame, 
-                   output_dir: str = 'results') -> dict:
+                   output_dir: str = 'results',
+                   policy_date: str = '2024-01-01') -> dict:
     """
     Execute Phase 3: Empirical Analysis.
     
     Args:
         df: Preprocessed DataFrame
         output_dir: Directory for outputs
+        policy_date: Date string (YYYY-MM-DD) to split Before/After groups
         
     Returns:
         Dictionary with analysis results
@@ -168,7 +171,47 @@ def phase3_analysis(df: pd.DataFrame,
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     df_analyzed.to_csv(f"{output_dir}/analyzed_data_{timestamp}.csv", index=False)
     
-    return results
+    return results, df_analyzed
+
+
+def phase4_statistical_analysis(df: pd.DataFrame,
+                                output_dir: str = 'results',
+                                policy_date: str = '2024-01-01') -> dict:
+    """
+    Execute Phase 4: Publication-Ready Statistical Analysis.
+    
+    Covers every checklist item:
+    - Data quality & relevance
+    - Hypothesis testing (H₀/H₁, normality, t-test or Mann-Whitney, Cohen's d, CI)
+    - Bias assessment (geographic, platform, time-window, user concentration)
+    - Sensitivity analysis (excluding top 5 % users)
+    - Drivers of sentiment (logistic regression odds ratios)
+    
+    Args:
+        df: Analyzed DataFrame (must contain sentiment_score & sentiment columns)
+        output_dir: Directory for outputs
+        policy_date: Date string for Before/After split
+        
+    Returns:
+        Dictionary with statistical analysis results
+    """
+    print("\n" + "="*70)
+    print("PHASE 4: STATISTICAL ANALYSIS (PUBLICATION CHECKLIST)")
+    print("="*70)
+    
+    if df is None or len(df) == 0:
+        print("⚠️ No data to analyze")
+        return None
+    
+    stat_results = run_statistical_analysis(
+        df,
+        text_column='clean_text',
+        date_column='created_utc',
+        policy_date=policy_date,
+        output_dir=output_dir,
+    )
+    
+    return stat_results
 
 
 def run_full_pipeline(target_count: int = 3000,
@@ -208,7 +251,18 @@ def run_full_pipeline(target_count: int = 3000,
         return None
     
     # Phase 3: Analysis
-    results = phase3_analysis(df_clean)
+    phase3_out = phase3_analysis(df_clean)
+    if phase3_out is None:
+        print("\n❌ Pipeline stopped: Analysis failed")
+        return None
+    results, df_analyzed = phase3_out
+    
+    # Phase 4: Statistical Analysis (publication checklist)
+    stat_results = phase4_statistical_analysis(
+        df_analyzed, output_dir='results', policy_date='2024-01-01'
+    )
+    if stat_results is not None:
+        results['statistical_analysis'] = stat_results
     
     print("\n" + "="*70)
     print("✅ PIPELINE COMPLETE")
@@ -274,7 +328,15 @@ def load_and_analyze(csv_path: str) -> dict:
         # Create fake dates for analysis
         df['created_utc'] = pd.date_range('2020-01-01', periods=len(df), freq='H')
     
-    results = phase3_analysis(df)
+    phase3_out = phase3_analysis(df)
+    if phase3_out is None:
+        return None
+    results, df_analyzed = phase3_out
+    
+    # Phase 4: Statistical Analysis
+    stat_results = phase4_statistical_analysis(df_analyzed)
+    if stat_results is not None:
+        results['statistical_analysis'] = stat_results
     
     return results
 
@@ -352,6 +414,8 @@ Examples:
                        help='Target number of posts to extract (default: 3000)')
     parser.add_argument('--start-year', type=int, default=2018,
                        help='Start year for data extraction (default: 2018)')
+    parser.add_argument('--policy-date', type=str, default='2024-01-01',
+                       help='Policy date for Before/After comparison (default: 2024-01-01)')
     parser.add_argument('--input', type=str,
                        help='Input CSV file for preprocessing or analysis')
     parser.add_argument('--output-dir', type=str, default='results',
@@ -391,7 +455,6 @@ Examples:
     elif args.analyze:
         if args.input:
             df = pd.read_csv(args.input)
-            phase3_analysis(df, output_dir=args.output_dir)
         else:
             # Find most recent preprocessed file
             data_files = [f for f in os.listdir('data') if f.startswith('reddit_preprocessed')]
@@ -399,9 +462,15 @@ Examples:
                 latest = sorted(data_files)[-1]
                 df = pd.read_csv(f'data/{latest}')
                 print(f"📂 Using latest preprocessed data: {latest}")
-                phase3_analysis(df, output_dir=args.output_dir)
             else:
                 print("❌ No preprocessed file found. Run --preprocess first or specify --input")
+                return
+        phase3_out = phase3_analysis(df, output_dir=args.output_dir,
+                                     policy_date=args.policy_date)
+        if phase3_out is not None:
+            _, df_analyzed = phase3_out
+            phase4_statistical_analysis(df_analyzed, output_dir=args.output_dir,
+                                        policy_date=args.policy_date)
                 
     elif args.from_csv:
         load_and_analyze(args.from_csv)

@@ -1,0 +1,2630 @@
+[
+  {
+    "timestamp": "2026-02-25T16:35:58.473347",
+    "query": "cow burps climate climate",
+    "subreddit": "all",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 100,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:35:58.963072",
+    "query": "cow burps climate climate",
+    "subreddit": "all",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 10,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:01.456768",
+    "query": "cow burps climate climate",
+    "subreddit": "all",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 170,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:05.408983",
+    "query": "cow burps climate climate",
+    "subreddit": "all",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 233,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:09.493182",
+    "query": "cow burps climate climate",
+    "subreddit": "all",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 115,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:12.994354",
+    "query": "cow burps climate climate",
+    "subreddit": "all",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 163,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:16.466385",
+    "query": "cow burps climate climate",
+    "subreddit": "all",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 250,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:19.483788",
+    "query": "cow burps climate climate",
+    "subreddit": "all",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:19.835116",
+    "query": "cow burps climate climate",
+    "subreddit": "climate",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 2,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:19.992408",
+    "query": "cow burps climate climate",
+    "subreddit": "climate",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:22.505672",
+    "query": "cow burps climate climate",
+    "subreddit": "climate",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 240,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:24.759279",
+    "query": "cow burps climate climate",
+    "subreddit": "climate",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 184,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:27.459800",
+    "query": "cow burps climate climate",
+    "subreddit": "climate",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 124,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:30.085527",
+    "query": "cow burps climate climate",
+    "subreddit": "climate",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 105,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:32.845694",
+    "query": "cow burps climate climate",
+    "subreddit": "climate",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 232,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:35.410756",
+    "query": "cow burps climate climate",
+    "subreddit": "climate",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:35.913657",
+    "query": "cow burps climate climate",
+    "subreddit": "environment",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 4,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:36.068522",
+    "query": "cow burps climate climate",
+    "subreddit": "environment",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:38.779328",
+    "query": "cow burps climate climate",
+    "subreddit": "environment",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 184,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:41.355875",
+    "query": "cow burps climate climate",
+    "subreddit": "environment",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 243,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:44.008793",
+    "query": "cow burps climate climate",
+    "subreddit": "environment",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 75,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:46.480954",
+    "query": "cow burps climate climate",
+    "subreddit": "environment",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 62,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:50.000656",
+    "query": "cow burps climate climate",
+    "subreddit": "environment",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 168,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:52.915494",
+    "query": "cow burps climate climate",
+    "subreddit": "environment",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:53.103224",
+    "query": "cow burps climate climate",
+    "subreddit": "farming",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:53.260446",
+    "query": "cow burps climate climate",
+    "subreddit": "farming",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:56.300640",
+    "query": "cow burps climate climate",
+    "subreddit": "farming",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 171,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:56.680329",
+    "query": "cow burps climate climate",
+    "subreddit": "farming",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 3,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:59.275218",
+    "query": "cow burps climate climate",
+    "subreddit": "farming",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 65,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:36:59.523500",
+    "query": "cow burps climate climate",
+    "subreddit": "farming",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:02.304086",
+    "query": "cow burps climate climate",
+    "subreddit": "farming",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 45,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:02.740945",
+    "query": "cow burps climate climate",
+    "subreddit": "farming",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:02.947050",
+    "query": "cow burps climate climate",
+    "subreddit": "science",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 1,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:03.098594",
+    "query": "cow burps climate climate",
+    "subreddit": "science",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:06.178170",
+    "query": "cow burps climate climate",
+    "subreddit": "science",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 135,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:08.163091",
+    "query": "cow burps climate climate",
+    "subreddit": "science",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 190,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:10.832856",
+    "query": "cow burps climate climate",
+    "subreddit": "science",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 6,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:12.619967",
+    "query": "cow burps climate climate",
+    "subreddit": "science",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:14.696393",
+    "query": "cow burps climate climate",
+    "subreddit": "science",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 4,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:16.545140",
+    "query": "cow burps climate climate",
+    "subreddit": "science",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:16.722640",
+    "query": "cow burps climate climate",
+    "subreddit": "sustainability",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:16.897129",
+    "query": "cow burps climate climate",
+    "subreddit": "sustainability",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:20.260087",
+    "query": "cow burps climate climate",
+    "subreddit": "sustainability",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 230,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:21.601418",
+    "query": "cow burps climate climate",
+    "subreddit": "sustainability",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 75,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:25.067065",
+    "query": "cow burps climate climate",
+    "subreddit": "sustainability",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 94,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:26.158656",
+    "query": "cow burps climate climate",
+    "subreddit": "sustainability",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:30.294114",
+    "query": "cow burps climate climate",
+    "subreddit": "sustainability",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 103,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:31.436741",
+    "query": "cow burps climate climate",
+    "subreddit": "sustainability",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:31.618845",
+    "query": "cow burps climate climate",
+    "subreddit": "agriculture",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:31.782223",
+    "query": "cow burps climate climate",
+    "subreddit": "agriculture",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:35.313048",
+    "query": "cow burps climate climate",
+    "subreddit": "agriculture",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 175,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:35.822883",
+    "query": "cow burps climate climate",
+    "subreddit": "agriculture",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:38.743138",
+    "query": "cow burps climate climate",
+    "subreddit": "agriculture",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:39.263025",
+    "query": "cow burps climate climate",
+    "subreddit": "agriculture",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:41.962536",
+    "query": "cow burps climate climate",
+    "subreddit": "agriculture",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:42.478852",
+    "query": "cow burps climate climate",
+    "subreddit": "agriculture",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:42.780866",
+    "query": "cow burps climate climate",
+    "subreddit": "vegan",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 4,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:42.969222",
+    "query": "cow burps climate climate",
+    "subreddit": "vegan",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:45.697086",
+    "query": "cow burps climate climate",
+    "subreddit": "vegan",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 161,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:47.716925",
+    "query": "cow burps climate climate",
+    "subreddit": "vegan",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 127,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:49.963535",
+    "query": "cow burps climate climate",
+    "subreddit": "vegan",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 49,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:52.005041",
+    "query": "cow burps climate climate",
+    "subreddit": "vegan",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:54.969519",
+    "query": "cow burps climate climate",
+    "subreddit": "vegan",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 42,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:56.731207",
+    "query": "cow burps climate climate",
+    "subreddit": "vegan",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:56.890754",
+    "query": "cow burps climate climate",
+    "subreddit": "zerowaste",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:37:57.043849",
+    "query": "cow burps climate climate",
+    "subreddit": "zerowaste",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:01.937729",
+    "query": "cow burps climate climate",
+    "subreddit": "zerowaste",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 218,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:02.238533",
+    "query": "cow burps climate climate",
+    "subreddit": "zerowaste",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 2,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:05.829219",
+    "query": "cow burps climate climate",
+    "subreddit": "zerowaste",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 60,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:06.232906",
+    "query": "cow burps climate climate",
+    "subreddit": "zerowaste",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:10.712563",
+    "query": "cow burps climate climate",
+    "subreddit": "zerowaste",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 36,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:11.044872",
+    "query": "cow burps climate climate",
+    "subreddit": "zerowaste",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:15.554713",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "all",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 217,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:19.972703",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "all",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 177,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:24.262774",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "all",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 203,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:29.608230",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "all",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 190,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:34.810740",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "all",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 91,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:39.209726",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "all",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 114,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:43.450074",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "all",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 237,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:47.413248",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "all",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:47.594351",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "climate",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:47.744957",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "climate",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:48.547811",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "climate",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 43,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:48.740120",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "climate",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:49.335458",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "climate",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:49.512188",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "climate",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:50.171505",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "climate",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:50.328077",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "climate",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:50.675180",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "environment",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 3,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:50.828536",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "environment",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:55.484707",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "environment",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 125,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:55.649333",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "environment",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:58.515240",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "environment",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 20,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:38:58.683520",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "environment",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:01.636512",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "environment",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 7,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:01.814695",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "environment",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:02.143892",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "farming",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 5,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:02.350529",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "farming",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:05.012422",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "farming",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 141,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:05.224127",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "farming",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 1,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:07.971755",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "farming",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 54,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:08.159956",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "farming",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:11.054641",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "farming",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 28,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:11.246670",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "farming",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:11.407082",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "science",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:11.560168",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "science",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:12.077510",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "science",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 11,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:12.247209",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "science",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:12.701963",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "science",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:13.020117",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "science",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:13.458203",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "science",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:13.628612",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "science",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:14.071076",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "sustainability",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 10,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:14.264538",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "sustainability",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:15.293790",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "sustainability",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 57,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:15.500463",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "sustainability",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:16.483383",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "sustainability",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:16.675845",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "sustainability",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:17.827175",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "sustainability",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:18.030673",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "sustainability",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:18.325799",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "agriculture",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 6,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:18.509999",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "agriculture",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:20.459519",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "agriculture",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 82,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:20.778512",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "agriculture",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:22.419820",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "agriculture",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:22.647198",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "agriculture",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:24.181669",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "agriculture",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:24.418830",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "agriculture",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:27.047644",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "vegan",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 92,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:27.287951",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "vegan",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:30.385646",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "vegan",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 138,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:30.559085",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "vegan",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:33.039499",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "vegan",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 76,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:34.812470",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "vegan",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 83,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:37.987580",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "vegan",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 50,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:39.725426",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "vegan",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:40.032083",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "zerowaste",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 1,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:40.336702",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "zerowaste",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:41.107837",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "zerowaste",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 37,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:41.310068",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "zerowaste",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:41.918558",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "zerowaste",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:42.112487",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "zerowaste",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:42.858762",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "zerowaste",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:43.035441",
+    "query": "regenerative dairy farming environment",
+    "subreddit": "zerowaste",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:48.144719",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "all",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 174,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:51.453643",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "all",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 180,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:54.675470",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "all",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 67,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:39:58.884898",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "all",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 121,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:03.182474",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "all",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 46,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:07.213669",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "all",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 111,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:11.286879",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "all",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 147,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:14.995655",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "all",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:19.560961",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "climate",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 178,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:20.073123",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "climate",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 1,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:22.631961",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "climate",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 91,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:25.300702",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "climate",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 134,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:27.545746",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "climate",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 65,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:30.216504",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "climate",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 53,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:32.665371",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "climate",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 157,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:35.135971",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "climate",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:39.299777",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "environment",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 152,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:39.630688",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "environment",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 1,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:42.503584",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "environment",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 72,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:45.071551",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "environment",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 132,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:48.237720",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "environment",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 34,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:50.689669",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "environment",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 17,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:53.458698",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "environment",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:56.358435",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "environment",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:56.739362",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "farming",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 1,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:56.911621",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "farming",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:59.283835",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "farming",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 33,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:40:59.476322",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "farming",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:01.748552",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "farming",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:01.949030",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "farming",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:05.210802",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "farming",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:05.419181",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "farming",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:07.221487",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "science",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 38,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:07.432434",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "science",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:10.883269",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "science",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 30,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:11.732127",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "science",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 2,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:14.555024",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "science",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 7,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:15.792458",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "science",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:18.172112",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "science",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 107,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:19.047199",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "science",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:22.769663",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "sustainability",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 142,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:23.050178",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "sustainability",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:27.060941",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "sustainability",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 62,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:27.664432",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "sustainability",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 10,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:30.731313",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "sustainability",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 36,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:31.244244",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "sustainability",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:34.596062",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "sustainability",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 56,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:35.243573",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "sustainability",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:35.749629",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "agriculture",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 3,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:35.958818",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "agriculture",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:37.800186",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "agriculture",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 18,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:38.065839",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "agriculture",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:39.810358",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "agriculture",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:40.144708",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "agriculture",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:42.612135",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "agriculture",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:42.943214",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "agriculture",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:47.314420",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "vegan",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 115,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:47.833311",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "vegan",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:50.903338",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "vegan",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 56,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:53.404075",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "vegan",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 64,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:56.222865",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "vegan",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 34,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:41:58.317943",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "vegan",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:01.554986",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "vegan",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 16,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:03.404300",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "vegan",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:04.121425",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "zerowaste",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 4,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:04.415312",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "zerowaste",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:08.309348",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "zerowaste",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 74,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:09.100016",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "zerowaste",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 5,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:12.508319",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "zerowaste",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 37,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:12.840825",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "zerowaste",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:16.138029",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "zerowaste",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 15,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:16.496512",
+    "query": "cow methane climate change sustainability",
+    "subreddit": "zerowaste",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:20.701992",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "all",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 159,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:23.620607",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "all",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 84,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:27.115787",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "all",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 173,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:30.950064",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "all",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 178,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:34.407104",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "all",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 61,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:38.220220",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "all",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 100,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:41.906650",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "all",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 207,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:45.588384",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "all",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:45.903641",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "climate",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 1,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:46.115384",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "climate",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:48.867251",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "climate",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 173,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:49.370288",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "climate",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 18,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:51.840149",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "climate",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 39,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:52.441308",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "climate",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:55.117965",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "climate",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 32,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:55.577812",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "climate",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:55.921845",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "environment",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:56.082942",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "environment",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:59.206769",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "environment",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 138,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:42:59.395400",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "environment",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:02.454138",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "environment",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 35,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:02.652803",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "environment",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:06.237526",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "environment",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 44,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:06.431120",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "environment",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:06.677396",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "farming",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:06.872012",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "farming",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:07.292606",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "farming",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 3,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:07.478599",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "farming",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:07.908104",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "farming",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:08.104020",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "farming",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:08.516373",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "farming",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:08.688273",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "farming",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:08.910801",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "science",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 1,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:09.095360",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "science",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:10.783432",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "science",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 52,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:10.986190",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "science",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:12.569791",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "science",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:12.760281",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "science",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:13.952726",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "science",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:14.168208",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "science",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:14.455679",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "sustainability",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 1,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:14.607030",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "sustainability",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:15.217667",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "sustainability",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 7,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:15.397238",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "sustainability",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:15.918311",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "sustainability",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:16.096791",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "sustainability",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:16.513628",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "sustainability",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:16.675877",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "sustainability",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:16.888986",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "agriculture",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:17.055473",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "agriculture",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:17.430268",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "agriculture",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 3,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:17.602750",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "agriculture",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:18.045455",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "agriculture",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:18.233049",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "agriculture",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:18.623117",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "agriculture",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:18.806031",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "agriculture",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:19.297929",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "vegan",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 4,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:19.484700",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "vegan",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:22.753307",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "vegan",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 84,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:23.275728",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "vegan",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 3,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:25.800310",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "vegan",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 43,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:26.240476",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "vegan",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:28.920406",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "vegan",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 39,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:29.282399",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "vegan",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:29.489886",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "zerowaste",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:29.651284",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "zerowaste",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:30.092061",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "zerowaste",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 6,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:30.279188",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "zerowaste",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:30.709794",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "zerowaste",
+    "sort": "comments",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:30.861804",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "zerowaste",
+    "sort": "comments",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:31.227392",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "zerowaste",
+    "sort": "new",
+    "time_filter": "all",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:31.412190",
+    "query": "methane digesters dairy emissions",
+    "subreddit": "zerowaste",
+    "sort": "new",
+    "time_filter": "year",
+    "results_count": 0,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:34.838408",
+    "query": "cow burps climate environment",
+    "subreddit": "all",
+    "sort": "relevance",
+    "time_filter": "all",
+    "results_count": 93,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:38.243709",
+    "query": "cow burps climate environment",
+    "subreddit": "all",
+    "sort": "relevance",
+    "time_filter": "year",
+    "results_count": 110,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:42.127380",
+    "query": "cow burps climate environment",
+    "subreddit": "all",
+    "sort": "top",
+    "time_filter": "all",
+    "results_count": 124,
+    "api_tier": "standard"
+  },
+  {
+    "timestamp": "2026-02-25T16:43:45.606050",
+    "query": "cow burps climate environment",
+    "subreddit": "all",
+    "sort": "top",
+    "time_filter": "year",
+    "results_count": 128,
+    "api_tier": "standard"
+  }
+]

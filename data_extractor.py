@@ -103,7 +103,10 @@ class RedditDataExtractor:
                      end_date: datetime = None,
                      sort_methods: List[str] = None,
                      time_filters: List[str] = None,
-                     include_comments: bool = False) -> pd.DataFrame:
+                     include_comments: bool = False,
+                     temporal_balance: bool = True,
+                     pool_multiplier: int = 4,
+                     random_seed: int = 42) -> pd.DataFrame:
         """
         Extract posts from Reddit with full metadata collection.
         
@@ -120,13 +123,29 @@ class RedditDataExtractor:
         Returns:
             DataFrame with posts and metadata
         """
-        subreddits = subreddits or ['all', 'climate', 'environment', 
-                                    'farming', 'science', 'sustainability',
-                                    'agriculture', 'vegan', 'zerowaste']
+        # Only scrape from subreddits directly relevant to
+        # methane / dairy / livestock / climate discourse.
+        # 'all' is intentionally excluded to avoid off-topic noise.
+        subreddits = subreddits or [
+            # Climate & environment
+            'climate', 'environment', 'climatechange', 'globalwarming',
+            'ClimateActionPlan', 'ClimateOffensive', 'sustainability',
+            'zerowaste', 'renewableenergy',
+            # Agriculture & livestock
+            'farming', 'agriculture', 'ranching', 'homesteading',
+            'dairy', 'Cattle',
+            # Science & policy
+            'science', 'EverythingScience', 'environmental_science',
+            'energy', 'green',
+            # Food systems & ethics
+            'vegan', 'vegetarian', 'AnimalRights',
+            'foodscience', 'Futurology',
+        ]
         sort_methods = sort_methods or ['relevance', 'top', 'comments', 'new']
         time_filters = time_filters or ['all', 'year']
         start_date = start_date or datetime(2018, 1, 1)
         end_date = end_date or datetime.now()
+        candidate_target = max(target_count, target_count * max(1, pool_multiplier))
         
         seen_ids = set()
         data = []
@@ -135,6 +154,7 @@ class RedditDataExtractor:
         print("REDDIT DATA EXTRACTION - PHASE 1")
         print(f"{'='*60}")
         print(f"Target: {target_count} unique posts")
+        print(f"Candidate pool target: {candidate_target} posts")
         print(f"Date range: {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}")
         print(f"Queries: {len(queries)}")
         print(f"Subreddits: {', '.join(subreddits)}")
@@ -144,19 +164,19 @@ class RedditDataExtractor:
         total_attempts = 0
         
         for query in queries:
-            if len(data) >= target_count:
+            if len(data) >= candidate_target:
                 break
                 
             for subreddit in subreddits:
-                if len(data) >= target_count:
+                if len(data) >= candidate_target:
                     break
                     
                 for sort in sort_methods:
-                    if len(data) >= target_count:
+                    if len(data) >= candidate_target:
                         break
                         
                     for time_filter in time_filters:
-                        if len(data) >= target_count:
+                        if len(data) >= candidate_target:
                             break
                         
                         try:
@@ -228,7 +248,7 @@ class RedditDataExtractor:
                                 
                                 data.append(post_data)
                                 
-                                if len(data) >= target_count:
+                                if len(data) >= candidate_target:
                                     break
                             
                             # Log this query
@@ -236,7 +256,7 @@ class RedditDataExtractor:
                                            time_filter, results_this_query)
                             
                             if results_this_query > 0:
-                                print(f"  [{len(data):>5}/{target_count}] "
+                                print(f"  [{len(data):>5}/{candidate_target}] "
                                       f"q='{query[:30]}...' r/{subreddit} "
                                       f"sort={sort} t={time_filter} → +{results_this_query}")
                                       
@@ -248,6 +268,21 @@ class RedditDataExtractor:
         
         # Create DataFrame
         df = pd.DataFrame(data)
+
+        # Temporal balancing to avoid recency skew
+        if len(df) > 0 and temporal_balance:
+            before_year_dist = df['created_year'].value_counts().sort_index().to_dict()
+            df = self._balance_by_year(
+                df=df,
+                target_count=target_count,
+                start_date=start_date,
+                end_date=end_date,
+                random_seed=random_seed
+            )
+            after_year_dist = df['created_year'].value_counts().sort_index().to_dict()
+            self.attrition_log['temporal_balance_before'] = before_year_dist
+            self.attrition_log['temporal_balance_after'] = after_year_dist
+            self.attrition_log['temporal_balance_enabled'] = True
         
         # Record attrition from extraction phase
         self.attrition_log['N0_raw_extracted'] = total_attempts
@@ -260,9 +295,63 @@ class RedditDataExtractor:
         print(f"   Unique posts collected: {len(df)}")
         print(f"   Date range achieved: {df['created_date'].min()} to {df['created_date'].max()}" 
               if len(df) > 0 else "   No posts collected")
+        if len(df) > 0:
+            year_dist = df['created_year'].value_counts().sort_index()
+            print("   Year distribution (balanced):")
+            print(year_dist.to_string())
         print(f"{'='*60}\n")
         
         return df
+
+    def _balance_by_year(self,
+                         df: pd.DataFrame,
+                         target_count: int,
+                         start_date: datetime,
+                         end_date: datetime,
+                         random_seed: int = 42) -> pd.DataFrame:
+        """Sample approximately equal counts per year from start_date to end_date."""
+        if len(df) <= target_count:
+            return df
+
+        years = list(range(start_date.year, end_date.year + 1))
+        if not years:
+            return df.sample(n=target_count, random_state=random_seed)
+
+        base_quota = target_count // len(years)
+        remainder = target_count % len(years)
+
+        parts = []
+        used_idx = set()
+
+        for i, year in enumerate(years):
+            year_df = df[df['created_year'] == year]
+            if len(year_df) == 0:
+                continue
+            quota = base_quota + (1 if i < remainder else 0)
+            take = min(quota, len(year_df))
+            sampled = year_df.sample(n=take, random_state=random_seed + year)
+            parts.append(sampled)
+            used_idx.update(sampled.index.tolist())
+
+        if parts:
+            balanced = pd.concat(parts, axis=0)
+        else:
+            balanced = df.sample(n=min(target_count, len(df)), random_state=random_seed)
+
+        # Fill any shortfall from remaining pool while preserving date constraints
+        shortfall = target_count - len(balanced)
+        if shortfall > 0:
+            remaining = df.drop(index=list(used_idx), errors='ignore')
+            if len(remaining) > 0:
+                extra_take = min(shortfall, len(remaining))
+                extra = remaining.sample(n=extra_take, random_state=random_seed + 999)
+                balanced = pd.concat([balanced, extra], axis=0)
+
+        # If still larger than target_count (edge-case), trim deterministically
+        if len(balanced) > target_count:
+            balanced = balanced.sample(n=target_count, random_state=random_seed)
+
+        return balanced.sort_values('created_utc').reset_index(drop=True)
     
     def manual_relevance_audit(self, df: pd.DataFrame, 
                                sample_size: int = 100) -> Tuple[pd.DataFrame, float]:

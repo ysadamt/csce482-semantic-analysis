@@ -1,6 +1,6 @@
 Topic,Label,Top Words,Word Count,Total Freq,Avg Sentiment
-1,Emissions & Climate Science,"while, world, year, after, years",25,17258,-0.005
-2,Dairy Farming & Livestock Practices,"sustainable, food, dairy, farm, climate",29,19641,0.068
-3,"Policy, Regulation & Public Debate","out, time, don, over, system",74,33034,-0.008
-4,"Economics, Prices & Supply Chain","can, sustainability, community, per, human",56,21511,0.034
-5,"Mitigation, Technology & Sustainability",move,1,270,0.012
+1,Emissions & Climate Science,"climate, can, change, energy, carbon",158,43513,-0.165
+2,Dairy Farming & Livestock Practices,"vegan, world, out, don, meat",48,19143,-0.115
+3,"Policy, Regulation & Public Debate",biden,1,104,-0.042
+4,"Economics, Prices & Supply Chain",place,1,118,-0.077
+5,"Mitigation, Technology & Sustainability",bit,1,120,-0.072
