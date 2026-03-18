@@ -31,6 +31,7 @@ from datetime import datetime, timedelta
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, AutoConfig
 import torch
 from textblob import TextBlob
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer as VaderSentimentIntensityAnalyzer
 
 warnings.filterwarnings('ignore')
 
@@ -209,6 +210,41 @@ class SentimentAnalyzer:
                     print(f"   Processed {min(i+batch_size, len(texts))}/{len(texts)} posts...")
         
         return pd.DataFrame(results)
+
+
+class VaderCrossCheckAnalyzer:
+    """VADER-based sentiment cross-check model."""
+
+    def __init__(self):
+        self.analyzer = VaderSentimentIntensityAnalyzer()
+
+    def predict_sentiment(self, texts: List[str]) -> pd.DataFrame:
+        """Predict sentiment with VADER and return class/score probabilities."""
+        rows = []
+        for i, text in enumerate(texts):
+            score = self.analyzer.polarity_scores(str(text))
+            compound = float(score.get('compound', 0.0))
+
+            if compound >= 0.05:
+                sentiment = 'positive'
+            elif compound <= -0.05:
+                sentiment = 'negative'
+            else:
+                sentiment = 'neutral'
+
+            rows.append({
+                'vader_sentiment': sentiment,
+                'vader_confidence': float(max(score.get('pos', 0.0), score.get('neu', 0.0), score.get('neg', 0.0))),
+                'vader_prob_negative': float(score.get('neg', 0.0)),
+                'vader_prob_neutral': float(score.get('neu', 0.0)),
+                'vader_prob_positive': float(score.get('pos', 0.0)),
+                'vader_sentiment_score': compound
+            })
+
+            if (i + 1) % 250 == 0:
+                print(f"   VADER cross-check processed {i + 1}/{len(texts)} posts...")
+
+        return pd.DataFrame(rows)
 
 
 class TrendAnalysis:
@@ -1174,8 +1210,10 @@ class NetworkAnalysis:
         self.word_freq = None
         self.node_community = None
         self.community_topics = None
+        self.selected_topic_indices = [0, 1, 4]  # Keep Topic 1, 2, and 5 only
         self.preset_topic_definitions = [
             {
+                'topic_id': 1,
                 'label': 'Emissions & Climate Science',
                 'anchors': {
                     'methane', 'emission', 'emissions', 'greenhouse', 'climate',
@@ -1183,6 +1221,7 @@ class NetworkAnalysis:
                 }
             },
             {
+                'topic_id': 2,
                 'label': 'Dairy Farming & Livestock Practices',
                 'anchors': {
                     'dairy', 'cattle', 'cow', 'cows', 'livestock', 'farm',
@@ -1190,6 +1229,7 @@ class NetworkAnalysis:
                 }
             },
             {
+                'topic_id': 3,
                 'label': 'Policy, Regulation & Public Debate',
                 'anchors': {
                     'policy', 'regulation', 'government', 'law', 'epa',
@@ -1197,6 +1237,7 @@ class NetworkAnalysis:
                 }
             },
             {
+                'topic_id': 4,
                 'label': 'Economics, Prices & Supply Chain',
                 'anchors': {
                     'price', 'prices', 'cost', 'market', 'inflation', 'shortage',
@@ -1204,6 +1245,7 @@ class NetworkAnalysis:
                 }
             },
             {
+                'topic_id': 5,
                 'label': 'Mitigation, Technology & Sustainability',
                 'anchors': {
                     'sustainable', 'sustainability', 'innovation', 'technology',
@@ -1279,7 +1321,7 @@ class NetworkAnalysis:
     
     def detect_communities(self, random_seed: int = 42) -> List[set]:
         """
-        Detect communities with Louvain, then map into 5 preset domain topics.
+        Detect communities with Louvain, then map into Topic 1/2/5 only.
         
         Returns:
             List of communities (sets of words)
@@ -1290,18 +1332,21 @@ class NetworkAnalysis:
 
         try:
             from networkx.algorithms.community import louvain_communities
-            louvain_result = list(louvain_communities(self.G, weight='weight', seed=random_seed))
-        except Exception:
-            from networkx.algorithms.community import greedy_modularity_communities
-            louvain_result = list(greedy_modularity_communities(self.G, weight='weight'))
+        except Exception as e:
+            raise RuntimeError(
+                "Louvain community detection is required but unavailable."
+            ) from e
 
-        preset_bins = [set() for _ in self.preset_topic_definitions]
+        louvain_result = list(louvain_communities(self.G, weight='weight', seed=random_seed))
+
+        selected_presets = [self.preset_topic_definitions[i] for i in self.selected_topic_indices]
+        preset_bins = [set() for _ in selected_presets]
 
         for comm in louvain_result:
             words = sorted(list(comm), key=lambda w: self.word_freq.get(w, 0), reverse=True)
             top_words = set(words[:15])
             scores = []
-            for preset in self.preset_topic_definitions:
+            for preset in selected_presets:
                 overlap = len(top_words.intersection(preset['anchors']))
                 scores.append(overlap)
 
@@ -1317,17 +1362,6 @@ class NetworkAnalysis:
 
             preset_bins[target_idx].update(comm)
 
-        # Guarantee all 5 preset communities are non-empty for reporting consistency
-        empty_idxs = [i for i, c in enumerate(preset_bins) if len(c) == 0]
-        for empty_idx in empty_idxs:
-            donor_idx = int(np.argmax([len(c) for c in preset_bins]))
-            donor_nodes = sorted(list(preset_bins[donor_idx]),
-                                 key=lambda w: self.word_freq.get(w, 0))
-            if donor_nodes:
-                moved = donor_nodes[0]
-                preset_bins[donor_idx].remove(moved)
-                preset_bins[empty_idx].add(moved)
-
         self.communities = [c for c in preset_bins if len(c) > 0]
 
         self.node_community = {}
@@ -1335,8 +1369,16 @@ class NetworkAnalysis:
             for node in community:
                 self.node_community[node] = idx
 
+        # Keep selected presets aligned with kept non-empty communities.
+        non_empty_selected = []
+        for i, community in enumerate(preset_bins):
+            if len(community) > 0:
+                non_empty_selected.append(selected_presets[i])
+        self.active_preset_topics = non_empty_selected
+
         print(f"   Detected {len(louvain_result)} Louvain communities")
-        print(f"   Mapped to {len(self.communities)} preset topic communities")
+        print("   Using selected topic groups: Topic 1, Topic 2, Topic 5")
+        print(f"   Mapped to {len(self.communities)} selected topic communities")
         return self.communities
     
     def label_topics(self, n_words: int = 5) -> Dict[int, Dict]:
@@ -1361,11 +1403,13 @@ class NetworkAnalysis:
             
             top_words = [w for w, _ in words_with_freq[:n_words]]
             
-            # Use preset domain label when available, fallback to keyword label
-            if idx < len(self.preset_topic_definitions):
-                topic_label = self.preset_topic_definitions[idx]['label']
+            # Use selected preset topic labels (Topic 1, 2, 5)
+            if hasattr(self, 'active_preset_topics') and idx < len(self.active_preset_topics):
+                topic_label = self.active_preset_topics[idx]['label']
+                topic_num = int(self.active_preset_topics[idx]['topic_id'])
             else:
                 topic_label = ", ".join(top_words[:3])
+                topic_num = idx + 1
             
             # Calculate total frequency and centrality metrics
             total_freq = sum(f for _, f in words_with_freq)
@@ -1381,7 +1425,7 @@ class NetworkAnalysis:
                     avg_sentiment = self.df.loc[mask, 'sentiment_score'].mean()
             
             self.community_topics[idx] = {
-                'topic_id': idx + 1,
+                'topic_id': topic_num,
                 'label': topic_label,
                 'top_words': top_words,
                 'all_words': list(community),
@@ -1434,8 +1478,16 @@ class NetworkAnalysis:
         
         fig, ax = plt.subplots(figsize=figsize, facecolor='white')
         
-        # Layout
-        pos = nx.spring_layout(self.G, k=0.6, iterations=50, seed=42)
+        # Layout: force each selected topic cluster into its own visual region.
+        centers = [(-2.2, 1.0), (2.2, 1.0), (0.0, -2.2)]
+        pos = {}
+        for idx, community in enumerate(self.communities):
+            sub_nodes = list(community)
+            subgraph = self.G.subgraph(sub_nodes)
+            local_pos = nx.spring_layout(subgraph, k=0.7, iterations=60, seed=42 + idx)
+            cx, cy = centers[idx % len(centers)]
+            for node, (x, y) in local_pos.items():
+                pos[node] = (x * 0.9 + cx, y * 0.9 + cy)
         
         # Node sizes based on word frequency
         max_freq = max(self.word_freq.get(n, 1) for n in self.G.nodes())
@@ -1443,8 +1495,9 @@ class NetworkAnalysis:
                      for n in self.G.nodes()]
         
         # Node colors based on community
-        node_colors = [community_colors[self.node_community.get(n, 0) % len(community_colors)] 
-                      for n in self.G.nodes()]
+        selected_colors = ['#4d96ff', '#ff6b6b', '#6bcb77']  # Topic 1,2,5
+        node_colors = [selected_colors[self.node_community.get(n, 0) % len(selected_colors)]
+                  for n in self.G.nodes()]
         
         # Edge widths based on co-occurrence weight
         edge_weights = [self.G[u][v].get('weight', 1) for u, v in self.G.edges()]
@@ -1489,7 +1542,7 @@ class NetworkAnalysis:
         # Create legend for topic communities
         legend_handles = []
         for idx, info in self.community_topics.items():
-            color = community_colors[idx % len(community_colors)]
+            color = selected_colors[idx % len(selected_colors)]
             label = f"Topic {info['topic_id']}: {info['label']}"
             if info['avg_sentiment'] is not None:
                 sent_indicator = '(+)' if info['avg_sentiment'] > 0.1 else '(-)' if info['avg_sentiment'] < -0.1 else '(~)'
@@ -1889,23 +1942,60 @@ class RobustnessAnalysis:
             'n': int(len(in_df))
         }
 
-    def alternative_sentiment_model_validation(self, sample_size: int = 500) -> Dict:
-        """Validate BERT sentiment against TextBlob polarity on a sample."""
+    def alternative_sentiment_model_validation(self,
+                                               sample_size: int = 500) -> Dict:
+        """Cross-check RoBERTa sentiment against VADER sentiment."""
         if len(self.df) == 0:
             return {}
         sample = self.df.sample(n=min(sample_size, len(self.df)), random_state=42)
-        blob_scores = sample[self.text_column].fillna('').apply(lambda t: TextBlob(str(t)).sentiment.polarity)
         if len(sample) < 10:
             return {}
-        r, p = pearsonr(sample['sentiment_score'].values, blob_scores.values)
-        ci_low, ci_high = _pearson_ci(r, len(sample))
-        return {
-            'n': int(len(sample)),
-            'pearson_r_bert_vs_textblob': float(r),
-            'p_value': float(p),
-            'ci_95': [ci_low, ci_high],
-            'effect_size': _effect_size_label(r)
-        }
+
+        try:
+            vader = VaderCrossCheckAnalyzer()
+            vader_df = vader.predict_sentiment(sample[self.text_column].fillna('').tolist())
+            roberta_scores = sample['sentiment_score'].values
+            vader_scores = vader_df['vader_sentiment_score'].values
+            r, p = pearsonr(roberta_scores, vader_scores)
+            ci_low, ci_high = _pearson_ci(r, len(sample))
+
+            roberta_labels = sample['sentiment'].astype(str).values
+            vader_labels = vader_df['vader_sentiment'].astype(str).values
+            label_agreement = float(np.mean(roberta_labels == vader_labels))
+
+            # Fallback lexical check for triangulation
+            blob_scores = sample[self.text_column].fillna('').apply(lambda t: TextBlob(str(t)).sentiment.polarity)
+            rb_blob_r, rb_blob_p = pearsonr(roberta_scores, blob_scores.values)
+
+            return {
+                'n': int(len(sample)),
+                'crosscheck_model': 'vaderSentiment',
+                'pearson_r_roberta_vs_vader': float(r),
+                'p_value_roberta_vs_vader': float(p),
+                'ci_95_roberta_vs_vader': [ci_low, ci_high],
+                'effect_size_roberta_vs_vader': _effect_size_label(r),
+                'label_agreement_rate': label_agreement,
+                'mean_vader_confidence': float(vader_df['vader_confidence'].mean()),
+                'triangulation_roberta_vs_textblob': {
+                    'pearson_r': float(rb_blob_r),
+                    'p_value': float(rb_blob_p)
+                }
+            }
+        except Exception as e:
+            # Safe fallback to keep pipeline running if VADER cannot load
+            blob_scores = sample[self.text_column].fillna('').apply(lambda t: TextBlob(str(t)).sentiment.polarity)
+            r, p = pearsonr(sample['sentiment_score'].values, blob_scores.values)
+            ci_low, ci_high = _pearson_ci(r, len(sample))
+            return {
+                'n': int(len(sample)),
+                'crosscheck_model': 'vaderSentiment',
+                'error': str(e),
+                'fallback': 'textblob',
+                'pearson_r_roberta_vs_textblob': float(r),
+                'p_value_roberta_vs_textblob': float(p),
+                'ci_95_roberta_vs_textblob': [ci_low, ci_high],
+                'effect_size_roberta_vs_textblob': _effect_size_label(r)
+            }
 
     def exclude_top_volume_days(self, percentile: float = 0.95) -> Dict:
         """Recompute results excluding top-activity days."""
@@ -1981,6 +2071,86 @@ class RobustnessAnalysis:
         }
 
 
+def generate_model_graph_suite(df_model: pd.DataFrame,
+                               text_column: str,
+                               date_column: str,
+                               output_dir: str,
+                               model_tag: str) -> Dict:
+    """Generate the same analysis graph suite for a given sentiment model output."""
+    summary = {}
+
+    # Trend analysis
+    trend_analyzer = TrendAnalysis(df_model, date_column=date_column, sentiment_column='sentiment')
+    monthly = trend_analyzer.analyze_sentiment_trends()
+    trend_analyzer.plot_trends(
+        monthly,
+        save_path=os.path.join(output_dir, f'trend_analysis_{model_tag}.png')
+    )
+
+    # Spike analysis + overlays
+    spike_detector = SpikeDetection(df_model, date_column=date_column)
+    volume_spikes = spike_detector.detect_volume_spikes(sigma_threshold=2.0)
+    sentiment_spikes = spike_detector.detect_sentiment_spikes(sigma_threshold=2.0)
+    spike_detector.plot_spikes(
+        volume_spikes,
+        sentiment_spikes,
+        save_path=os.path.join(output_dir, f'spike_detection_{model_tag}.png')
+    )
+    spike_detector.plot_epidemic_curve_overlay(
+        volume_spikes=volume_spikes,
+        save_path=os.path.join(output_dir, f'epidemic_curve_overlay_{model_tag}.png')
+    )
+    corr_matrix = spike_detector.plot_correlation_heatmap(
+        save_path=os.path.join(output_dir, f'correlation_heatmap_{model_tag}.png')
+    )
+
+    # Odds ratio and sentiment probabilities
+    odds_text_column = text_column
+    if 'topic_text' in df_model.columns and df_model['topic_text'].astype(str).str.len().gt(0).any():
+        odds_text_column = 'topic_text'
+    odds_analyzer = OddsRatioAnalysis(df_model, text_column=odds_text_column, sentiment_column='sentiment')
+    log_odds_df = odds_analyzer.compute_log_odds_ratio(min_count=10, max_doc_frequency=0.8)
+    if len(log_odds_df) > 0:
+        odds_analyzer.plot_semantic_drivers(
+            log_odds_df,
+            n_words=15,
+            save_path=os.path.join(output_dir, f'semantic_drivers_{model_tag}.png')
+        )
+    odds_analyzer.plot_probability_distribution(
+        save_path=os.path.join(output_dir, f'probability_distribution_{model_tag}.png')
+    )
+
+    # Network + topic views
+    network_analyzer = NetworkAnalysis(df_model, text_column=text_column)
+    network_analyzer.build_network(min_cooccurrence=1, max_edges=800, min_word_frequency=2)
+    topic_count = 0
+    if network_analyzer.G and network_analyzer.G.number_of_nodes() > 0:
+        network_analyzer.detect_communities()
+        topics = network_analyzer.label_topics(n_words=5)
+        topic_count = len(topics)
+        topic_summary = network_analyzer.get_topic_summary()
+        topic_summary.to_csv(os.path.join(output_dir, f'topic_summary_{model_tag}.csv'), index=False)
+        network_analyzer.plot_network(
+            save_path=os.path.join(output_dir, f'network_analysis_{model_tag}.png')
+        )
+        network_analyzer.plot_topic_sentiment(
+            save_path=os.path.join(output_dir, f'topic_sentiment_{model_tag}.png')
+        )
+        topic_interaction = network_analyzer.plot_topic_sentiment_interaction(
+            save_path=os.path.join(output_dir, f'topic_sentiment_interaction_{model_tag}.png')
+        )
+        if isinstance(topic_interaction, pd.DataFrame):
+            topic_interaction.to_csv(
+                os.path.join(output_dir, f'topic_sentiment_interaction_{model_tag}.csv'),
+                index=False
+            )
+
+    summary['n_posts'] = int(len(df_model))
+    summary['topic_count'] = int(topic_count)
+    summary['correlation_matrix'] = corr_matrix.to_dict() if isinstance(corr_matrix, pd.DataFrame) else {}
+    return summary
+
+
 def run_full_analysis(df: pd.DataFrame,
                      text_column: str = 'clean_text',
                      date_column: str = 'created_utc',
@@ -2043,6 +2213,26 @@ def run_full_analysis(df: pd.DataFrame,
     
     results['sentiment_distribution'] = sentiment_dist.to_dict()
     results['mean_sentiment_score'] = df['sentiment_score'].mean()
+
+    # ===== Step 1B: VADER Cross-Check Inference =====
+    print("\n🤝 Step 1B: VADER Cross-Check Inference")
+    print("-" * 40)
+    vader_available = False
+    try:
+        vader_model = VaderCrossCheckAnalyzer()
+        vader_results = vader_model.predict_sentiment(df[text_column].tolist())
+        for col in vader_results.columns:
+            df[col] = vader_results[col].values
+        vader_available = True
+        vader_dist = df['vader_sentiment'].value_counts()
+        print("   VADER sentiment distribution:")
+        for sent, count in vader_dist.items():
+            print(f"      {sent.capitalize()}: {count} ({count/len(df)*100:.1f}%)")
+        results['vader_sentiment_distribution'] = vader_dist.to_dict()
+        results['vader_mean_sentiment_score'] = float(df['vader_sentiment_score'].mean())
+    except Exception as e:
+        print(f"   ⚠️ VADER full inference failed: {e}")
+        results['vader_inference_error'] = str(e)
 
     # Representativeness and potential bias disclosure
     representativeness = {}
@@ -2283,7 +2473,19 @@ def run_full_analysis(df: pd.DataFrame,
     time_window = robust.time_window_sensitivity(shift_days=7)
 
     if alt_model:
-        print(f"   BERT vs TextBlob agreement: r={alt_model['pearson_r_bert_vs_textblob']:.3f}, p={alt_model['p_value']:.4f}")
+        if 'pearson_r_roberta_vs_vader' in alt_model:
+            print(
+                f"   RoBERTa vs VADER cross-check: "
+                f"r={alt_model['pearson_r_roberta_vs_vader']:.3f}, "
+                f"p={alt_model['p_value_roberta_vs_vader']:.4f}, "
+                f"agreement={alt_model['label_agreement_rate']*100:.1f}%"
+            )
+        else:
+            print(
+                f"   VADER cross-check fallback ({alt_model.get('fallback', 'unknown')}): "
+                f"r={alt_model.get('pearson_r_roberta_vs_textblob', np.nan):.3f}, "
+                f"p={alt_model.get('p_value_roberta_vs_textblob', np.nan):.4f}"
+            )
     print(f"   Excluding top 5% volume days: n={vol_excl['filtered']['n']} "
           f"(net={vol_excl['filtered']['net_sentiment']:+.3f})")
     if user_excl.get('available'):
@@ -2302,6 +2504,23 @@ def run_full_analysis(df: pd.DataFrame,
             'ccf_profile': 'fdr_bh applied'
         }
     }
+
+    # ===== Step 7: VADER Graph Suite =====
+    if vader_available:
+        print(f"\n🖼️ Step 7: VADER Graph Suite")
+        print("-" * 40)
+        df_vader = df.copy()
+        df_vader['sentiment'] = df_vader['vader_sentiment']
+        df_vader['sentiment_score'] = df_vader['vader_sentiment_score']
+        vader_summary = generate_model_graph_suite(
+            df_model=df_vader,
+            text_column=text_column,
+            date_column=date_column,
+            output_dir=output_dir,
+            model_tag='vader'
+        )
+        results['vader_graph_suite'] = vader_summary
+        print("   ✅ Saved VADER versions of all primary result graphs")
     
     # ===== Save Results Summary =====
     results_path = os.path.join(output_dir, 'analysis_results.json')

@@ -23,6 +23,7 @@ dependencies = [
     "langdetect>=1.0.9",
     "pyarrow>=14.0.0",
     "scikit-learn>=1.4.0",
+    "vaderSentiment>=3.3.2",
     "pip>=26.0.1",
 ]
 

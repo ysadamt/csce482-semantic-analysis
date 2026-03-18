@@ -1,6 +1,4 @@
 Topic,Label,Top Words,Word Count,Total Freq,Avg Sentiment
-1,Emissions & Climate Science,"climate, can, change, energy, carbon",158,43513,-0.165
-2,Dairy Farming & Livestock Practices,"vegan, world, out, don, meat",48,19143,-0.115
-3,"Policy, Regulation & Public Debate",biden,1,104,-0.042
-4,"Economics, Prices & Supply Chain",place,1,118,-0.077
-5,"Mitigation, Technology & Sustainability",bit,1,120,-0.072
+1,Emissions & Climate Science,"climate, energy, gas, emissions, change",47,21126,-0.160
+2,Dairy Farming & Livestock Practices,"can, animals, vegan, meat, animal",112,28151,-0.076
+5,"Mitigation, Technology & Sustainability","out, world, sustainable, don, time",50,19176,-0.056
