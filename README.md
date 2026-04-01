@@ -13,6 +13,7 @@ This project implements a 3-phase research methodology for social media sentimen
 - Reddit API integration via PRAW
 - Boolean query construction for construct validity
 - Pagination support for temporal completeness
+- Post + comment capture (comments stored in dedicated fields)
 - User ID anonymization (SHA-256 hashing) for IRB compliance
 - Query logging for reproducibility
 
@@ -87,8 +88,23 @@ python -m spacy download en_core_web_sm
 # Full pipeline (extract → preprocess → analyze)
 python run_analysis.py --full
 
+# Full pipeline with explicit comment controls
+python run_analysis.py --full --max-comments-per-post 10
+
 # Extract 2500 posts from 2018 onwards
 python run_analysis.py --full --target 2500 --start-year 2018
+
+# Disable comment scraping if needed
+python run_analysis.py --extract --disable-comments
+
+# Enrich comments onto an existing extracted CSV (no post rescrape)
+python run_analysis.py --enrich-comments --input data/reddit_extracted_YYYYMMDD_HHMMSS.csv
+
+# Enrich comments then run preprocess + analysis in one command
+python run_analysis.py --enrich-comments --input data/reddit_extracted_YYYYMMDD_HHMMSS.csv --analyze-after-enrich
+
+# Keep comments in dataset but analyze post text only
+python run_analysis.py --preprocess --exclude-comments-from-analysis
 
 # Analyze existing CSV file
 python run_analysis.py --from-csv your_data.csv
@@ -113,6 +129,14 @@ semantic-v2/
 ├── data/                # Extracted and preprocessed data
 └── results/             # Analysis outputs and figures
 ```
+
+## 💬 Comment-Aware Defaults
+
+- Comment scraping is enabled by default during extraction.
+- Up to 10 comments are collected per post by default.
+- Extracted comments are stored in `comments_text` with `comments_collected_count`.
+- `raw_text` remains post-only for reproducibility.
+- Preprocessing merges post text + comments into `clean_text` by default.
 
 ## 📊 Output Files
 

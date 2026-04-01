@@ -39,6 +39,9 @@ def setup_directories():
 
 def phase1_extraction(target_count: int = 3000, 
                      start_year: int = 2018,
+                     include_comments: bool = True,
+                     max_comments_per_post: int = 10,
+                     fast_mode: bool = False,
                      save: bool = True) -> pd.DataFrame:
     """
     Execute Phase 1: Reddit Data Extraction.
@@ -46,19 +49,25 @@ def phase1_extraction(target_count: int = 3000,
     Args:
         target_count: Target number of posts (recommended: 2500-3000)
         start_year: Start year for data collection
+        include_comments: Whether to include comment text in extraction output
+        max_comments_per_post: Maximum comments to capture per post
+        fast_mode: Reduce search breadth for quicker extraction
         save: Whether to save the extracted data
         
     Returns:
         DataFrame with extracted posts
     """
     print("\n" + "="*70)
-    print("PHASE 1: DATA EXTRACTION")
+    print("PHASE 1: DATA EXTRACTION (REDDIT-ONLY)")
     print("="*70)
     
     try:
         df, extractor = extract_reddit_data(
             target_count=target_count,
-            start_year=start_year
+            start_year=start_year,
+            include_comments=include_comments,
+            max_comments_per_post=max_comments_per_post,
+            fast_mode=fast_mode,
         )
         
         if len(df) == 0:
@@ -71,6 +80,11 @@ def phase1_extraction(target_count: int = 3000,
         print(f"   Total posts: {len(df)}")
         print(f"   Date range: {df['created_date'].min()} to {df['created_date'].max()}")
         print(f"   Unique subreddits: {df['subreddit'].nunique()}")
+        if 'comments_collected_count' in df.columns:
+            print(
+                f"   Avg comments captured/post: "
+                f"{df['comments_collected_count'].mean():.2f}"
+            )
         
         # Print attrition report
         print("\n📋 ATTRITION REPORT:")
@@ -93,12 +107,14 @@ def phase1_extraction(target_count: int = 3000,
 
 
 def phase2_preprocessing(df: pd.DataFrame, 
+                        include_comments_in_text: bool = True,
                         save: bool = True) -> pd.DataFrame:
     """
     Execute Phase 2: Data Preprocessing.
     
     Args:
         df: DataFrame from Phase 1
+        include_comments_in_text: Merge comments into analysis text if available
         save: Whether to save preprocessed data
         
     Returns:
@@ -112,7 +128,10 @@ def phase2_preprocessing(df: pd.DataFrame,
         print("⚠️ No data to preprocess")
         return None
     
-    df_clean, preprocessor = preprocess_reddit_data(df)
+    df_clean, preprocessor = preprocess_reddit_data(
+        df,
+        include_comments_in_text=include_comments_in_text
+    )
     
     # Print final statistics
     print("\n📊 PREPROCESSING RESULTS:")
@@ -132,6 +151,78 @@ def phase2_preprocessing(df: pd.DataFrame,
         print(f"💾 Attrition report saved to: {attrition_path}")
     
     return df_clean
+
+
+def phase1b_comment_enrichment(input_csv: str = None,
+                               max_comments_per_post: int = 10,
+                               skip_existing_comments: bool = True,
+                               save: bool = True) -> pd.DataFrame:
+    """
+    Enrich an existing extracted post dataset with comments by post ID.
+
+    This does not rescrape posts; it only fetches comments for rows already present.
+
+    Args:
+        input_csv: Existing extraction CSV path; defaults to latest reddit_extracted*.csv
+        max_comments_per_post: Maximum comments to capture per post
+        skip_existing_comments: Skip rows that already have comments_text
+        save: Whether to save enriched CSV and enrichment log
+
+    Returns:
+        DataFrame enriched with comments_text and comments_collected_count
+    """
+    print("\n" + "="*70)
+    print("PHASE 1B: COMMENT ENRICHMENT (NO POST RESCRAPE)")
+    print("="*70)
+
+    if input_csv:
+        source_path = input_csv
+    else:
+        data_files = [f for f in os.listdir('data') if f.startswith('reddit_extracted')]
+        if not data_files:
+            print("❌ No extraction file found. Run --extract first or specify --input")
+            return None
+        source_path = os.path.join('data', sorted(data_files)[-1])
+        print(f"📂 Using latest extraction: {os.path.basename(source_path)}")
+
+    try:
+        df = pd.read_csv(source_path)
+    except Exception as e:
+        print(f"❌ Failed to read input CSV: {e}")
+        return None
+
+    if len(df) == 0:
+        print("⚠️ Input CSV is empty; nothing to enrich")
+        return df
+
+    extractor = RedditDataExtractor()
+    df_enriched = extractor.enrich_comments_for_dataframe(
+        df,
+        max_comments_per_post=max_comments_per_post,
+        skip_existing_comments=skip_existing_comments,
+    )
+
+    print("\n📊 COMMENT ENRICHMENT SUMMARY:")
+    print(f"   Rows: {len(df_enriched)}")
+    if 'comments_collected_count' in df_enriched.columns:
+        print(
+            f"   Avg comments captured/post: "
+            f"{df_enriched['comments_collected_count'].mean():.2f}"
+        )
+
+    if save:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_path = f"data/reddit_comments_enriched_{timestamp}.csv"
+        df_enriched.to_csv(output_path, index=False)
+
+        enrich_log_path = f"data/reddit_comment_enrichment_{timestamp}.json"
+        with open(enrich_log_path, 'w') as f:
+            json.dump(extractor.attrition_log, f, indent=2)
+
+        print(f"\n💾 Comment-enriched data saved to: {output_path}")
+        print(f"💾 Enrichment log saved to: {enrich_log_path}")
+
+    return df_enriched
 
 
 def phase3_analysis(df: pd.DataFrame, 
@@ -215,13 +306,21 @@ def phase4_statistical_analysis(df: pd.DataFrame,
 
 
 def run_full_pipeline(target_count: int = 3000,
-                     start_year: int = 2018) -> dict:
+                     start_year: int = 2018,
+                     include_comments: bool = True,
+                     max_comments_per_post: int = 10,
+                     fast_mode: bool = False,
+                     include_comments_in_text: bool = True) -> dict:
     """
     Run the complete research pipeline (Phases 1-3).
     
     Args:
         target_count: Target number of posts
         start_year: Start year for data collection
+        include_comments: Include comments in extraction output
+        max_comments_per_post: Maximum comments captured per post
+        fast_mode: Reduce extraction search breadth for faster runtime
+        include_comments_in_text: Merge comments into analysis text in preprocessing
         
     Returns:
         Dictionary with all results
@@ -237,14 +336,23 @@ def run_full_pipeline(target_count: int = 3000,
     setup_directories()
     
     # Phase 1: Extraction
-    df_raw = phase1_extraction(target_count=target_count, start_year=start_year)
+    df_raw = phase1_extraction(
+        target_count=target_count,
+        start_year=start_year,
+        include_comments=include_comments,
+        max_comments_per_post=max_comments_per_post,
+        fast_mode=fast_mode,
+    )
     
     if df_raw is None:
         print("\n❌ Pipeline stopped: Extraction failed")
         return None
     
     # Phase 2: Preprocessing
-    df_clean = phase2_preprocessing(df_raw)
+    df_clean = phase2_preprocessing(
+        df_raw,
+        include_comments_in_text=include_comments_in_text
+    )
     
     if df_clean is None:
         print("\n❌ Pipeline stopped: Preprocessing failed")
@@ -359,6 +467,7 @@ def print_usage_guide():
     ║  USAGE:                                                          ║
     ║  python run_analysis.py --full           Run complete pipeline   ║
     ║  python run_analysis.py --extract        Extract data only       ║
+    ║  python run_analysis.py --enrich-comments Add comments only       ║
     ║  python run_analysis.py --preprocess     Preprocess only         ║
     ║  python run_analysis.py --analyze        Analyze only            ║
     ║  python run_analysis.py --from-csv FILE  Analyze existing CSV    ║
@@ -366,6 +475,12 @@ def print_usage_guide():
     ║  OPTIONS:                                                        ║
     ║  --target N      Target number of posts (default: 3000)          ║
     ║  --start-year Y  Start year for data (default: 2018)             ║
+    ║  --fast-mode     Faster extraction with reduced search breadth    ║
+    ║  --disable-comments Disable Reddit comment scraping               ║
+    ║  --max-comments-per-post N  Max comments/post (default: 10)      ║
+    ║  --refresh-existing-comments  Refetch even if comments exist      ║
+    ║  --analyze-after-enrich  Run preprocess+analysis after enrich     ║
+    ║  --exclude-comments-from-analysis  Use post text only             ║
     ║                                                                  ║
     ║  OUTPUTS:                                                        ║
     ║  📁 data/      - Raw and preprocessed data files                 ║
@@ -390,6 +505,11 @@ def main():
 Examples:
   python run_analysis.py --full                    # Run complete pipeline
   python run_analysis.py --full --target 2500     # Extract 2500 posts
+    python run_analysis.py --extract --fast-mode    # Faster extraction mode
+    python run_analysis.py --enrich-comments --input data/reddit_extracted_x.csv
+                                                                                                     # Add comments to existing rows
+    python run_analysis.py --enrich-comments --analyze-after-enrich
+                                                                                                     # Enrich comments then analyze
   python run_analysis.py --from-csv data.csv      # Analyze existing data
         '''
     )
@@ -400,6 +520,8 @@ Examples:
                             help='Run complete pipeline (extract → preprocess → analyze)')
     stage_group.add_argument('--extract', action='store_true',
                             help='Run data extraction only')
+    stage_group.add_argument('--enrich-comments', action='store_true',
+                            help='Fetch comments for existing post rows only (no rescrape)')
     stage_group.add_argument('--preprocess', action='store_true',
                             help='Run preprocessing only (requires existing data)')
     stage_group.add_argument('--analyze', action='store_true',
@@ -414,6 +536,18 @@ Examples:
                        help='Target number of posts to extract (default: 3000)')
     parser.add_argument('--start-year', type=int, default=2018,
                        help='Start year for data extraction (default: 2018)')
+    parser.add_argument('--fast-mode', action='store_true',
+                       help='Enable faster extraction with reduced search breadth')
+    parser.add_argument('--disable-comments', action='store_true',
+                       help='Disable comment scraping during extraction (default: enabled)')
+    parser.add_argument('--max-comments-per-post', type=int, default=10,
+                       help='Maximum comments captured per post (default: 10)')
+    parser.add_argument('--refresh-existing-comments', action='store_true',
+                       help='Refetch comments even when comments_text already exists')
+    parser.add_argument('--analyze-after-enrich', action='store_true',
+                       help='After --enrich-comments, run preprocess and analysis')
+    parser.add_argument('--exclude-comments-from-analysis', action='store_true',
+                       help='Do not merge comments into analysis text during preprocessing')
     parser.add_argument('--policy-date', type=str, default='2024-01-01',
                        help='Policy date for Before/After comparison (default: 2024-01-01)')
     parser.add_argument('--input', type=str,
@@ -432,15 +566,57 @@ Examples:
     
     # Execute requested stage
     if args.full:
-        run_full_pipeline(target_count=args.target, start_year=args.start_year)
+        run_full_pipeline(
+            target_count=args.target,
+            start_year=args.start_year,
+            include_comments=not args.disable_comments,
+            max_comments_per_post=args.max_comments_per_post,
+            fast_mode=args.fast_mode,
+            include_comments_in_text=not args.exclude_comments_from_analysis
+        )
         
     elif args.extract:
-        phase1_extraction(target_count=args.target, start_year=args.start_year)
+        phase1_extraction(
+            target_count=args.target,
+            start_year=args.start_year,
+            include_comments=not args.disable_comments,
+            max_comments_per_post=args.max_comments_per_post,
+            fast_mode=args.fast_mode,
+        )
+
+    elif args.enrich_comments:
+        df_enriched = phase1b_comment_enrichment(
+            input_csv=args.input,
+            max_comments_per_post=args.max_comments_per_post,
+            skip_existing_comments=not args.refresh_existing_comments,
+        )
+
+        if df_enriched is not None and args.analyze_after_enrich:
+            df_clean = phase2_preprocessing(
+                df_enriched,
+                include_comments_in_text=not args.exclude_comments_from_analysis
+            )
+            if df_clean is not None:
+                phase3_out = phase3_analysis(
+                    df_clean,
+                    output_dir=args.output_dir,
+                    policy_date=args.policy_date
+                )
+                if phase3_out is not None:
+                    _, df_analyzed = phase3_out
+                    phase4_statistical_analysis(
+                        df_analyzed,
+                        output_dir=args.output_dir,
+                        policy_date=args.policy_date
+                    )
         
     elif args.preprocess:
         if args.input:
             df = pd.read_csv(args.input)
-            phase2_preprocessing(df)
+            phase2_preprocessing(
+                df,
+                include_comments_in_text=not args.exclude_comments_from_analysis
+            )
         else:
             # Find most recent extraction file
             data_files = [f for f in os.listdir('data') if f.startswith('reddit_extracted')]
@@ -448,7 +624,10 @@ Examples:
                 latest = sorted(data_files)[-1]
                 df = pd.read_csv(f'data/{latest}')
                 print(f"📂 Using latest extraction: {latest}")
-                phase2_preprocessing(df)
+                phase2_preprocessing(
+                    df,
+                    include_comments_in_text=not args.exclude_comments_from_analysis
+                )
             else:
                 print("❌ No extraction file found. Run --extract first or specify --input")
                 

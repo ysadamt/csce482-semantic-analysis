@@ -1,0 +1,6 @@
+Stage,Description,Count,Removed,Removal Rate (%)
+N0_initial,Initial dataset from extraction,1473,0,0.0
+N1_deduplicated,Removed exact duplicate texts,1356,117,7.94
+N2_language_filtered,Filtered to en language posts,1353,3,0.22
+N3_length_filtered,Removed posts with <5 words,1346,7,0.52
+N4_final_analytic,Final analytic dataset after all preprocessing,1346,0,0.0

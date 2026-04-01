@@ -1,0 +1,66 @@
+{
+  "extraction_date": "20260325_101826",
+  "total_posts": 1473,
+  "date_range": {
+    "start": "2018-01-01",
+    "end": "2026-03-24"
+  },
+  "subreddits": {
+    "vegan": 367,
+    "environment": 289,
+    "climate": 203,
+    "science": 88,
+    "climatechange": 80,
+    "sustainability": 76,
+    "Futurology": 73,
+    "ClimateOffensive": 56,
+    "farming": 46,
+    "ZeroWaste": 33,
+    "EverythingScience": 25,
+    "Agriculture": 23,
+    "energy": 23,
+    "environmental_science": 19,
+    "vegetarian": 18,
+    "ClimateActionPlan": 16,
+    "AnimalRights": 13,
+    "Ranching": 8,
+    "Green": 6,
+    "Cattle": 5,
+    "Homesteading": 4,
+    "RenewableEnergy": 2
+  },
+  "queries_executed": 1728,
+  "attrition": {
+    "temporal_balance_before": {
+      "2018": 186,
+      "2019": 236,
+      "2020": 156,
+      "2021": 240,
+      "2022": 191,
+      "2023": 147,
+      "2024": 184,
+      "2025": 109,
+      "2026": 24
+    },
+    "temporal_balance_after": {
+      "2018": 186,
+      "2019": 236,
+      "2020": 156,
+      "2021": 240,
+      "2022": 191,
+      "2023": 147,
+      "2024": 184,
+      "2025": 109,
+      "2026": 24
+    },
+    "temporal_balance_enabled": true,
+    "N0_raw_extracted": 13024,
+    "N1_after_date_filter": 1473,
+    "N1_unique_posts": 1473
+  },
+  "files": {
+    "data": "data/reddit_extraction_20260325_101826.csv",
+    "query_log": "data/reddit_extraction_query_log_20260325_101826.json",
+    "attrition_log": "data/reddit_extraction_attrition_20260325_101826.json"
+  }
+}

@@ -21,6 +21,9 @@ import re
 load_dotenv()
 
 
+WHITESPACE_RE = re.compile(r'\s+')
+
+
 class RedditDataExtractor:
     """
     Reddit data extraction with full audit trail and reproducibility features.
@@ -60,6 +63,193 @@ class RedditDataExtractor:
             "results_count": results_count,
             "api_tier": "standard"
         })
+
+    def _is_livestock_methane_relevant(self, text: str) -> bool:
+        """Require both livestock and methane/emissions cues to reduce off-topic results."""
+        text = str(text).lower()
+        livestock_terms = {
+            'dairy', 'livestock', 'cattle', 'cow', 'cows', 'beef', 'ruminant',
+            'enteric', 'farm', 'farming', 'herd', 'manure'
+        }
+        methane_terms = {
+            'methane', 'emission', 'emissions', 'ghg', 'greenhouse gas',
+            'greenhouse', 'climate', 'enteric fermentation'
+        }
+        has_livestock = any(term in text for term in livestock_terms)
+        has_methane = any(term in text for term in methane_terms)
+        return has_livestock and has_methane
+
+    def _collect_comments(self, post, max_comments: int) -> Tuple[List[str], bool]:
+        """Collect up to max_comments comment bodies, skipping placeholders."""
+        if max_comments <= 0:
+            return [], False
+
+        if getattr(post, 'num_comments', 0) <= 0:
+            return [], False
+
+        comments = []
+        try:
+            # Prefer top-level comments to minimize API overhead during enrichment.
+            post.comment_sort = 'top'
+            post.comment_limit = max_comments
+            for comment in post.comments:
+                if len(comments) >= max_comments:
+                    break
+
+                body = getattr(comment, 'body', '')
+                if not body:
+                    continue
+
+                body = WHITESPACE_RE.sub(' ', str(body)).strip()
+                if not body:
+                    continue
+
+                if body.lower() in {'[deleted]', '[removed]'}:
+                    continue
+
+                comments.append(body)
+
+            return comments, False
+        except Exception:
+            return [], True
+
+    def enrich_comments_for_dataframe(self,
+                                      df: pd.DataFrame,
+                                      id_column: str = 'id',
+                                      comments_column: str = 'comments_text',
+                                      comments_count_column: str = 'comments_collected_count',
+                                      max_comments_per_post: int = 10,
+                                      skip_existing_comments: bool = True,
+                                      progress_every: int = 250,
+                                      batch_size: int = 100) -> pd.DataFrame:
+        """Fetch comments for existing post rows using post IDs (no post rescraping)."""
+        if id_column not in df.columns:
+            raise ValueError(
+                f"Input data must contain '{id_column}' column to fetch comments by submission ID"
+            )
+
+        if len(df) == 0:
+            df_out = df.copy()
+            if comments_column not in df_out.columns:
+                df_out[comments_column] = ''
+            if comments_count_column not in df_out.columns:
+                df_out[comments_count_column] = 0
+            return df_out
+
+        df_out = df.copy()
+        if comments_column not in df_out.columns:
+            df_out[comments_column] = ''
+        if comments_count_column not in df_out.columns:
+            df_out[comments_count_column] = 0
+
+        max_comments_per_post = max(0, int(max_comments_per_post))
+
+        if max_comments_per_post == 0:
+            self.attrition_log['comment_enrichment_source'] = 'existing_csv'
+            self.attrition_log['comment_enrichment_rows'] = int(len(df_out))
+            self.attrition_log['comment_enrichment_max_per_post'] = 0
+            self.attrition_log['comment_enrichment_attempted_posts'] = 0
+            self.attrition_log['comment_enrichment_failed_posts'] = 0
+            self.attrition_log['comment_enrichment_total_comments'] = 0
+            self.attrition_log['comment_enrichment_skipped_existing'] = 0
+            self.attrition_log['comment_enrichment_skipped_zero_comment_posts'] = 0
+            self.attrition_log['comment_enrichment_avg_comments_per_attempted_post'] = 0.0
+            return df_out
+
+        attempted = 0
+        failed = 0
+        total_comments = 0
+        skipped_existing = 0
+        skipped_zero_comment_posts = 0
+
+        print("\nCollecting comments for existing posts (no rescrape)...")
+
+        # Build an explicit worklist so we can batch submission lookups.
+        targets = []
+        for row_num, (idx, row) in enumerate(df_out.iterrows(), start=1):
+            post_id = str(row[id_column]).strip()
+            existing_text = row.get(comments_column, '')
+            has_existing = isinstance(existing_text, str) and existing_text.strip() != ''
+
+            if skip_existing_comments and has_existing:
+                skipped_existing += 1
+                continue
+
+            existing_num_comments = row.get('num_comments', None)
+            if pd.notna(existing_num_comments):
+                try:
+                    if int(existing_num_comments) <= 0:
+                        skipped_zero_comment_posts += 1
+                        df_out.at[idx, comments_column] = ''
+                        df_out.at[idx, comments_count_column] = 0
+                        continue
+                except Exception:
+                    pass
+
+            targets.append((row_num, idx, post_id))
+
+        attempted = len(targets)
+
+        batch_size = max(1, min(int(batch_size), 100))
+        processed_targets = 0
+        for batch_start in range(0, len(targets), batch_size):
+            batch = targets[batch_start: batch_start + batch_size]
+            fullnames = [f"t3_{post_id}" for _, _, post_id in batch]
+            submissions_by_id = {}
+
+            try:
+                for submission in self.reddit.info(fullnames=fullnames):
+                    submissions_by_id[str(getattr(submission, 'id', ''))] = submission
+            except Exception:
+                # Fall back to per-ID retrieval for this batch if bulk lookup fails.
+                submissions_by_id = {}
+
+            for row_num, idx, post_id in batch:
+                try:
+                    submission = submissions_by_id.get(post_id)
+                    if submission is None:
+                        submission = self.reddit.submission(id=post_id)
+
+                    comments, fetch_failed = self._collect_comments(
+                        submission,
+                        max_comments=max_comments_per_post
+                    )
+
+                    if fetch_failed:
+                        failed += 1
+
+                    total_comments += len(comments)
+                    df_out.at[idx, comments_column] = " || ".join(comments)
+                    df_out.at[idx, comments_count_column] = len(comments)
+                except Exception:
+                    failed += 1
+                    df_out.at[idx, comments_column] = ''
+                    df_out.at[idx, comments_count_column] = 0
+
+                processed_targets += 1
+                if progress_every > 0 and processed_targets % progress_every == 0:
+                    print(
+                        f"  comments processed for {processed_targets}/{attempted} attempted posts"
+                    )
+
+        if attempted > 0 and progress_every > 0 and processed_targets % progress_every != 0:
+            print(f"  comments processed for {processed_targets}/{attempted} attempted posts")
+
+        self.attrition_log['comment_enrichment_source'] = 'existing_csv'
+        self.attrition_log['comment_enrichment_rows'] = int(len(df_out))
+        self.attrition_log['comment_enrichment_max_per_post'] = int(max_comments_per_post)
+        self.attrition_log['comment_enrichment_attempted_posts'] = int(attempted)
+        self.attrition_log['comment_enrichment_failed_posts'] = int(failed)
+        self.attrition_log['comment_enrichment_total_comments'] = int(total_comments)
+        self.attrition_log['comment_enrichment_skipped_existing'] = int(skipped_existing)
+        self.attrition_log['comment_enrichment_skipped_zero_comment_posts'] = int(
+            skipped_zero_comment_posts
+        )
+        self.attrition_log['comment_enrichment_avg_comments_per_attempted_post'] = (
+            float(total_comments / attempted) if attempted > 0 else 0.0
+        )
+
+        return df_out
     
     def construct_queries(self, primary_concepts: List[str], 
                          contextual_constraints: List[str] = None,
@@ -104,8 +294,10 @@ class RedditDataExtractor:
                      sort_methods: List[str] = None,
                      time_filters: List[str] = None,
                      include_comments: bool = False,
+                     max_comments_per_post: int = 10,
+                     fast_mode: bool = False,
                      temporal_balance: bool = True,
-                     pool_multiplier: int = 4,
+                     pool_multiplier: int = 2,
                      random_seed: int = 42) -> pd.DataFrame:
         """
         Extract posts from Reddit with full metadata collection.
@@ -118,7 +310,9 @@ class RedditDataExtractor:
             end_date: Filter posts until this date
             sort_methods: Reddit sort methods
             time_filters: Time filter options
-            include_comments: Whether to include top comments
+            include_comments: Whether to include comments in `comments_text`
+            max_comments_per_post: Maximum number of comments captured per post
+            fast_mode: Reduce search breadth for quicker extraction
         
         Returns:
             DataFrame with posts and metadata
@@ -141,20 +335,34 @@ class RedditDataExtractor:
             'vegan', 'vegetarian', 'AnimalRights',
             'foodscience', 'Futurology',
         ]
-        sort_methods = sort_methods or ['relevance', 'top', 'comments', 'new']
-        time_filters = time_filters or ['all', 'year']
+        if fast_mode:
+            sort_methods = sort_methods or ['relevance', 'new']
+            time_filters = time_filters or ['year', 'all']
+            pool_multiplier = 1
+        else:
+            sort_methods = sort_methods or ['relevance', 'top', 'comments', 'new']
+            time_filters = time_filters or ['all', 'year']
         start_date = start_date or datetime(2018, 1, 1)
         end_date = end_date or datetime.now()
-        candidate_target = max(target_count, target_count * max(1, pool_multiplier))
+        candidate_target = min(
+            max(target_count, target_count * max(1, pool_multiplier)),
+            target_count + (400 if fast_mode else 1500),
+        )
+        max_comments_per_post = max(0, int(max_comments_per_post))
         
         seen_ids = set()
         data = []
+        post_cache = {}
+        comment_fetch_attempted_posts = 0
+        comment_fetch_failed_posts = 0
+        comment_fetch_total_comments = 0
         
         print(f"\n{'='*60}")
         print("REDDIT DATA EXTRACTION - PHASE 1")
         print(f"{'='*60}")
         print(f"Target: {target_count} unique posts")
         print(f"Candidate pool target: {candidate_target} posts")
+        print(f"Fast mode: {'ON' if fast_mode else 'OFF'}")
         print(f"Date range: {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}")
         print(f"Queries: {len(queries)}")
         print(f"Subreddits: {', '.join(subreddits)}")
@@ -162,109 +370,223 @@ class RedditDataExtractor:
         
         # Track initial attempt count
         total_attempts = 0
-        
-        for query in queries:
-            if len(data) >= candidate_target:
-                break
-                
-            for subreddit in subreddits:
+
+        def run_search_pass(search_queries: List[str],
+                            search_subreddits: List[str],
+                            search_sorts: List[str],
+                            search_time_filters: List[str],
+                            pass_name: str,
+                            enforce_relevance: bool = False) -> None:
+            nonlocal total_attempts, data, seen_ids
+
+            print(f"\n--- {pass_name} ---")
+            for query in search_queries:
                 if len(data) >= candidate_target:
                     break
-                    
-                for sort in sort_methods:
+
+                for subreddit in search_subreddits:
                     if len(data) >= candidate_target:
                         break
-                        
-                    for time_filter in time_filters:
+
+                    for sort in search_sorts:
                         if len(data) >= candidate_target:
                             break
-                        
-                        try:
-                            results_this_query = 0
-                            
-                            # Use pagination to get all results
-                            for post in self.reddit.subreddit(subreddit).search(
-                                query, sort=sort, time_filter=time_filter, limit=250
-                            ):
-                                total_attempts += 1
-                                
-                                # Date filtering
-                                post_date = datetime.fromtimestamp(post.created_utc)
-                                if post_date < start_date or post_date > end_date:
-                                    continue
-                                
-                                # Deduplication
-                                if post.id in seen_ids:
-                                    continue
-                                
-                                seen_ids.add(post.id)
-                                results_this_query += 1
-                                
-                                # Extract comprehensive metadata
-                                post_data = {
-                                    # Core text data
-                                    'id': post.id,
-                                    'raw_text': f"{post.title} {post.selftext}".strip(),
-                                    'title': post.title,
-                                    'body': post.selftext,
-                                    
-                                    # Temporal data
-                                    'created_utc': post_date,
-                                    'created_date': post_date.strftime('%Y-%m-%d'),
-                                    'created_year': post_date.year,
-                                    'created_month': post_date.month,
-                                    
-                                    # Engagement metrics (public_metrics equivalent)
-                                    'score': post.score,
-                                    'upvote_ratio': post.upvote_ratio,
-                                    'num_comments': post.num_comments,
-                                    'engagement_total': post.score + post.num_comments,
-                                    
-                                    # Source metadata
-                                    'subreddit': post.subreddit.display_name,
-                                    'is_self': post.is_self,
-                                    'is_video': post.is_video,
-                                    'permalink': f"https://reddit.com{post.permalink}",
-                                    
-                                    # Anonymized author (IRB compliant)
-                                    'author_id_hash': self._hash_user_id(
-                                        str(post.author) if post.author else 'deleted'
-                                    ),
-                                    
-                                    # Query tracking
-                                    'search_query': query,
-                                    'search_subreddit': subreddit
-                                }
-                                
-                                # Optional: Get top comments
-                                if include_comments:
-                                    try:
-                                        post.comments.replace_more(limit=0)
-                                        top_comments = [c.body for c in post.comments[:3] 
-                                                       if hasattr(c, 'body')]
-                                        post_data['top_comments'] = " | ".join(top_comments)
-                                    except:
-                                        post_data['top_comments'] = ""
-                                
-                                data.append(post_data)
-                                
-                                if len(data) >= candidate_target:
-                                    break
-                            
-                            # Log this query
-                            self._log_query(query, subreddit, sort, 
-                                           time_filter, results_this_query)
-                            
-                            if results_this_query > 0:
-                                print(f"  [{len(data):>5}/{candidate_target}] "
-                                      f"q='{query[:30]}...' r/{subreddit} "
-                                      f"sort={sort} t={time_filter} → +{results_this_query}")
-                                      
-                        except Exception as e:
-                            if "rate" in str(e).lower():
-                                print(f"  ⏳ Rate limited, waiting 60s...")
-                                time.sleep(60)
-                            continue
+
+                        for time_filter in search_time_filters:
+                            if len(data) >= candidate_target:
+                                break
+
+                            try:
+                                results_this_query = 0
+                                remaining_needed = candidate_target - len(data)
+                                if fast_mode:
+                                    search_limit = min(50, max(15, remaining_needed))
+                                else:
+                                    search_limit = min(100, max(25, remaining_needed))
+
+                                for post in self.reddit.subreddit(subreddit).search(
+                                    query, sort=sort, time_filter=time_filter, limit=search_limit
+                                ):
+                                    total_attempts += 1
+
+                                    post_date = datetime.fromtimestamp(post.created_utc)
+                                    if post_date < start_date or post_date > end_date:
+                                        continue
+
+                                    if post.id in seen_ids:
+                                        continue
+
+                                    full_text = f"{post.title} {post.selftext}".strip()
+                                    if enforce_relevance and not self._is_livestock_methane_relevant(full_text):
+                                        continue
+
+                                    seen_ids.add(post.id)
+                                    results_this_query += 1
+
+                                    post_data = {
+                                        'id': post.id,
+                                        'raw_text': full_text,
+                                        'title': post.title,
+                                        'body': post.selftext,
+                                        'created_utc': post_date,
+                                        'created_date': post_date.strftime('%Y-%m-%d'),
+                                        'created_year': post_date.year,
+                                        'created_month': post_date.month,
+                                        'score': post.score,
+                                        'upvote_ratio': post.upvote_ratio,
+                                        'num_comments': post.num_comments,
+                                        'engagement_total': post.score + post.num_comments,
+                                        'subreddit': post.subreddit.display_name,
+                                        'is_self': post.is_self,
+                                        'is_video': post.is_video,
+                                        'permalink': f"https://reddit.com{post.permalink}",
+                                        'author_id_hash': self._hash_user_id(
+                                            str(post.author) if post.author else 'deleted'
+                                        ),
+                                        'search_query': query,
+                                        'search_subreddit': subreddit,
+                                        'query_pass': pass_name,
+                                        'comments_text': '',
+                                        'comments_collected_count': 0,
+                                    }
+
+                                    # Reuse submission objects later to avoid one lookup call per selected post.
+                                    post_cache[post.id] = post
+
+                                    data.append(post_data)
+
+                                    if len(data) >= candidate_target:
+                                        break
+
+                                self._log_query(query, subreddit, sort, time_filter, results_this_query)
+
+                                if results_this_query > 0:
+                                    print(
+                                        f"  [{len(data):>5}/{candidate_target}] "
+                                        f"q='{query[:30]}...' r/{subreddit} "
+                                        f"sort={sort} t={time_filter} -> +{results_this_query}"
+                                    )
+
+                            except Exception as e:
+                                if "rate" in str(e).lower():
+                                    print("  Rate limited, waiting 60s...")
+                                    time.sleep(60)
+                                continue
+        
+        # Pass 1: strict query strategy over curated topical subreddits.
+        run_search_pass(
+            search_queries=queries,
+            search_subreddits=subreddits,
+            search_sorts=sort_methods,
+            search_time_filters=time_filters,
+            pass_name='strict_subreddit_pass',
+            enforce_relevance=False,
+        )
+
+        # Pass 2: adaptive fallback to fill the candidate pool target.
+        if len(data) < candidate_target:
+            remaining = candidate_target - len(data)
+            print(
+                f"\nUnder candidate pool target after strict pass ({len(data)}/{candidate_target}). "
+                f"Launching adaptive fallback for ~{remaining} additional posts."
+            )
+            fallback_queries = [
+                'methane dairy',
+                'methane livestock',
+                'cattle methane emissions',
+                'dairy greenhouse gas',
+                'enteric fermentation cattle',
+                'livestock emissions climate',
+                'dairy methane reduction',
+                'manure methane farm',
+                'beef methane emissions',
+                'ruminant methane',
+                'agricultural methane',
+            ]
+            run_search_pass(
+                search_queries=fallback_queries,
+                search_subreddits=['all'],
+                search_sorts=['relevance', 'new'] if fast_mode else ['relevance', 'new', 'top', 'comments'],
+                search_time_filters=['year', 'month'] if fast_mode else ['all', 'year', 'month', 'week'],
+                pass_name='adaptive_fallback_all',
+                enforce_relevance=True,
+            )
+
+        # Pass 3: broad fallback to maximize sample fill if still under candidate target.
+        if len(data) < candidate_target and not fast_mode:
+            remaining = candidate_target - len(data)
+            print(
+                f"\nStill under candidate target after adaptive fallback ({len(data)}/{candidate_target}). "
+                f"Launching broad fallback for ~{remaining} additional posts."
+            )
+            broad_queries = [
+                'methane',
+                'livestock',
+                'dairy',
+                'cattle',
+                'emissions',
+                'greenhouse gas',
+                'agriculture climate',
+                'enteric fermentation',
+                'farm emissions',
+                'manure methane',
+                'beef climate',
+                'cow burps methane',
+                'dairy sustainability',
+                'livestock ghg',
+            ]
+            run_search_pass(
+                search_queries=broad_queries,
+                search_subreddits=['all'],
+                search_sorts=['relevance', 'new', 'top', 'comments'],
+                search_time_filters=['all', 'year', 'month', 'week'],
+                pass_name='broad_fallback_all',
+                enforce_relevance=False,
+            )
+
+        # Pass 4: combinational query expansion to push toward full candidate pool.
+        if len(data) < candidate_target and not fast_mode:
+            remaining = candidate_target - len(data)
+            print(
+                f"\nStill under candidate target after broad fallback ({len(data)}/{candidate_target}). "
+                f"Launching combinational expansion for ~{remaining} additional posts."
+            )
+            livestock_terms = [
+                'dairy', 'livestock', 'cattle', 'beef', 'cow', 'ruminant', 'farm', 'manure'
+            ]
+            methane_terms = [
+                'methane', 'emissions', 'greenhouse gas', 'ghg', 'climate', 'enteric fermentation'
+            ]
+            expansion_queries = [
+                f"{livestock} {methane}"
+                for livestock in livestock_terms
+                for methane in methane_terms
+            ]
+            run_search_pass(
+                search_queries=expansion_queries,
+                search_subreddits=['all'],
+                search_sorts=['relevance', 'new', 'comments', 'top'],
+                search_time_filters=['all', 'year', 'month', 'week', 'day'],
+                pass_name='combinational_fallback_all',
+                enforce_relevance=False,
+            )
+
+        self.attrition_log['extraction_target_count'] = int(target_count)
+        self.attrition_log['candidate_pool_target'] = int(candidate_target)
+        self.attrition_log['fast_mode_enabled'] = bool(fast_mode)
+        self.attrition_log['candidate_pool_collected_before_balancing'] = int(len(data))
+        self.attrition_log['strict_pass_unique_posts'] = int(
+            sum(1 for row in data if row.get('query_pass') == 'strict_subreddit_pass')
+        )
+        self.attrition_log['adaptive_fallback_unique_posts'] = int(
+            sum(1 for row in data if row.get('query_pass') == 'adaptive_fallback_all')
+        )
+        self.attrition_log['broad_fallback_unique_posts'] = int(
+            sum(1 for row in data if row.get('query_pass') == 'broad_fallback_all')
+        )
+        self.attrition_log['combinational_fallback_unique_posts'] = int(
+            sum(1 for row in data if row.get('query_pass') == 'combinational_fallback_all')
+        )
         
         # Create DataFrame
         df = pd.DataFrame(data)
@@ -283,6 +605,60 @@ class RedditDataExtractor:
             self.attrition_log['temporal_balance_before'] = before_year_dist
             self.attrition_log['temporal_balance_after'] = after_year_dist
             self.attrition_log['temporal_balance_enabled'] = True
+
+        # Enrich final selected posts with comments after sampling to avoid throttling search throughput.
+        if include_comments and len(df) > 0 and max_comments_per_post > 0:
+            print("\nCollecting comments for selected posts...")
+            comments_texts = []
+            comments_counts = []
+
+            # Skip expensive calls for posts that already report no comments.
+            id_to_num_comments = {
+                str(row['id']): int(row.get('num_comments', 0))
+                for _, row in df[['id', 'num_comments']].iterrows()
+            }
+
+            for idx, post_id in enumerate(df['id'].tolist(), start=1):
+                post_id = str(post_id)
+                if id_to_num_comments.get(post_id, 0) <= 0:
+                    comments_texts.append('')
+                    comments_counts.append(0)
+                    continue
+
+                comment_fetch_attempted_posts += 1
+                try:
+                    submission = post_cache.get(post_id)
+                    if submission is None:
+                        submission = self.reddit.submission(id=post_id)
+                    comments, fetch_failed = self._collect_comments(
+                        submission,
+                        max_comments=max_comments_per_post
+                    )
+                    if fetch_failed:
+                        comment_fetch_failed_posts += 1
+                    comment_fetch_total_comments += len(comments)
+                    comments_texts.append(" || ".join(comments))
+                    comments_counts.append(len(comments))
+                except Exception:
+                    comment_fetch_failed_posts += 1
+                    comments_texts.append('')
+                    comments_counts.append(0)
+
+                if idx % 500 == 0:
+                    print(f"  comments enriched for {idx}/{len(df)} posts")
+
+            df['comments_text'] = comments_texts
+            df['comments_collected_count'] = comments_counts
+
+        self.attrition_log['comment_fetch_enabled'] = bool(include_comments)
+        self.attrition_log['comment_fetch_max_per_post'] = int(max_comments_per_post)
+        self.attrition_log['comment_fetch_attempted_posts'] = int(comment_fetch_attempted_posts)
+        self.attrition_log['comment_fetch_failed_posts'] = int(comment_fetch_failed_posts)
+        self.attrition_log['comment_fetch_total_comments'] = int(comment_fetch_total_comments)
+        self.attrition_log['comment_fetch_avg_comments_per_attempted_post'] = (
+            float(comment_fetch_total_comments / comment_fetch_attempted_posts)
+            if comment_fetch_attempted_posts > 0 else 0.0
+        )
         
         # Record attrition from extraction phase
         self.attrition_log['N0_raw_extracted'] = total_attempts
@@ -447,64 +823,69 @@ class RedditDataExtractor:
         return report
 
 
-def create_methane_dairy_queries() -> Tuple[List[str], List[str]]:
+def create_methane_dairy_queries() -> List[str]:
     """
-    Create research queries for methane/dairy climate discourse.
-    Following Boolean Logic Framework from methodology.
+    Create multiple Boolean query strategies for methane/livestock discourse.
+
+    These are intentionally structured to improve construct validity by requiring
+    livestock-related context with methane/emissions language, while reducing
+    off-topic hits (e.g., automotive/industrial emissions).
     """
-    # Primary concepts (OR relationship)
-    primary_concepts = [
-        "methane emissions dairy",
-        "methane cows climate",
-        "cattle methane greenhouse",
-        "dairy farming emissions",
-        "livestock methane environment",
-        "cow methane climate change",
-        "enteric fermentation methane",
-        "dairy industry carbon footprint",
-        "methane reduction cattle",
-        "factory farming methane",
-        "regenerative dairy farming",
-        "sustainable dairy farming",
-        "methane digesters dairy",
-        "cow burps climate",
-        "beef cattle emissions"
+    queries = [
+        # Core boolean strategy requested in project guidance
+        '("dairy" OR "livestock") AND ("methane" OR "emission" OR "emissions")',
+
+        # Expand livestock terms while keeping methane/emissions anchored
+        '("dairy" OR "livestock" OR "cattle" OR "cow" OR "beef") AND ("methane" OR "greenhouse gas" OR "ghg")',
+
+        # Enteric fermentation pathway (directly livestock methane source)
+        '("enteric fermentation" OR "ruminant") AND ("methane" OR "emissions")',
+
+        # Dairy production and climate framing
+        '("dairy farming" OR "dairy industry") AND ("methane" OR "climate" OR "emissions")',
+
+        # Mitigation and technology discourse
+        '("feed additive" OR "methane digester" OR "anaerobic digester") AND ("cattle" OR "dairy" OR "livestock")',
+
+        # Policy framing for agricultural methane
+        '("agriculture" OR "livestock") AND ("methane policy" OR "methane regulation" OR "methane target")',
+
+        # Sustainability-oriented livestock discussions
+        '("regenerative" OR "sustainable") AND ("dairy" OR "livestock") AND ("methane" OR "emissions")',
+
+        # Explicit exclusion to reduce non-livestock emission topics
+        '("dairy" OR "livestock" OR "cattle") AND ("methane" OR "emissions") NOT ("car" OR "vehicle" OR "factory" OR "industrial")',
+
+        # Plain-language methane framing often used in public discourse
+        '("cow burps" OR "cows") AND ("methane" OR "climate change")',
     ]
-    
-    # Contextual constraints (AND relationship)
-    contextual_constraints = [
-        "climate",
-        "environment", 
-        "sustainability",
-        "emissions",
-        "greenhouse gas"
-    ]
-    
-    return primary_concepts, contextual_constraints
+
+    # Preserve insertion order while removing accidental duplicates.
+    return list(dict.fromkeys(queries))
 
 
-def extract_reddit_data(target_count: int = 3000, 
-                        start_year: int = 2018) -> pd.DataFrame:
+def extract_reddit_data(target_count: int = 3000,
+                        start_year: int = 2018,
+                        include_comments: bool = True,
+                        max_comments_per_post: int = 10,
+                        fast_mode: bool = False) -> pd.DataFrame:
     """
     Convenience function to run full extraction pipeline.
     
     Args:
         target_count: Target number of posts (2500-3000 recommended)
         start_year: Start year for data collection (2018 default)
+        include_comments: Include comments in extraction output
+        max_comments_per_post: Maximum comments captured per post
+        fast_mode: Reduce extraction search breadth for faster runtime
     
     Returns:
         DataFrame with extracted posts
     """
     extractor = RedditDataExtractor()
     
-    # Get predefined queries for methane/dairy research
-    primary_concepts, contextual_constraints = create_methane_dairy_queries()
-    
-    # Construct query variations
-    queries = extractor.construct_queries(
-        primary_concepts=primary_concepts,
-        contextual_constraints=contextual_constraints
-    )
+    # Get predefined multi-strategy Boolean queries for methane/dairy research.
+    queries = create_methane_dairy_queries()
     
     print(f"📝 Generated {len(queries)} query variations")
     
@@ -513,7 +894,9 @@ def extract_reddit_data(target_count: int = 3000,
         queries=queries,
         target_count=target_count,
         start_date=datetime(start_year, 1, 1),
-        include_comments=False  # Set True if comment analysis needed
+        include_comments=include_comments,
+        max_comments_per_post=max_comments_per_post,
+        fast_mode=fast_mode,
     )
     
     # Save data
@@ -525,7 +908,13 @@ def extract_reddit_data(target_count: int = 3000,
 
 if __name__ == "__main__":
     # Run extraction
-    df, extractor = extract_reddit_data(target_count=3000, start_year=2018)
+    df, extractor = extract_reddit_data(
+        target_count=3000,
+        start_year=2018,
+        include_comments=True,
+        max_comments_per_post=10,
+        fast_mode=False,
+    )
     
     # Print summary
     if len(df) > 0:

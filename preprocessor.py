@@ -191,6 +191,8 @@ class DataPreprocessor:
     
     def preprocess_dataframe(self, df: pd.DataFrame,
                             text_column: str = 'raw_text',
+                            comments_column: str = 'comments_text',
+                            include_comments_in_text: bool = True,
                             min_word_count: int = 5,
                             language: str = 'en',
                             remove_duplicates: bool = True,
@@ -202,6 +204,8 @@ class DataPreprocessor:
         Args:
             df: Input DataFrame
             text_column: Name of column containing raw text
+            comments_column: Name of optional column containing scraped comments
+            include_comments_in_text: Merge comments into preprocessing/analysis text
             min_word_count: Minimum words required (default: 5)
             language: Language to filter for (default: 'en')
             remove_duplicates: Whether to remove duplicate texts
@@ -220,11 +224,24 @@ class DataPreprocessor:
         self._log_stage("N0_initial", initial_count, initial_count, 
                        "Initial dataset from extraction")
         print(f"📥 Initial dataset: {initial_count} posts")
+
+        # Build an explicit analysis text source to keep raw_text reproducible.
+        df[text_column] = df[text_column].fillna('').astype(str)
+        effective_text_column = text_column
+        if include_comments_in_text and comments_column in df.columns:
+            df[comments_column] = df[comments_column].fillna('').astype(str)
+            df['analysis_text'] = (
+                df[text_column].str.strip() + " " + df[comments_column].str.strip()
+            ).str.strip()
+            effective_text_column = 'analysis_text'
+            print("💬 Including comments in analysis text")
+        else:
+            print("📝 Using post text only for analysis")
         
         # ===== STEP 1: Remove exact duplicates =====
         if remove_duplicates:
             count_before = len(df)
-            df = df.drop_duplicates(subset=[text_column], keep='first')
+            df = df.drop_duplicates(subset=[effective_text_column], keep='first')
             count_after = len(df)
             self._log_stage("N1_deduplicated", count_before, count_after,
                           "Removed exact duplicate texts")
@@ -235,7 +252,7 @@ class DataPreprocessor:
         if LANGDETECT_AVAILABLE and language:
             count_before = len(df)
             print(f"🌐 Detecting language (this may take a moment)...")
-            df['detected_language'] = df[text_column].apply(self.detect_language)
+            df['detected_language'] = df[effective_text_column].apply(self.detect_language)
             df = df[df['detected_language'].isin([language, 'unknown'])]
             count_after = len(df)
             self._log_stage("N2_language_filtered", count_before, count_after,
@@ -245,7 +262,7 @@ class DataPreprocessor:
         
         # ===== STEP 3: Text cleaning =====
         print(f"🧹 Cleaning text...")
-        df['clean_text'] = df[text_column].apply(self.clean_text)
+        df['clean_text'] = df[effective_text_column].apply(self.clean_text)
         
         # ===== STEP 4: Length filtering =====
         count_before = len(df)
@@ -389,13 +406,19 @@ class DataPreprocessor:
 
 
 def preprocess_reddit_data(df: pd.DataFrame,
-                          output_path: str = None) -> Tuple[pd.DataFrame, DataPreprocessor]:
+                          output_path: str = None,
+                          text_column: str = 'raw_text',
+                          comments_column: str = 'comments_text',
+                          include_comments_in_text: bool = True) -> Tuple[pd.DataFrame, DataPreprocessor]:
     """
     Convenience function to run full preprocessing pipeline.
     
     Args:
         df: DataFrame from data extraction
         output_path: Optional path to save preprocessed data
+        text_column: Name of post text column
+        comments_column: Name of comments text column
+        include_comments_in_text: Merge comments into analysis text if available
         
     Returns:
         Tuple of (preprocessed DataFrame, preprocessor object)
@@ -405,7 +428,9 @@ def preprocess_reddit_data(df: pd.DataFrame,
     # Run preprocessing
     df_clean = preprocessor.preprocess_dataframe(
         df,
-        text_column='raw_text',
+        text_column=text_column,
+        comments_column=comments_column,
+        include_comments_in_text=include_comments_in_text,
         min_word_count=5,
         language='en',
         remove_duplicates=True,

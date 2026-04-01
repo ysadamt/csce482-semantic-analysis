@@ -1,0 +1,11 @@
+{
+  "comment_enrichment_source": "existing_csv",
+  "comment_enrichment_rows": 400,
+  "comment_enrichment_max_per_post": 0,
+  "comment_enrichment_attempted_posts": 0,
+  "comment_enrichment_failed_posts": 0,
+  "comment_enrichment_total_comments": 0,
+  "comment_enrichment_skipped_existing": 0,
+  "comment_enrichment_skipped_zero_comment_posts": 0,
+  "comment_enrichment_avg_comments_per_attempted_post": 0.0
+}

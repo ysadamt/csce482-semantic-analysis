@@ -138,6 +138,63 @@ def _safe_serializable(obj):
     return obj
 
 
+def extract_keywords_by_sentiment(df: pd.DataFrame,
+                                  text_column: str = 'clean_text',
+                                  sentiment_column: str = 'sentiment',
+                                  top_n: int = 25,
+                                  min_token_length: int = 3) -> pd.DataFrame:
+    """
+    Quality-check helper: extract top keywords for positive/neutral/negative posts.
+
+    Returns a tidy DataFrame with one row per (sentiment, keyword).
+    """
+    if text_column not in df.columns or sentiment_column not in df.columns:
+        return pd.DataFrame()
+
+    stop_words = {
+        'the', 'and', 'for', 'with', 'that', 'this', 'from', 'have', 'has', 'had',
+        'are', 'was', 'were', 'will', 'would', 'could', 'should', 'about', 'into',
+        'their', 'there', 'than', 'them', 'they', 'you', 'your', 'our', 'out',
+        'not', 'but', 'can', 'all', 'any', 'who', 'how', 'why', 'what', 'when',
+        'where', 'just', 'more', 'most', 'also', 'its', 'it', 'to', 'of', 'in',
+        'on', 'is', 'a', 'an', 'as', 'at', 'be', 'by', 'or', 'if', 'we', 'i',
+        'do', 'does', 'did', 'so', 'my', 'me', 'he', 'she', 'his', 'her', 'theirs',
+        'http', 'https', 'www', 'com', 'reddit', 'post', 'comment'
+    }
+
+    sentiment_order = ['positive', 'neutral', 'negative']
+    token_pattern = re.compile(r"[a-z][a-z0-9_'-]+")
+    rows = []
+
+    for sentiment in sentiment_order:
+        subset = df[df[sentiment_column].astype(str).str.lower() == sentiment]
+        if len(subset) == 0:
+            continue
+
+        token_counts = Counter()
+        for text in subset[text_column].astype(str):
+            for token in token_pattern.findall(text.lower()):
+                if len(token) < min_token_length:
+                    continue
+                if token in stop_words:
+                    continue
+                if token.isnumeric():
+                    continue
+                token_counts[token] += 1
+
+        total_sentiment_posts = int(len(subset))
+        for keyword, count in token_counts.most_common(top_n):
+            rows.append({
+                'sentiment': sentiment,
+                'keyword': keyword,
+                'count': int(count),
+                'posts_in_sentiment_class': total_sentiment_posts,
+                'keyword_rate_per_post': float(count / max(1, total_sentiment_posts))
+            })
+
+    return pd.DataFrame(rows)
+
+
 class SentimentAnalyzer:
     """
     BERT-based sentiment analysis using pretrained models.
@@ -921,13 +978,39 @@ class OddsRatioAnalysis:
             'their', 'they', 'them', 'about', 'would', 'could', 'should', 'there',
             'which', 'when', 'where', 'what', 'your', 'just', 'into', 'over',
             'than', 'also', 'http', 'https', 'www', 'com', 'amp', 'reddit',
+            'are', 'was', 'is', 'be', 'been', 'being', 'am', 'to', 'of', 'in',
+            'on', 'at', 'as', 'by', 'it', 'its', 'if', 'or', 'can',
             'post', 'comment', 'people', 'thing', 'things', 'make', 'made',
             'know', 'like', 'really', 'still', 'much', 'many', 'some', 'more',
             'most', 'other', 'because', 'going', 'want', 'need', 'take', 'come',
             'said', 'dont', 'doesnt', 'didnt', 'cant', 'wont', 'ive', 'youre',
             'im', 'get', 'got', 'one', 'two', 'first', 'last', 'new', 'use',
-            'used', 'using', 'well', 'back', 'look', 'long', 'even', 'say'
+            'used', 'using', 'well', 'back', 'look', 'long', 'even', 'say',
+            # Contraction stems and generic filler fragments.
+            'don', 'doesn', 'didn', 'isn', 'aren', 'wasn', 'weren', 'won',
+            'wouldn', 'couldn', 'shouldn', 'mustn', 'mightn', 'needn', 'hasn',
+            'hadn', 'haven', 'ain', 'll', 've', 're', 'let', 'etc'
         }
+
+        self.topic_anchor_terms = {
+            'methane', 'emission', 'emissions', 'greenhouse', 'ghg', 'climate',
+            'dairy', 'livestock', 'cattle', 'cow', 'cows', 'beef', 'ruminant',
+            'enteric', 'fermentation', 'farm', 'farming', 'manure', 'feed',
+            'digester', 'digesters', 'agriculture', 'sustainable', 'sustainability',
+            'carbon', 'warming', 'decarbonization', 'mitigation'
+        }
+        self.topic_stems = (
+            'methan', 'emiss', 'greenhouse', 'climat', 'carbon', 'ghg',
+            'dair', 'livestock', 'cattl', 'cow', 'beef', 'rumin', 'enteric',
+            'ferment', 'farm', 'agric', 'manur', 'feed', 'digest', 'policy',
+            'regulat', 'sustain', 'mitigat', 'warming', 'decarbon'
+        )
+
+    def _is_topic_relevant_word(self, word: str) -> bool:
+        """Allow only terms that are lexically aligned with the query domain."""
+        if word in self.topic_anchor_terms:
+            return True
+        return any(word.startswith(stem) for stem in self.topic_stems)
 
     def _tokenize_text(self, text: str) -> List[str]:
         """Tokenize and filter words for semantic odds analysis."""
@@ -974,6 +1057,20 @@ class OddsRatioAnalysis:
         """
         positive_words, negative_words, all_words = self.compute_word_frequencies()
 
+        # Document-level relevance signal for each token.
+        word_doc_counts = Counter()
+        word_topic_doc_counts = Counter()
+        for text in self.df[self.text_column]:
+            tokens = set(self._tokenize_text(text))
+            if not tokens:
+                continue
+            text_lower = str(text).lower()
+            has_topic_anchor = any(anchor in text_lower for anchor in self.topic_anchor_terms)
+            for token in tokens:
+                word_doc_counts[token] += 1
+                if has_topic_anchor:
+                    word_topic_doc_counts[token] += 1
+
         total_docs = max(1, len(self.df))
         
         # Total counts
@@ -986,6 +1083,16 @@ class OddsRatioAnalysis:
             if total_count < min_count:
                 continue
             if (total_count / total_docs) > max_doc_frequency:
+                continue
+
+            # Hard topic constraint: suppress generic conversation terms.
+            if not self._is_topic_relevant_word(word):
+                continue
+
+            # Retain terms that are either explicit anchors or strongly tied to topic posts.
+            doc_count = word_doc_counts.get(word, 0)
+            topic_ratio = (word_topic_doc_counts.get(word, 0) / doc_count) if doc_count > 0 else 0.0
+            if word not in self.topic_anchor_terms and topic_ratio < 0.35:
                 continue
             
             # Counts with prior smoothing
@@ -1011,9 +1118,17 @@ class OddsRatioAnalysis:
                 'p_word_negative': p_word_negative,
                 'odds_ratio': odds_ratio,
                 'log_odds': log_odds,
+                'topic_relevance_ratio': float(topic_ratio),
                 'sentiment_driver': 'positive' if log_odds > 0 else 'negative'
             })
-        
+
+        if not results:
+            return pd.DataFrame(columns=[
+                'word', 'count_total', 'count_positive', 'count_negative',
+                'p_word_positive', 'p_word_negative', 'odds_ratio', 'log_odds',
+                'topic_relevance_ratio', 'sentiment_driver'
+            ])
+
         return pd.DataFrame(results).sort_values('log_odds', ascending=False)
     
     def compute_sentiment_probabilities(self) -> Dict:
@@ -2213,6 +2328,36 @@ def run_full_analysis(df: pd.DataFrame,
     
     results['sentiment_distribution'] = sentiment_dist.to_dict()
     results['mean_sentiment_score'] = df['sentiment_score'].mean()
+
+    # ===== Step 1C: Sentiment Keyword Quality Check =====
+    print("\n🔎 Step 1C: Keyword Quality Check by Sentiment")
+    print("-" * 40)
+    sentiment_keywords = extract_keywords_by_sentiment(
+        df,
+        text_column=text_column,
+        sentiment_column='sentiment',
+        top_n=25
+    )
+    if len(sentiment_keywords) > 0:
+        keyword_path = os.path.join(output_dir, 'sentiment_keyword_quality_check.csv')
+        sentiment_keywords.to_csv(keyword_path, index=False)
+        print(f"   Saved keyword quality-check table: {keyword_path}")
+
+        keywords_summary = {}
+        for sentiment in ['positive', 'neutral', 'negative']:
+            top_terms = sentiment_keywords[
+                sentiment_keywords['sentiment'] == sentiment
+            ]['keyword'].head(10).tolist()
+            if top_terms:
+                keywords_summary[sentiment] = top_terms
+                print(f"   {sentiment.capitalize()} top keywords: {', '.join(top_terms[:8])}")
+
+        results['sentiment_keyword_quality_check'] = {
+            'file': keyword_path,
+            'top_keywords': keywords_summary
+        }
+    else:
+        print("   ⚠️ Could not compute sentiment keyword quality-check table")
 
     # ===== Step 1B: VADER Cross-Check Inference =====
     print("\n🤝 Step 1B: VADER Cross-Check Inference")
