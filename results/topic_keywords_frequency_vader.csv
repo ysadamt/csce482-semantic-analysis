@@ -1,0 +1,24 @@
+Topic,Label,Keyword,Frequency,Keyword Topic Relevance Ratio,Avg Sentiment,Sentiment Label,Sentiment Posts,Topic Relevant
+1,Emissions & Climate Science,methane,3079,1.0,,N/A,0,True
+1,Emissions & Climate Science,climate,2981,1.0,,N/A,0,True
+1,Emissions & Climate Science,emissions,2947,1.0,,N/A,0,True
+1,Emissions & Climate Science,dairy,1966,1.0,,N/A,0,True
+1,Emissions & Climate Science,carbon,1845,1.0,,N/A,0,True
+1,Emissions & Climate Science,livestock,1658,1.0,,N/A,0,True
+1,Emissions & Climate Science,cows,1297,1.0,,N/A,0,True
+1,Emissions & Climate Science,agriculture,1159,0.9979633401221996,,N/A,0,True
+1,Emissions & Climate Science,greenhouse,1057,1.0,,N/A,0,True
+2,Dairy Farming & Livestock Practices,beef,1014,0.9909297052154195,,N/A,0,True
+2,Dairy Farming & Livestock Practices,feed,935,1.0,,N/A,0,True
+2,Dairy Farming & Livestock Practices,cattle,927,1.0,,N/A,0,True
+2,Dairy Farming & Livestock Practices,farming,828,1.0,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",please,1259,0.9620637329286799,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",action,727,0.958029197080292,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",questions,683,0.9563636363636364,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",subreddit,647,0.9469214437367304,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",concerns,514,0.9494505494505494,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",contact,507,0.944954128440367,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",message,488,0.9472477064220184,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",bot,417,0.9346733668341709,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",automatically,400,0.9375,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",performed,392,0.9361702127659575,,N/A,0,True

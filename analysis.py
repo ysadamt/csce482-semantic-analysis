@@ -1369,6 +1369,17 @@ class NetworkAnalysis:
                 }
             }
         ]
+
+        selected_presets = [self.preset_topic_definitions[i] for i in self.selected_topic_indices]
+        self.topic_anchor_terms = set()
+        for preset in selected_presets:
+            self.topic_anchor_terms.update(preset['anchors'])
+        self.topic_stems = (
+            'methan', 'emiss', 'greenhouse', 'climat', 'carbon', 'ghg',
+            'dair', 'livestock', 'cattl', 'cow', 'beef', 'rumin', 'enteric',
+            'ferment', 'farm', 'agric', 'manur', 'feed', 'digest', 'sustain',
+            'mitigat', 'renew', 'efficien', 'welfare', 'transparen'
+        )
     
     def _tokenize_text(self, text: str) -> List[str]:
         """Extract clean tokens from text."""
@@ -1495,6 +1506,44 @@ class NetworkAnalysis:
         print("   Using selected topic groups: Topic 1, Topic 2, Topic 5")
         print(f"   Mapped to {len(self.communities)} selected topic communities")
         return self.communities
+
+    def _is_topic_relevant_word(self, word: str) -> bool:
+        """Keep keywords tightly scoped to methane/dairy/livestock topic space."""
+        if word in self.topic_anchor_terms:
+            return True
+        return any(word.startswith(stem) for stem in self.topic_stems)
+
+    def _compile_word_matcher(self, words: List[str]) -> Optional[re.Pattern]:
+        """Compile a safe word-boundary regex for keyword matching."""
+        cleaned = [re.escape(str(w).lower()) for w in words if isinstance(w, str) and w]
+        if not cleaned:
+            return None
+        return re.compile(r'\\b(?:' + '|'.join(cleaned) + r')\\b', flags=re.IGNORECASE)
+
+    def _compute_topic_sentiment(self, topic_words: List[str]) -> Tuple[Optional[float], Optional[str], int]:
+        """Compute average sentiment and class label for posts matching topic words."""
+        if 'sentiment_score' not in self.df.columns:
+            return None, None, 0
+
+        matcher = self._compile_word_matcher(topic_words)
+        if matcher is None:
+            return None, None, 0
+
+        text_series = self.df[self.text_column].astype(str).str.lower()
+        mask = text_series.apply(lambda t: bool(matcher.search(t)))
+        subset = self.df[mask]
+        if len(subset) == 0:
+            return None, None, 0
+
+        avg_sentiment = float(subset['sentiment_score'].mean())
+        if avg_sentiment > 0.1:
+            sentiment_label = 'positive'
+        elif avg_sentiment < -0.1:
+            sentiment_label = 'negative'
+        else:
+            sentiment_label = 'neutral'
+
+        return avg_sentiment, sentiment_label, int(len(subset))
     
     def label_topics(self, n_words: int = 5) -> Dict[int, Dict]:
         """
@@ -1508,6 +1557,26 @@ class NetworkAnalysis:
         """
         if self.communities is None:
             self.detect_communities()
+
+        # Document-level topical relevance ratio per token.
+        word_doc_counts = Counter()
+        word_topic_doc_counts = Counter()
+        for text in self.df[self.text_column].astype(str):
+            tokens = set(self._tokenize_text(text))
+            if not tokens:
+                continue
+            text_lower = text.lower()
+            has_topic_anchor = any(anchor in text_lower for anchor in self.topic_anchor_terms)
+            for token in tokens:
+                word_doc_counts[token] += 1
+                if has_topic_anchor:
+                    word_topic_doc_counts[token] += 1
+
+        def _topic_ratio(word: str) -> float:
+            doc_count = word_doc_counts.get(word, 0)
+            if doc_count <= 0:
+                return 0.0
+            return float(word_topic_doc_counts.get(word, 0) / doc_count)
         
         self.community_topics = {}
         
@@ -1515,8 +1584,18 @@ class NetworkAnalysis:
             # Sort words by frequency
             words_with_freq = [(w, self.word_freq.get(w, 0)) for w in community]
             words_with_freq.sort(key=lambda x: x[1], reverse=True)
-            
-            top_words = [w for w, _ in words_with_freq[:n_words]]
+
+            relevant_words_with_freq = []
+            for word, freq in words_with_freq:
+                topic_ratio = _topic_ratio(word)
+                if not self._is_topic_relevant_word(word):
+                    continue
+                if word not in self.topic_anchor_terms and topic_ratio < 0.35:
+                    continue
+                relevant_words_with_freq.append((word, freq))
+
+            words_for_topic = relevant_words_with_freq if len(relevant_words_with_freq) > 0 else words_with_freq
+            top_words = [w for w, _ in words_for_topic[:n_words]]
             
             # Use selected preset topic labels (Topic 1, 2, 5)
             if hasattr(self, 'active_preset_topics') and idx < len(self.active_preset_topics):
@@ -1528,16 +1607,24 @@ class NetworkAnalysis:
             
             # Calculate total frequency and centrality metrics
             total_freq = sum(f for _, f in words_with_freq)
-            
-            # Get average sentiment if available
-            avg_sentiment = None
-            if 'sentiment_score' in self.df.columns:
-                # Find posts containing any of the top words
-                mask = self.df[self.text_column].str.lower().str.contains(
-                    '|'.join(top_words[:3]), regex=True, na=False
-                )
-                if mask.sum() > 0:
-                    avg_sentiment = self.df.loc[mask, 'sentiment_score'].mean()
+
+            avg_sentiment, sentiment_label, sentiment_posts = self._compute_topic_sentiment(top_words[:5])
+            relevant_word_share = (
+                float(len(relevant_words_with_freq) / len(words_with_freq))
+                if len(words_with_freq) > 0 else 0.0
+            )
+            top_word_relevance = [_topic_ratio(w) for w in top_words]
+            topic_relevance_score = (
+                float(np.mean(top_word_relevance)) if len(top_word_relevance) > 0 else 0.0
+            )
+            is_relevant_topic = bool(
+                any(w in self.topic_anchor_terms for w in top_words)
+                or relevant_word_share >= 0.35
+                or topic_relevance_score >= 0.45
+            )
+
+            keyword_frequencies = {w: int(f) for w, f in words_for_topic}
+            keyword_relevance = {w: _topic_ratio(w) for w, _ in words_for_topic}
             
             self.community_topics[idx] = {
                 'topic_id': topic_num,
@@ -1546,27 +1633,83 @@ class NetworkAnalysis:
                 'all_words': list(community),
                 'word_count': len(community),
                 'total_frequency': total_freq,
-                'avg_sentiment': avg_sentiment
+                'avg_sentiment': avg_sentiment,
+                'sentiment_label': sentiment_label,
+                'sentiment_posts': sentiment_posts,
+                'relevant_word_share': relevant_word_share,
+                'topic_relevance_score': topic_relevance_score,
+                'is_relevant_topic': is_relevant_topic,
+                'keyword_frequencies': keyword_frequencies,
+                'keyword_relevance': keyword_relevance,
             }
         
         return self.community_topics
-    
-    def get_topic_summary(self) -> pd.DataFrame:
+
+    def get_topic_summary(self, only_relevant: bool = True) -> pd.DataFrame:
         """Generate summary table of all topics."""
         if self.community_topics is None:
             self.label_topics()
         
         rows = []
-        for topic_id, info in self.community_topics.items():
+        for _, info in self.community_topics.items():
+            if only_relevant and not info.get('is_relevant_topic', True):
+                continue
             rows.append({
                 'Topic': info['topic_id'],
                 'Label': info['label'],
                 'Top Words': ', '.join(info['top_words']),
                 'Word Count': info['word_count'],
                 'Total Freq': info['total_frequency'],
-                'Avg Sentiment': f"{info['avg_sentiment']:.3f}" if info['avg_sentiment'] else 'N/A'
+                'Avg Sentiment': f"{info['avg_sentiment']:.3f}" if info['avg_sentiment'] is not None else 'N/A',
+                'Sentiment Label': info.get('sentiment_label', 'N/A') or 'N/A',
+                'Sentiment Posts': int(info.get('sentiment_posts', 0)),
+                'Topic Relevant': bool(info.get('is_relevant_topic', True)),
+                'Topic Relevance Score': float(info.get('topic_relevance_score', 0.0)),
             })
+
+        if len(rows) == 0 and only_relevant:
+            return self.get_topic_summary(only_relevant=False)
         
+        return pd.DataFrame(rows)
+
+    def get_topic_keywords_by_frequency(self,
+                                        top_n_per_topic: int = 10,
+                                        only_relevant: bool = True) -> pd.DataFrame:
+        """Return top topic keywords by frequency with topic sentiment metadata."""
+        if self.community_topics is None:
+            self.label_topics()
+
+        rows = []
+        for _, info in self.community_topics.items():
+            if only_relevant and not info.get('is_relevant_topic', True):
+                continue
+
+            keyword_frequencies = info.get('keyword_frequencies', {})
+            if not keyword_frequencies:
+                continue
+
+            sorted_keywords = sorted(
+                keyword_frequencies.items(),
+                key=lambda x: x[1],
+                reverse=True
+            )[:max(1, int(top_n_per_topic))]
+
+            for keyword, freq in sorted_keywords:
+                rows.append({
+                    'Topic': int(info['topic_id']),
+                    'Label': info['label'],
+                    'Keyword': keyword,
+                    'Frequency': int(freq),
+                    'Keyword Topic Relevance Ratio': float(info.get('keyword_relevance', {}).get(keyword, 0.0)),
+                    'Avg Sentiment': float(info['avg_sentiment']) if info.get('avg_sentiment') is not None else np.nan,
+                    'Sentiment Label': info.get('sentiment_label', 'N/A') or 'N/A',
+                    'Sentiment Posts': int(info.get('sentiment_posts', 0)),
+                    'Topic Relevant': bool(info.get('is_relevant_topic', True)),
+                })
+
+        if len(rows) == 0 and only_relevant:
+            return self.get_topic_keywords_by_frequency(top_n_per_topic=top_n_per_topic, only_relevant=False)
+
         return pd.DataFrame(rows)
     
     def plot_network(self, save_path: str = None, 
@@ -1707,6 +1850,8 @@ class NetworkAnalysis:
         ]
         
         for idx, info in self.community_topics.items():
+            if not info.get('is_relevant_topic', True):
+                continue
             if info['avg_sentiment'] is not None:
                 topics.append(f"Topic {info['topic_id']}:\n{info['label'][:20]}")
                 sentiments.append(info['avg_sentiment'])
@@ -1754,6 +1899,8 @@ class NetworkAnalysis:
         # Get top words from each topic
         all_topic_words = []
         for info in self.community_topics.values():
+            if not info.get('is_relevant_topic', True):
+                continue
             for word in info['top_words'][:3]:
                 all_topic_words.append({
                     'word': word,
@@ -1932,11 +2079,17 @@ class NetworkAnalysis:
 
         rows = []
         for idx, info in self.community_topics.items():
+            if not info.get('is_relevant_topic', True):
+                continue
             topic_words = info['top_words'][:4]
             if not topic_words:
                 continue
-            pattern = r'\\b(' + '|'.join(re.escape(w) for w in topic_words) + r')\\b'
-            mask = self.df[self.text_column].str.lower().str.contains(pattern, regex=True, na=False)
+            matcher = self._compile_word_matcher(topic_words)
+            if matcher is None:
+                continue
+            mask = self.df[self.text_column].astype(str).str.lower().apply(
+                lambda t: bool(matcher.search(t))
+            )
             subset = self.df[mask]
             if len(subset) == 0:
                 continue
@@ -2245,6 +2398,11 @@ def generate_model_graph_suite(df_model: pd.DataFrame,
         topic_count = len(topics)
         topic_summary = network_analyzer.get_topic_summary()
         topic_summary.to_csv(os.path.join(output_dir, f'topic_summary_{model_tag}.csv'), index=False)
+        topic_keywords = network_analyzer.get_topic_keywords_by_frequency(top_n_per_topic=10)
+        if len(topic_keywords) > 0:
+            topic_keywords_path = os.path.join(output_dir, f'topic_keywords_frequency_{model_tag}.csv')
+            topic_keywords.to_csv(topic_keywords_path, index=False)
+            print(f"   Saved topic keyword frequency table: {topic_keywords_path}")
         network_analyzer.plot_network(
             save_path=os.path.join(output_dir, f'network_analysis_{model_tag}.png')
         )

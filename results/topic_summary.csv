@@ -1,4 +1,4 @@
-Topic,Label,Top Words,Word Count,Total Freq,Avg Sentiment
-1,Emissions & Climate Science,"can, climate, emissions, methane, change",67,8265,-0.246
-2,Dairy Farming & Livestock Practices,"vegan, meat, animal, animals, food",37,6602,-0.250
-5,"Mitigation, Technology & Sustainability","please, keep, action, questions, subreddit",13,691,-0.180
+Topic,Label,Top Words,Word Count,Total Freq,Avg Sentiment,Sentiment Label,Sentiment Posts,Topic Relevant,Topic Relevance Score
+1,Emissions & Climate Science,"methane, climate, emissions, dairy, carbon",65,98986,N/A,N/A,0,True,1.0
+2,Dairy Farming & Livestock Practices,"beef, feed, cattle, farming",95,75015,N/A,N/A,0,True,0.9977324263038548
+5,"Mitigation, Technology & Sustainability","please, action, questions, subreddit, concerns",12,6752,N/A,N/A,0,True,0.9545657119119777

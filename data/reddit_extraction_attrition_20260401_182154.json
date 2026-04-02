@@ -1,0 +1,41 @@
+{
+  "extraction_target_count": 3000,
+  "candidate_pool_target": 4500,
+  "candidate_pool_collected_before_balancing": 4500,
+  "strict_pass_unique_posts": 1358,
+  "adaptive_fallback_unique_posts": 1216,
+  "broad_fallback_unique_posts": 1926,
+  "combinational_fallback_unique_posts": 0,
+  "temporal_balance_before": {
+    "2018": 223,
+    "2019": 288,
+    "2020": 245,
+    "2021": 379,
+    "2022": 320,
+    "2023": 272,
+    "2024": 360,
+    "2025": 983,
+    "2026": 1430
+  },
+  "temporal_balance_after": {
+    "2018": 223,
+    "2019": 288,
+    "2020": 245,
+    "2021": 341,
+    "2022": 320,
+    "2023": 272,
+    "2024": 338,
+    "2025": 449,
+    "2026": 524
+  },
+  "temporal_balance_enabled": true,
+  "comment_fetch_enabled": true,
+  "comment_fetch_max_per_post": 3,
+  "comment_fetch_attempted_posts": 2646,
+  "comment_fetch_failed_posts": 16,
+  "comment_fetch_total_comments": 5756,
+  "comment_fetch_avg_comments_per_attempted_post": 2.1753590325018894,
+  "N0_raw_extracted": 27366,
+  "N1_after_date_filter": 3000,
+  "N1_unique_posts": 3000
+}
