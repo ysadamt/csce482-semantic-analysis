@@ -47,7 +47,7 @@ def phase1_extraction(target_count: int = 3000,
     Execute Phase 1: Reddit Data Extraction.
     
     Args:
-        target_count: Target number of posts (recommended: 2500-3000)
+        target_count: Target output rows (posts + comments, recommended: 2500-3000)
         start_year: Start year for data collection
         include_comments: Whether to include comment text in extraction output
         max_comments_per_post: Maximum comments to capture per post
@@ -55,7 +55,7 @@ def phase1_extraction(target_count: int = 3000,
         save: Whether to save the extracted data
         
     Returns:
-        DataFrame with extracted posts
+        DataFrame with extracted rows
     """
     print("\n" + "="*70)
     print("PHASE 1: DATA EXTRACTION (REDDIT-ONLY)")
@@ -76,14 +76,27 @@ def phase1_extraction(target_count: int = 3000,
             return None
         
         # Print extraction summary
+        total_rows = len(df)
+        if 'content_type' in df.columns:
+            content_types = df['content_type'].fillna('post').astype(str).str.lower()
+            post_rows = int((content_types == 'post').sum())
+            comment_rows = int((content_types == 'comment').sum())
+            post_mask = content_types == 'post'
+        else:
+            post_rows = total_rows
+            comment_rows = 0
+            post_mask = pd.Series(True, index=df.index)
+
         print("\n📊 EXTRACTION SUMMARY:")
-        print(f"   Total posts: {len(df)}")
+        print(f"   Total rows: {total_rows}")
+        print(f"   Post rows: {post_rows}")
+        print(f"   Comment rows: {comment_rows}")
         print(f"   Date range: {df['created_date'].min()} to {df['created_date'].max()}")
         print(f"   Unique subreddits: {df['subreddit'].nunique()}")
-        if 'comments_collected_count' in df.columns:
+        if 'comments_collected_count' in df.columns and post_rows > 0:
             print(
                 f"   Avg comments captured/post: "
-                f"{df['comments_collected_count'].mean():.2f}"
+                f"{df.loc[post_mask, 'comments_collected_count'].mean():.2f}"
             )
         
         # Print attrition report
@@ -135,7 +148,7 @@ def phase2_preprocessing(df: pd.DataFrame,
     
     # Print final statistics
     print("\n📊 PREPROCESSING RESULTS:")
-    print(f"   Posts retained: {len(df_clean)} / {len(df)} "
+    print(f"   Rows retained: {len(df_clean)} / {len(df)} "
           f"({len(df_clean)/len(df)*100:.1f}%)")
     
     if save:
@@ -204,10 +217,21 @@ def phase1b_comment_enrichment(input_csv: str = None,
 
     print("\n📊 COMMENT ENRICHMENT SUMMARY:")
     print(f"   Rows: {len(df_enriched)}")
-    if 'comments_collected_count' in df_enriched.columns:
+    if 'content_type' in df_enriched.columns:
+        content_types = df_enriched['content_type'].fillna('post').astype(str).str.lower()
+        post_rows = int((content_types == 'post').sum())
+        comment_rows = int((content_types == 'comment').sum())
+        post_mask = content_types == 'post'
+        print(f"   Post rows: {post_rows}")
+        print(f"   Comment rows: {comment_rows}")
+    else:
+        post_rows = len(df_enriched)
+        post_mask = pd.Series(True, index=df_enriched.index)
+
+    if 'comments_collected_count' in df_enriched.columns and post_rows > 0:
         print(
             f"   Avg comments captured/post: "
-            f"{df_enriched['comments_collected_count'].mean():.2f}"
+            f"{df_enriched.loc[post_mask, 'comments_collected_count'].mean():.2f}"
         )
 
     if save:
@@ -315,7 +339,7 @@ def run_full_pipeline(target_count: int = 3000,
     Run the complete research pipeline (Phases 1-3).
     
     Args:
-        target_count: Target number of posts
+        target_count: Target output rows (posts + comments)
         start_year: Start year for data collection
         include_comments: Include comments in extraction output
         max_comments_per_post: Maximum comments captured per post
@@ -330,7 +354,7 @@ def run_full_pipeline(target_count: int = 3000,
     print("Methane/Dairy Climate Discourse Analysis")
     print("="*70)
     print(f"\nStarted at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Target posts: {target_count}")
+    print(f"Target rows (posts + comments): {target_count}")
     print(f"Date range: {start_year}-01-01 to present")
     
     setup_directories()
@@ -473,7 +497,7 @@ def print_usage_guide():
     ║  python run_analysis.py --from-csv FILE  Analyze existing CSV    ║
     ║                                                                  ║
     ║  OPTIONS:                                                        ║
-    ║  --target N      Target number of posts (default: 3000)          ║
+    ║  --target N      Target rows (posts + comments, default: 3000)   ║
     ║  --start-year Y  Start year for data (default: 2018)             ║
     ║  --fast-mode     Faster extraction with reduced search breadth    ║
     ║  --disable-comments Disable Reddit comment scraping               ║
@@ -504,7 +528,7 @@ def main():
         epilog='''
 Examples:
   python run_analysis.py --full                    # Run complete pipeline
-  python run_analysis.py --full --target 2500     # Extract 2500 posts
+    python run_analysis.py --full --target 2500     # Extract 2500 rows
     python run_analysis.py --extract --fast-mode    # Faster extraction mode
     python run_analysis.py --enrich-comments --input data/reddit_extracted_x.csv
                                                                                                      # Add comments to existing rows
@@ -533,7 +557,7 @@ Examples:
     
     # Configuration options
     parser.add_argument('--target', type=int, default=3000,
-                       help='Target number of posts to extract (default: 3000)')
+                       help='Target output rows (posts + comments, default: 3000)')
     parser.add_argument('--start-year', type=int, default=2018,
                        help='Start year for data extraction (default: 2018)')
     parser.add_argument('--fast-mode', action='store_true',

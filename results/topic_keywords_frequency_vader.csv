@@ -1,24 +1,23 @@
 Topic,Label,Keyword,Frequency,Keyword Topic Relevance Ratio,Avg Sentiment,Sentiment Label,Sentiment Posts,Topic Relevant
-1,Emissions & Climate Science,methane,3079,1.0,,N/A,0,True
-1,Emissions & Climate Science,climate,2981,1.0,,N/A,0,True
-1,Emissions & Climate Science,emissions,2947,1.0,,N/A,0,True
-1,Emissions & Climate Science,dairy,1966,1.0,,N/A,0,True
-1,Emissions & Climate Science,carbon,1845,1.0,,N/A,0,True
-1,Emissions & Climate Science,livestock,1658,1.0,,N/A,0,True
-1,Emissions & Climate Science,cows,1297,1.0,,N/A,0,True
-1,Emissions & Climate Science,agriculture,1159,0.9979633401221996,,N/A,0,True
-1,Emissions & Climate Science,greenhouse,1057,1.0,,N/A,0,True
-2,Dairy Farming & Livestock Practices,beef,1014,0.9909297052154195,,N/A,0,True
-2,Dairy Farming & Livestock Practices,feed,935,1.0,,N/A,0,True
-2,Dairy Farming & Livestock Practices,cattle,927,1.0,,N/A,0,True
-2,Dairy Farming & Livestock Practices,farming,828,1.0,,N/A,0,True
-5,"Mitigation, Technology & Sustainability",please,1259,0.9620637329286799,,N/A,0,True
-5,"Mitigation, Technology & Sustainability",action,727,0.958029197080292,,N/A,0,True
-5,"Mitigation, Technology & Sustainability",questions,683,0.9563636363636364,,N/A,0,True
-5,"Mitigation, Technology & Sustainability",subreddit,647,0.9469214437367304,,N/A,0,True
-5,"Mitigation, Technology & Sustainability",concerns,514,0.9494505494505494,,N/A,0,True
-5,"Mitigation, Technology & Sustainability",contact,507,0.944954128440367,,N/A,0,True
-5,"Mitigation, Technology & Sustainability",message,488,0.9472477064220184,,N/A,0,True
-5,"Mitigation, Technology & Sustainability",bot,417,0.9346733668341709,,N/A,0,True
-5,"Mitigation, Technology & Sustainability",automatically,400,0.9375,,N/A,0,True
-5,"Mitigation, Technology & Sustainability",performed,392,0.9361702127659575,,N/A,0,True
+1,Emissions & Climate Science,climate,849,1.0,,N/A,0,True
+1,Emissions & Climate Science,livestock,445,1.0,,N/A,0,True
+1,Emissions & Climate Science,greenhouse,375,1.0,,N/A,0,True
+1,Emissions & Climate Science,agriculture,366,0.8783068783068783,,N/A,0,True
+1,Emissions & Climate Science,farming,221,1.0,,N/A,0,True
+2,Dairy Farming & Livestock Practices,methane,909,1.0,,N/A,0,True
+2,Dairy Farming & Livestock Practices,carbon,686,1.0,,N/A,0,True
+2,Dairy Farming & Livestock Practices,dairy,505,1.0,,N/A,0,True
+2,Dairy Farming & Livestock Practices,cows,438,1.0,,N/A,0,True
+2,Dairy Farming & Livestock Practices,beef,392,0.8354430379746836,,N/A,0,True
+2,Dairy Farming & Livestock Practices,cattle,313,1.0,,N/A,0,True
+2,Dairy Farming & Livestock Practices,feed,295,1.0,,N/A,0,True
+2,Dairy Farming & Livestock Practices,cow,241,1.0,,N/A,0,True
+2,Dairy Farming & Livestock Practices,warming,207,1.0,,N/A,0,True
+2,Dairy Farming & Livestock Practices,atmosphere,155,1.0,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",emissions,1198,1.0,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",farmers,192,1.0,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",sustainable,188,1.0,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",farms,169,1.0,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",ghg,140,0.9761904761904762,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",agricultural,108,0.9855072463768116,,N/A,0,True
+5,"Mitigation, Technology & Sustainability",reduction,105,1.0,,N/A,0,True

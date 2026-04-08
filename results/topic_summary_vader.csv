@@ -1,4 +1,4 @@
 Topic,Label,Top Words,Word Count,Total Freq,Avg Sentiment,Sentiment Label,Sentiment Posts,Topic Relevant,Topic Relevance Score
-1,Emissions & Climate Science,"methane, climate, emissions, dairy, carbon",65,98986,N/A,N/A,0,True,1.0
-2,Dairy Farming & Livestock Practices,"beef, feed, cattle, farming",95,75015,N/A,N/A,0,True,0.9977324263038548
-5,"Mitigation, Technology & Sustainability","please, action, questions, subreddit, concerns",12,6752,N/A,N/A,0,True,0.9545657119119777
+1,Emissions & Climate Science,"climate, livestock, greenhouse, agriculture, farming",27,8747,N/A,N/A,0,True,0.9756613756613757
+2,Dairy Farming & Livestock Practices,"methane, carbon, dairy, cows, beef",44,14542,N/A,N/A,0,True,0.9670886075949368
+5,"Mitigation, Technology & Sustainability","emissions, farmers, sustainable, farms, ghg",69,11873,N/A,N/A,0,True,0.9952380952380953
