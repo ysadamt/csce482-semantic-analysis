@@ -1,0 +1,408 @@
+id,created_date,subreddit,vader_sentiment,vader_sentiment_score,sentiment,sentiment_score,abs_score_diff,raw_text,text_preview
+ooxj7v,2021-07-21,climatechange,positive,0.9998,neutral,-0.0910515487194061,1.0908515487194061,"Podcast ""Climate Change: Humanity's Greatest Challenge, Yet Greatest Opportunity With every passing day, we are all made more aware of the growing challenge of climate change.  Wildfires, floods, and extreme weather events are only becoming more common all over the globe.  Is all hope lost? Does humanity have a chance?  Listen in, and hear about some of the amazing technologies that have the potential to save humanity.  While the situation may seem dire, humanity does have a chance.  Listen in to hear what we must do to overcome the greatest challenge of all time.
+
+Here's the link: [https://anchor.fm/beyondmoney/episodes/Climate-Change-Humanitys-Greatest-Challenge--Yet-Greatest-Opportunity-e14p1fk](https://anchor.fm/beyondmoney/episodes/Climate-Change-Humanitys-Greatest-Challenge--Yet-Greatest-Opportunity-e14p1fk)
+
+Here's the podcast transcript:
+
+Welcome to Beyond Money, the podcast where we discuss the technologies and businesses changing the world.  Today, we’re going to talk about Climate Change, the greatest problem humanity has ever faced.  A problem of our own creation, climate change will impact every single person’s life on this planet.  From the food that we eat, to the water that we drink, these basic necessities as well as our surrounding environments will be dramatically impacted in the future as climate change progressively continues to worsen over the coming decades.  Despite this, there’s a saying I’ve heard numerous times regarding capitalism and business.  “The greater the challenge, the greater the opportunity.”  Despite the enormous challenge and danger Climate Change presents us with, I believe it will be our greatest opportunity to create a beautiful, sustainable, and prosperous future, for all. 
+
+Climate change isn’t a problem in the distant future, it’s a problem that our planet is dealing with right now. I’ve personally witnessed my home town experience the greatest flood it’s seen in over 100 years.  My college of Indiana University just faced one of the worst flash floods in over a century, and we all witnessed the devastating wildfires in Australia in 2020.  Climate change isn’t just wildfires in California or rising sea levels, it’s more extreme and unpredictable weather all over the globe.  It’s no surprise we’re seeing the worst wildfires globally ever, at the same time as the worst flooding ever.  In Pittsburgh, Pennsylvania, my hometown, I’ve witnessed in the middle of December temperatures rapidly fluctuate from 75 degrees and sunny one day to 20 degrees and snowing the next day.  75 degrees in Pittsburgh during the middle of December may sound great, but these extremely volatile weather patterns disrupt natural migration and growth cycles for both plants and animals. These extreme, unpredictable weather patterns will only continue to get worse as the amount of carbon in the atmosphere increases.  The global climate is a delicate balance, and as we continue to emit carbon into the atmosphere, we will slowly destabilize this balance.   We must all, working together, take drastic and rapid action in order to combat climate change.  We cannot be the first generation of people to provide our children with a worse future than ourselves.  I believe that all of us on Earth, working as one united people, can conquer climate change.  Climate change is too grand of a problem for any one nation to solve.  We must all be in this together, because if we aren’t, then the paradise we call Earth will quickly destabilize into a wasteland.
+
+Fixing climate change will require dramatic, radical changes to the way we live on this planet, and it all starts with the very fuel that powers our world, oil. Oil and fossil fuels are destroying our planet, and it’s all because of the way we power our homes, cities, ships, cars, and planes.  While fossil fuels are incredibly energy dense, the way we power our planet must change.  Oil and natural gas still make up over 80% of the US’s energy consumption, and globally, fossil fuels make up 79% of total energy production. However, despite much of the energy production currently being fossil fuels, this is rapidly changing.  In 2019, wind and solar energy represented 72% of all energy capacity installed, meaning the vast majority of companies expanding electricity generation are choosing renewables over fossil fuel alternatives.  This can all be explained by one thing: cost. The cost to produce energy from solar, wind, and other renewables has greatly reduced over the past decade.  For example, the cost to generate electricity from solar energy has dropped from $359/Mwh in 2009 to just $40/Mwh in 2019, an 80% decrease in just 10 years.  Solar went from being the most expensive option to the least expensive option, all within a decade.  Electricity from wind has dramatically lowered in cost as well, with costs decreasing 70% over the same time period from $135/Mwh to $41/MwH. Now, it is cheaper on average to build solar and wind energy, versus ANY other type of energy.  
+
+Now why did this happen?  Max Roser, from Our World in Data, explains: 
+
+“The costs of fossil fuels and nuclear power depend largely on two factors, the price of the fuel that they burn and the power plant’s operating costs.  Renewable energy plants are different: their operating costs are comparatively low and they don’t have to pay for any fuel; their fuel doesn’t have to be dug out of the ground, their fuel – the wind and sunlight – comes to them. What is determining the cost of renewable power is the cost of the power plant, the cost of *the technology itself*.” 
+
+As we can now see, it’s all about economies of scale. As we’ve scaled solar and wind energy production, it’s driven down the cost of those technologies, driving further economies of scale and therefore further demand.  More solar or wind deployment leads to prices falling, which in turn leads to more applications for solar or wind energy, which then leads to further demand and deployment of these technologies.  This positive feedback loop continues indefinitely.  To see this positive feedback loop and it’s dramatic impact, we can simply zoom out and look at the cost of renewable technologies over the long term.  For example, the price of solar modules has decreased 99.6% since 1976.  How dramatic is that! 99.6%!  This is the magic of technology and economies of scale, more growth leads to lower costs, which leads to even more growth.
+
+Now while solar and wind technology are rapidly decreasing in cost, they still have one fundamental flaw.  The sun doesn’t always shine, and the wind doesn’t always blow.  How do we solve this problem, as electricity demand globally is constant, 24 hours a day, 7 days a week.  Fortunately, we have some of the smartest minds working to solve this problem.  Tesla has developed cutting edge battery storage products which will store solar or wind energy in lithium-ion batteries, completely changing everything.  Now, solar energy generated during the day can be stored in these batteries, and distributed for use during night, even when the sun isn’t shining.  A combined solution of solar and wind energy generation with battery storage, now makes this energy available for use, 24/7.  And as battery costs continue to decline, the prospect of such a system only grows more appealing.  This is what gives me hope for the future.  These incredible technologies are becoming more accessible to more regions of the world due to these steep cost declines and fundamental improvements. With the fundamental problem of solar and wind energy now solved with a battery-based energy storage solution, there’s no reason why the entire world can’t be powered by sustainable energy. I’m not saying shut down all fossil fuel plants tomorrow, however, as this would cause a societal collapse.  We still rely on fossil fuels for critical infrastructure in the United States and around the globe.  What I’m truly advocating for is an accelerated push towards sustainable technology, as fast as possible, from everyone.  The technology is ready and here today, it’s all a matter of scaling production and distributing it to the world.
+
+Now obviously scaling such a solution will require an immense amount of resources, talent and capital, yet I believe it will get done since this will be the world’s greatest economic opportunity. There is simply too much money to be made by building and deploying sustainable energy technology, as everyone on the planet will need it. The amount of jobs required to scale production, distribute, and deploy sustainable energy technology will be immense.  I believe scaling sustainable energy technology will generate tens of millions of jobs globally, with many of those jobs being in developing countries.  As these countries modernize and industrialize, they will demand sustainable energy solutions since they will all have rapidly increasing demand for electricity as their populations grow and standards of living rise. Solar and wind plants combined with batteries will be cheaper than any fossil fuel solution, so it’ll be a no-brainer to use sustainable technology solutions in these countries.  All of these regions will need an immense amount of people to distribute and maintain these technologies, which will help the economies of these regions. When fully distributed, sustainable energy technology will bring a rapid expansion of cheap electricity to regions that have never had power.  People in these regions will be able to have access to the internet, clean drinking water, and sanitary food for the first time.  Think of the innovation that will result globally, with these tools now at everyone’s disposal.  It makes it a lot easier to innovate and solve problems when you don’t have to find clean drinking water and food every day.
+
+Now climate change isn’t all about the carbon emissions, although it plays the greatest role.  Our impact can be felt in other ways, such as the fertilizers we use in our agricultural fields and the deforestation activity we engage in to support growing crops, livestock, and other activities. Runoff from our agricultural fields into our rivers and oceans is killing huge amounts of marine life, and all ecosystems are delicate and connected.  Having a diverse ecosystem of life on the planet is crucial to our long-term survival, as diversity of life creates a robust global ecosystem that provides us with a variety of nutrients from various plants and animals.  When we destabilize this delicate global ecosystem, things quickly get out of hand.  Humanity’s overfishing has caused many marine ecosystems to collapse, dramatically reducing the amount of fish in the ocean, as many fish rely on other fish or marine plants to survive.  Fertilizers and other chemicals from human activities are also causing many coastal reef ecosystems to collapse, dramatically reducing the amount of food available for other marine life as well as ourselves.  We must figure out a way to sustainably manage our marine ecosystems, or else this trend will continue to worsen.  As the global population continues to rise, the importance of this will only increase, as we will have to balance an ever-increasing demand for food with a smaller and smaller pool of marine life.  If we eat all of the food in the ocean, we will starve.   We must find a balance.  Every ecosystem on the planet relies on another ecosystem, whether its bears relying on fish from the ocean or plants relying on bees to pollinate them.  As we disrupt this balance by destroying ecosystems, our problems will only continue to worsen.  Luckily for us, innovative companies are coming up with creative solutions to help us with our ever-growing food and protein demands.  We’ll dive deeper into this in the next podcast.
+
+In conclusion, despite the immense problem climate change poses and the deteriorating situation currently, I believe humanity will perservere.  With the world’s greatest talent flocking to companies that solve this problem, I believe in human ingenuity and the belief that anything is possible.  I personally will be taking my talents to a company that fights climate change, as I see no greater cause to fight for.  A future where the Earth is a lush, green paradise, where we breathe clean air and live sustainably is a future I desire, and I strive to help create it. We must attack the problem of climate change from all fronts, not just one vector.  We must eat sustainably, power our homes sustainably, travel sustainably, and manage our surrounding ecosystems sustainably.  Sustainable technologies are rapidly declining in cost and improving, and I believe we will do all of these things. Despite the tough road ahead, I believe that we will prevail, and create a beautiful future as a result.  Don’t lose faith, don’t give up.  Help is on the way, and we will conquer climate change.
+
+I hope you enjoyed the show, and found today’s podcast entertaining and informative.  If you enjoyed the topic of climate change, you’re in for a treat, as the next podcast will dive deep into a company that’s revolutionizing how humanity consumes protein, and saving the planet as a result.  Stay tuned.  We also discussed mostly solar and wind technology solutions, but nuclear is equally if not more promising long-term.  A future podcast will cover innovations in this space and what the future of nuclear power looks like.  Trust me, it’s beyond exciting.
+
+Follow the podcast on Instagram and Twitter u/beyondmoneypod.  There you'll stay up to date on the latest podcasts and relevant news.  If you're interested in stocks and investing, follow me on the social investing app, Public, u/jzaleski.  There, you'll see all the investment moves I'm making and why I'm making them.   If you enjoyed the show, please leave a review.  It greatly helps me out and helps push the podcast out to a greater audience.  I hope you have a fantastic day, and thank you for listening to Beyond Money.","Podcast ""Climate Change: Humanity's Greatest Challenge, Yet Greatest Opportunity With every passing day, we are all made more aware of th..."
+1h0db0u,2024-11-26,ClimateOffensive,positive,0.9998,positive,0.7815314531326294,0.21826854686737063,"using artificial intelligence as a tool to create action plans I thought this was useful, chat GPT prompts with suggestions-
+
+# 1. how can AI help solve climate change?
+
+Artificial Intelligence (AI) can play a significant role in combating climate change in various ways. Here's a breakdown of how AI can contribute to solving this global challenge:
+
+# 1. Optimizing Energy Use and Efficiency
+
+* **Smart Grids**: AI can help optimize electricity distribution, managing energy flow more efficiently and reducing energy waste. By predicting demand and adjusting the supply accordingly, AI can improve grid reliability and decrease the need for fossil fuel-based backup power.
+* **Energy Efficiency in Buildings**: AI can be used in smart buildings to optimize heating, cooling, lighting, and appliance usage based on real-time data, reducing energy consumption and emissions.
+
+# 2. Renewable Energy Management
+
+* **Grid Integration of Renewables**: AI can help balance the fluctuating supply of renewable energy (e.g., solar and wind) with demand by forecasting energy production and consumption, thus improving the reliability of renewable energy sources on the grid.
+* **Predicting Weather Patterns**: AI can enhance weather forecasting models to predict renewable energy availability more accurately, helping to plan energy production and distribution more effectively.
+
+# 3. Climate and Environmental Monitoring
+
+* **Satellite Imagery Analysis**: AI can analyze satellite data to monitor deforestation, land-use changes, and urban expansion, providing critical insights into environmental degradation and climate change impacts.
+* **Real-time Monitoring**: AI can process vast amounts of environmental data, such as air and water quality, temperature, and carbon emissions, enabling real-time monitoring of ecosystems and climate patterns.
+
+# 4. Reducing Carbon Emissions in Industry
+
+* **Industrial Automation**: AI can optimize manufacturing processes to reduce energy consumption and material waste, leading to lower carbon emissions in industries such as steel, cement, and chemicals.
+* **Carbon Capture and Storage (CCS)**: AI models can improve the efficiency of carbon capture technologies, predicting optimal conditions for capturing CO2 emissions and storing them safely.
+
+# 5. Sustainable Agriculture
+
+* **Precision Agriculture**: AI-powered tools can help farmers optimize the use of resources such as water, fertilizers, and pesticides. By using sensors and data analysis, AI can increase crop yields while minimizing environmental impact.
+* **Carbon Sequestration**: AI can help track soil health and optimize agricultural practices for carbon sequestration, turning agricultural lands into carbon sinks.
+
+# 6. Climate Change Mitigation Strategies
+
+* **Carbon Footprint Analysis**: AI can be used to assess and reduce the carbon footprint of organizations, industries, and even entire countries by analyzing supply chains, energy usage, and production methods.
+* **Sustainable Urban Planning**: AI can assist in designing cities with lower emissions by optimizing transportation systems, energy-efficient building designs, and waste management solutions.
+
+# 7. Predicting and Adapting to Climate Change Impacts
+
+* **Disaster Response**: AI can analyze historical climate data and predict extreme weather events (e.g., hurricanes, floods, wildfires), helping authorities prepare for and respond to natural disasters more effectively.
+* **Climate Adaptation Models**: AI can be used to develop models to assess the impacts of climate change on ecosystems, agriculture, and human health, providing guidance on adaptation strategies.
+
+# 8. Supporting Climate Policy and Decision-Making
+
+* **Climate Modeling**: AI can enhance complex climate models by processing large amounts of data and identifying patterns that humans may overlook, helping policymakers understand future climate scenarios and make informed decisions.
+* **Data-Driven Policy**: AI can assist governments and organizations in developing evidence-based climate policies by analyzing large datasets and simulating potential policy impacts.
+
+# 9. Promoting Circular Economy
+
+* **Waste Management**: AI can optimize recycling processes and the management of waste materials, ensuring that products are reused or recycled more efficiently, thus reducing the environmental impact of landfills and incineration.
+* **Supply Chain Optimization**: AI can help optimize supply chains to reduce waste, transportation emissions, and resource consumption by predicting demand and streamlining production processes.
+
+# 10. Public Awareness and Education
+
+* **AI-Powered Platforms**: AI can be used to create interactive platforms that educate the public about climate change, offering personalized recommendations to reduce carbon footprints, such as using less energy or choosing sustainable products.
+* **Behavioral Insights**: AI can analyze consumer behavior and suggest ways to encourage more sustainable habits, such as reducing waste, conserving water, or adopting electric vehicles.
+
+# Challenges and Considerations
+
+While AI holds great potential in combating climate change, there are some challenges to consider:
+
+* **Energy Consumption of AI**: AI itself requires energy to run, and if not managed carefully, this could lead to increased emissions. Optimizing the energy efficiency of AI systems is crucial.
+* **Data Quality and Bias**: AI's effectiveness depends on the quality of data. Poor or biased data can lead to inaccurate predictions or solutions.
+* **Equity**: AI solutions should be accessible to all countries, including developing nations, to ensure equitable distribution of benefits in the fight against climate change.
+
+# 2. how to make climate change appeal to republican voters?
+
+I can assist! I misunderstood your earlier question. Here’s how the climate change issue could be framed to appeal to Republican voters, focusing on values often aligned with conservative principles:
+
+	1.	Economic Opportunities: Highlight how renewable energy can boost the economy, create jobs, and reduce dependence on foreign oil. Point to states like Texas, which leads in wind energy production, as examples of conservative-led clean energy success.
+
+	2.	Energy Independence and National Security: Stress the importance of reducing reliance on foreign energy sources. Clean energy technologies can make the U.S. energy-independent, a goal that resonates with national security concerns.
+
+	3.	Innovation and Free Market Solutions: Emphasize the role of American innovation and entrepreneurship in tackling climate challenges. Focus on market-driven solutions like carbon capture technologies or investments in nuclear energy.
+
+	4.	Conservation and Stewardship: Frame environmental action as part of conserving God’s creation, a value many conservatives hold. Point out how protecting natural resources benefits future generations.
+
+	5.	Resilience and Preparedness: Discuss how addressing climate risks, such as flooding or wildfires, can reduce future costs for taxpayers. Investing in resilient infrastructure is a fiscally responsible approach.
+
+	6.	Local Solutions and States’ Rights: Advocate for empowering states and local governments to take the lead on climate initiatives, rather than relying on federal mandates.
+
+By linking climate action to these values, the conversation can resonate more effectively with Republican voters. Would you like more examples or strategies?
+
+Here are additional strategies and examples for framing climate change in ways that align with Republican values:
+
+1. Boosting Agriculture and Rural Economies
+
+	•	Framing: Highlight how addressing climate change can help farmers and rural communities by protecting crops and livestock from extreme weather.
+
+	•	Examples:  -Programs that reward farmers for adopting sustainable practices like regenerative agriculture or carbon farming (e.g., storing carbon in soil).
+
+\-Renewable energy projects, such as wind farms and solar installations, providing extra income for landowners in rural areas.
+
+2. Reducing Waste and Promoting Efficiency
+
+	•	Framing: Focus on the importance of reducing waste and improving efficiency, principles conservatives often support.
+
+	•	Examples: -Highlight success stories of businesses cutting costs by reducing energy consumption.
+
+\-Promote energy-efficient technologies, like LED lighting or advanced manufacturing systems, that save money for households and companies.
+
+3. Strengthening National Defense
+
+	•	Framing: Stress how climate-related risks, such as rising sea levels and extreme weather, affect military operations and readiness.
+
+	•	Examples: -Discuss how the Department of Defense is already adapting to climate threats, including fortifying bases against flooding and preparing for climate-induced conflicts abroad.
+
+4. Economic Benefits from Clean Energy
+
+	•	Framing: Present clean energy as an opportunity to lead global markets and maintain the U.S.’s competitive edge.
+
+	•	Examples: -Talk about how China is dominating the solar panel market and why the U.S. needs to invest in similar technologies to compete.
+
+\-Point to American companies, like Tesla, creating jobs in innovative energy sectors.
+
+5. Health and Family Well-Being
+
+	•	Framing: Highlight the health benefits of reducing air pollution from fossil fuels, especially for children and vulnerable populations.
+
+	•	Examples: -Cleaner air leading to fewer asthma cases, which reduces healthcare costs and improves quality of life.
+
+\-Local campaigns to transition from coal plants to cleaner energy sources, improving public health in nearby communities.
+
+6. Bipartisan Success Stories
+
+	•	Framing: Showcase examples of Republican-led climate initiatives to inspire action without partisan conflict.
+
+	•	Examples: -The Reagan administration’s efforts to address ozone depletion through the Montreal Protocol.
+
+\-Recent bipartisan efforts like the *Growing Climate Solutions Act*, which helps farmers and foresters access carbon markets.
+
+7. Appealing to Fiscal Conservatism
+
+	•	Framing: Emphasize that ignoring climate risks will cost more in the long run through disaster relief, infrastructure repair, and insurance costs.
+
+	•	Examples: -Show how Florida, under Republican leadership, is investing in sea wall projects to address rising tides, saving money by acting early.
+
+8. Community and Personal Responsibility
+
+	•	Framing: Tie climate solutions to conservative values of responsibility and local empowerment.
+
+	•	Examples:
+
+	•	Encourage community-led initiatives like tree planting or small-scale solar co-ops.
+
+	•	Promote individual actions, such as reducing energy use at home, as a way to “do your part.”
+
+9. Natural Disaster Resilience
+
+	•	Framing: Link climate action to disaster preparedness, which has a direct and visible impact.
+
+	•	Examples:
+
+	•	Advocate for investments in flood defenses, wildfire prevention, and drought-resistant crops.
+
+	•	Frame these investments as practical, life-saving measures, not ideological debates.","using artificial intelligence as a tool to create action plans I thought this was useful, chat GPT prompts with suggestions- # 1. how can..."
+vxgnrv,2022-07-12,ZeroWaste,positive,0.9994,positive,0.8913166522979736,0.10808334770202632,"Why vermicomposting is one of the best things you can do for the planet! I am making this post because a few people have expressed interest. My apologies if it has been posted before but I think it's worth repeating. 
+
+Reasons every household should have a vermicomposter:
+- According to Project Drawdown, ""If food waste is halved in the next 30 years, the world will avoid emitting at least 10 gigatons of carbon dioxide — equivalent to taking 2,570 coal-fired power plants offline.""
+- According to the WWF, ""In the US alone, the production of lost or wasted food generates the equivalent of 32.6 million cars’ worth of greenhouse gas emissions.""
+- Food waste (especially the methane produced as it rots in landfills) contributes massively to greenhouse gas emissions. According to Ourworldindata.com ""To put this in context: it’s around three times the global emissions from aviation. Or, if we were to put it in the context of emissions, it would be the world’s third largest emitter. Only China (21%) and the United States (13%) emitted more.""
+
+
+Why is it better than traditional composting:
+- Less labor intensive, set and more or less forget.
+- It breaks down waste faster (in a thriving vermicomposter my food turns into compost in under 2 weeks) meaning fewer greenhouse gasses and greenhouse gas precursors like nitrogen are released into the atmosphere. Gardening with the castings has also been shown to lock more nitrogen into the soil. 
+- Produces compost and fertilizer that is richer in macro and micro nutrients than traditional composting and much higher in beneficial microbes and mycorrhizae. 
+- Can be done in a small space, even indoors. (A friend did it in a studio apt)
+- It's clean and odor free when managed properly. Does not attract pests to the extent traditional composting does. 
+- Is completely mobile and can easily be moved to a new location.
+- Cheap to set up and can be done with reclaimed materials. 
+- It's a beautiful system that exponentially increases home crop output and worm bin output which in turn provides more yard waste and food scraps for the bin which means more reproduction of the worms, more worm poop means happier worms and more fertilizer output and so on. If you aren't interested in gardening it makes excellent gifts or you can barter with it for home grown foods or sell it.
+- You can have liquid fertilizer from the bin fairly immediately. 
+- This liquid fertilizer was analyzed by a colleague of mine when I worked in a bookstore who was completing her Phd in Bottany at the time. She was tired of me constantly carrying on about it and wanted to shut me up. Instead she came back in amazed wonder and said it was the best fertilizer she had ever analyzed.
+- Vermicompost helps to repel pests from home crops because both the castings and the runnoff contain chitinase, an enzyme that degrades chitin, the substance that comprises the exo-skeletons of most insects. Diluting it and spraying it on the leaves and fruit of crops can do a lot to minimize the use of pesticides. Even organic pesticides have problems. I used this in conjunction with companion planting and had amazing yields. 
+- The castings are absorbed easily by plants and will never burn roots. They tend to slowly release nutrients.
+
+
+There are many ways to do this. You can buy a ready made vermicomposter if you are not the DIY type. Be sure to read reviews, shop around and compare capacity. Also make sure that it's made from high quality materials that will not degrade with exposure to the elements and that are food safe. 
+
+The easiest way to DIY it is to set up a keyhole garden. I have done this with reclaimed materials. You just need a bigger container (like an old wheelbarrow or raised bed) and a smaller container with holes in the bottom and a lid. Burry the smaller container about halfway up in the soil of the larger container. You add your worms to the big container and then start adding food scraps to the small container. Start slowly and give them time to adjust. You should pour a little soil over the top of the food scraps every time you add more. Use either poor soil from garden or just some of the top soil from the larger container. Put plants in large container around small container. Water through small container. Nutrients will wash into larger container. Worms will pull food scraps down into the soil, oxygenating the soil as they go. You NEVER have to till this garden and in fact doing so would be detrimental. This type of garden can have as much as 89% more beneficial microbes than traditional gardening that requires tilling. 
+
+To make your own tiered bin you need:
+- A drill or some way to punch holes that are quite big and won't get clogged (can use a hot screwdriver too but that means melting plastic)
+- Three containers made of sturdy, food safe plastic that are opaque and can stack on top of each other in a way that allows there to be space inside each. I used shipping containers I found at a yard sale for mine. I have also used butcher buckets from a second hand chef supply store. I have seen people do this with bathtubs, containers they built with wood etc. It doesn't have to be plastic but make sure thay what you use isn't going to kill worms, leach chemicals or cause undue acidity in the soil. 
+- Some black and white ripped up newspaper or brown paper or cardboard or dried leaves to act as bedding. Don't use greasy or colored paper bc it might be toxic to worms. 
+- Some dirt.
+- A handful of kitchen scraps or yard clippings that aren't toxic to worms. 
+- Worms (can get from local tackle shop, order online, get from literally anyone who has a vermicomposter but make sure that they are native to your region or gardening with them could cause problems.)
+- Some sort of lid. 
+
+You can get real fancy and add a tap to the bottom (just put it up high enough to avoid silt clogs), add breathing holes and mesh, and raise it up on bricks or something else that allows airflow beneath the bin, but all that is just gravy and I have done this many times successfully without any if these features. You can also go find some horse poop from an animal not treated with vermicides to help your bin get started strong but this is not necessary either. Worms love horse poop and it helps with their overall health and that of the composter by adding the right microbes. 
+
+How it works:
+You will stack the three container on top of each other to create 3 tiers. 
+The top two layers will be where the worms live, the bottom one is for the runoff (aka black gold, worm tea, worm juice, vermicompost liquid.)
+Drill about 20 holes about 1-2 cm in diameter (half an inch if you don't know how logical measuring systems work) in the top two layers. Bottom layer no holes. Then you add about 3-5 cm of the ripped up bedding to the top bin. Then about the same amount of dirt. Then your worms and food scraps and then just enough dirt to cover them up. Cover the container with lid and place in a mild area in or near your home. Wait about 2 weeks. 
+They will take about that long to acclimate to their new environment. Now you can slowly start adding food scraps. Add them to different parts of the bin so you can monitor how quickly they are consuming them and increase the feeding as their needs increase. Avoid digging and turning the soil as much as possible.
+Don't add meat, dairy, bread or baked goods, sugary foods, fatty foods, citrus, pineapple, garlic, salt, tobacco or onion at first. Once the bin is thriving you can experiment with these and add them in moderation with the exception of tobacco, salt and fat. If you are doing this indoors I would avoid all of these altogether as they can cause fowl odors and upset the balance in your bin. 
+
+The bin should always be slightly moist, enough that if you grabbed a handful and squeezed one drop would fall out. You can sprinkle a little water on top if need be, but don't stress about it too much. 
+
+After about 2 to 3 months your bin should be thriving. At this point you can start feeding them as much as you want, just ramp it up to that point slowly. I like to sprinkle a handful of poor soil on top of any fresh food scraps I add. This helps keep fruit flies at bay and gives the worms something to ""swim"" in. It also means that when time comes to use it there's less mixing necessary which means more beneficial microbes preserved. But it also means the layers fill up more quickly so be aware of that. Some people like to chop food up into smaller chunks or even put it through a food processor. This is to keep flies from breading in the composter and is definitely something worth considering if you are doing it indoors. However, fly maggots won't bother the bin and will likely only increase the rate of decomposition. 
+
+When the top bin gets full, move it to the middle. Start filling the new top bin. Worms will migrate to the top bin. When you are confident that most of them are now living in the top you can use the content of the middle bin as compost or mix it into potting soil. These are worm castings (also aka black gold, worm compost and vermicompost.) 
+
+Dilute the run off from bottom bin to 10% strenth and use as fertilizer. It is much higher in available nutrients than chemical fertilizer or any recipe for homemade fertilizer I have found. As mentioned above, this mixture can be sprayed directly on the leaves and fruits of plants intended for human consumption to protect them from pests. Do not spray this on polinator plants if youvare worried about the bees and butterflies. 
+
+If you don't want to garden with it you can also dispose of certain household items like paper products, pet waste or cotton by breaking it up and throwing it in the bin. 
+
+This is something I am very passionate about and I am happy to answer any questions. 
+
+There's a subreddit for r/vermicomposting  
+A great book is ""Worms Eat My Garbage.""
+You can find a lot online about it. I did most of my learning on this subject long before the Internet was what it is today. There's a ton of great stuff on YouTube too. 
+ Hope this inspired someone today!",Why vermicomposting is one of the best things you can do for the planet! I am making this post because a few people have expressed intere...
+1gqp739,2024-11-13,ClimateOffensive,positive,0.9992,neutral,0.036108374595642,0.963091625404358,"Atmospheric Rescue Act (ARA) [Citizen's Draft, work-in-progress] (something like this:)
+
+(This is intended to be the next big follow-on to the IRA/Inflation Reduction Act, and also to either replace or be an adjunct to the Clean Air Act, in the U.S., and can be adopted similarly anywhere:)
+
+3 Targets:
+
+Your Stove
+
+Your Car
+
+Your House
+
+Stoves- are to be replaced with electric.
+
+Cars- are to be replaced with electric.
+
+House- solar panels go on the roof, and/or, green energy of some form, nuclear acceptable, is to replace the local power plant.
+
+Mandates- all designers and producers of gas-using equipment are mandated to begin a sequential phase-out as follows:
+
+\-All equipment currently in design but yet not in production: these designs are to be cancelled. Now you will design electric equipment.
+
+\-All equipment currently in production: you may finish this production run, for now; you must discontinue production no later than one year from now. Ramp-ups during this year, in an attempt to meet investments costs, will be tolerated.
+
+Incentives: incentives will be offered as follows- to help electric-equipment manufacturers ramp-up production of electric equipment, and, to enable lower-income buyers to better afford novel electric equipment. these incentives are to be determined within reasonability of budget considerations.
+
+The People are asked additionally to adopt these guidelines for themselves to every extent possible, to conserve resources of gas-using equipment in the meantime by lowering as much as possible whatever they consider to be non-essential use until full system change has been implemented.
+
+Forward-looking statements:
+
+The next big consideration will be limiting the power available to: data centers in general, and, to AI data centers.
+
+Let us decide first on something: what is a reasonable amount of online storage for each person, on average? How many gigabytes of free online storage should each person get, as offered by free-online-storage companies?
+
+Then: which AI operations yet running are truly of service to us and have passed muster already? Let us chop back lesser attempts and reasonably regulate start-ups. Start-ups with clearly novel uses for AI proposed will be favored.
+
+In general, these two ideas will be applied toward regulating the power-use problems associated with online data centers and AI-specific online data centers.
+
+A starting analogy for data-use determination: if everyone used paper, and you were going to give everyone a free warehouse to store their paperwork in, how big would you make the warehouse? As big as their house? Ten times as big as their house? A hundred times as big as their house? A thousand times as big as their house? Half as big as their house? A quarter as big as their house? To just stuff to the top with paperwork.
+
+Does everyone need to store a thousand times their house's worth of just stuffed, junk paperwork, that they're now storing only because you gave them a big free warehouse to do it in?
+
+Raise your hand if you've ever bothered going through all your online files to determine which should be thrown out and which should be kept, now that you've been given however many gigabytes online to just store old junk files in?
+
+I don't think there is a ""need"", to give everyone many many many gigabytes of free, or paid-for, online storage, just because companies like doing this and people are happy to accept.
+
+For that matter, I'm not sure everyone needs the entirety of their computer files copied over to Microsoft or Google both, or whoever else, in addition to all old emails plus entire contents of older computers and reams of old photos or whatever goes into people's junk collections. Just because it's online doesn't mean it's under the rug! Somewhere a data center is wasting power for that stuff while our environment burns and green energy has not been fully installed. We should relieve the demands on energy while installing green energy, this will make that transition less complicated and more functional off the bat. Let people decide whatever of these products they like most and get the most use out of it, and otherwise, let's chop it back. A reasonable amount of storage, a reasonable degree of hard drive copying.
+
+Further-
+
+rations of beef consumption due to methane concerns- people should take it upon themselves to at least cut back on their beef consumption. bison is a clever substitute as is available by the way, as bison do not have four-chambered stomachs and don't produce the same amount of methane (i think? i need to double check this). beef can also be made more expensive to help this and mandates can be placed on the beef industry to start limiting their operations to certain levels.
+
+rations of airline use since many people consider airline use essential to their jobs and so far there's only gas-powered airplanes. However, electric air vehicles can and should be designed; smaller ones work already. Also, self-driving cars that can drive a person through the night while they sleep might be an interesting future alternative to otherwise making a morning airplane trip.
+
+Other-
+
+there's some other problem with I think gas from certain designs of refrigerator? or air conditioning? i forget which one this is i think its a refrigerator type. these should be phased out.
+
+That (all the above) basically solves the whole problem.
+
+2 other considerations- military and getting everyone else to do the same
+
+military- we have many nuclear-powered assets already. we can transition to relying on these types of vehicles for deterrence. all gas-powered assets can serve a limited continuation period, relative to the civilian stance, while military vehicle designers ultimately have the same mandate: start designing things that can rely on electric power, nuclear is fine, and/or, keep gas/dirty-propellant fired things to some minimum and increasingly reduce them in future designs.
+
+getting other people (around the globe) to do the same thing- ultimately the world looks to the U.S. for leadership. U.S. does it, in time, everyone does it. if we define the state of modernity as being x y and z, then, this is what the modern state is, and everyone will want the same thing or feel outdated. if the electric car is the modern car then everyone will feel that theyre living in the past to drive a gas car.
+
+An example for electric cars- In China, electric cars have caught on because they're more popular, not because anyone forced them to do it. This predicts that in general, anyone who tries an electric car will find it to be the futuristic, modern car, compared to the gas-powered car, and they will no longer want a gas-powered car. Just gotta get them to try it first. As more gas cars become unavailable and more electric cars become available, one day they aren't going to have much to try at a dealership beside electric car models and they'll try it, and they'll realize they like it better and were just being stubborn about trying a new thing. electric car prices should be coming down as more of them become used first and U.S. automakers at some point put out good cheap new electrics second.
+
+this is a draft idea; who cares if it won't be popular yet or isn't officially designated; let's work on it, let's have a draft. feel free to discuss changes or additions you think should be made in the comments. a one-act-fixes-all-environment-problems act.
+
+Addition- considerations for:
+
+\-a phase-out otherwise of all nuclear power by 50 years after this act, to eliminate any future problem of toxic waste or safety concerns of over-reliance on nuclear energy, such that solar and wind will be favored and more-perfected and more-sufficiently-widespread by this date. possible exceptions or modifiers: -that waste be cleverly re-used as lower-tech heating equipment -that exceptions be made perhaps for extreme-condition scientific research labs on earth for nuclear power, such as in antarctica or underwater -that fusion energy, if perfected, safe, and not-significantly-waste-forming, be allowed
+
+\-a phase-out otherwise of all remaining military power-source and warhead assets by 100 years after this act, at which point exceptions or transitions will be made such as: that no earth-based nuclear warhead system be aimed at earth-based targets or intended for use against earth-based targets, and that instead any such system be employed only for anti-asteroid defenses, and by a sort of united earth force -that nuclear power systems otherwise be allowed only for cases of space exploration, transport, research laboratory, and/or colonization purposes.","Atmospheric Rescue Act (ARA) [Citizen's Draft, work-in-progress] (something like this:) (This is intended to be the next big follow-on to..."
+1quf6ki,2026-02-02,ClimateOffensive,positive,0.9991,neutral,-0.059343546628952,1.058443546628952,"climate change Climate change is no longer a distant or abstract problem—it is a reality that is already shaping the world we live in. Across the globe, people are experiencing rising temperatures, stronger storms, shifting seasons, and environmental changes that affect daily life, economic stability, and long-term security. While Earth’s climate has always changed over time, the speed and intensity of current climate change are unlike anything seen in human history. What makes today’s situation especially urgent is that it is largely driven by human activity.
+
+Since the Industrial Revolution, societies have relied heavily on fossil fuels such as coal, oil, and natural gas to power industries, transportation, and homes. At the same time, widespread deforestation and intensive agricultural practices have altered natural ecosystems that once helped regulate the climate. These actions have increased the concentration of greenhouse gases in the atmosphere, trapping heat and disrupting the planet’s natural balance. As a result, climate change has moved from a scientific concern to a social, economic, and moral issue that affects everyone.
+
+The impacts of climate change are already visible. Heatwaves are becoming more frequent, glaciers are melting, sea levels are rising, and ecosystems are shifting in ways that threaten food supplies, public health, and biodiversity. Communities with the fewest resources—often those least responsible for greenhouse gas emissions—are facing the greatest risks. Addressing climate change, therefore, is not only about protecting the environment but also about ensuring fairness, stability, and opportunity for current and future generations.
+
+This essay examines climate change by exploring its scientific foundations, human causes, environmental and societal impacts, political responses, and potential solutions. By looking at climate change through multiple lenses, it becomes clear that while the challenge is immense, there are also meaningful paths forward.
+
+The Science of Climate Change
+
+At the heart of climate change is the greenhouse effect, a natural process that allows life on Earth to exist. Certain gases in the atmosphere—such as carbon dioxide, methane, nitrous oxide, and water vapor—trap some of the heat that the Earth radiates back toward space. This trapped heat keeps the planet warm enough to support ecosystems and human civilization. Without the greenhouse effect, Earth would be a frozen and uninhabitable place.
+
+The problem arises when human activities intensify this effect. By burning fossil fuels and altering land use, people have dramatically increased the amount of greenhouse gases in the atmosphere, particularly carbon dioxide. Scientific evidence from ice cores shows that today’s carbon dioxide levels are higher than they have been in hundreds of thousands of years. This increase has led to a steady rise in global temperatures, a trend commonly referred to as global warming.
+
+Climate scientists study these changes using a combination of direct measurements, historical climate data, and computer models. These models help researchers understand how the atmosphere, oceans, land, and ice interact and how the climate is likely to change under different emission scenarios. While no model can predict the future with absolute certainty, the overwhelming conclusion is clear: continued greenhouse gas emissions will lead to further warming and more severe climate impacts, while reducing emissions can significantly limit the damage.
+
+Human Causes of Climate Change
+
+Human activity is the primary driver of modern climate change. The burning of fossil fuels for electricity, transportation, and industry accounts for the largest share of global greenhouse gas emissions. Every time coal is burned in a power plant or gasoline is used in a car, carbon dioxide is released into the atmosphere, where it can remain for centuries.
+
+Deforestation further worsens the problem. Forests play a critical role in absorbing carbon dioxide, acting as natural buffers against climate change. When trees are cut down or burned, not only is this protective function lost, but the carbon stored in the trees is released back into the atmosphere. Large-scale deforestation, particularly in tropical regions, has significantly reduced the planet’s ability to regulate its own climate.
+
+Agriculture and industry also contribute to climate change in important ways. Livestock produce methane, a powerful greenhouse gas, while fertilizers release nitrous oxide into the air. Industrial activities such as cement production generate additional emissions. Together, these practices show that climate change is deeply connected to the way modern societies produce food, build infrastructure, and sustain economic growth.
+
+Observed Environmental Impacts
+
+The environmental effects of climate change are becoming increasingly difficult to ignore. Rising global temperatures have led to more frequent and intense heatwaves, which pose serious risks to human health and place strain on energy systems. In many regions, extreme heat has become the new normal rather than a rare event.
+
+Melting ice is another clear sign of a warming planet. Glaciers are retreating worldwide, and Arctic sea ice has declined dramatically. As ice melts, sea levels rise, increasing the risk of flooding for coastal communities. At the same time, the loss of reflective ice surfaces causes the Earth to absorb more heat, accelerating the warming process.
+
+Changes in rainfall patterns are also disrupting ecosystems and human activities. Some areas are experiencing heavier rainfall and flooding, while others face prolonged droughts. These shifts affect agriculture, water availability, and natural habitats. Coral reefs, which are highly sensitive to temperature changes, have suffered widespread bleaching as ocean temperatures rise, threatening marine life and the communities that depend on these ecosystems.
+
+Societal and Economic Consequences
+
+Climate change has far-reaching effects on societies and economies. Extreme weather events such as hurricanes, wildfires, floods, and droughts cause enormous financial losses each year. Homes, roads, and businesses are destroyed, and recovery can take years, particularly in communities with limited resources.
+
+Food security is especially vulnerable. Changes in temperature and rainfall affect crop yields, livestock productivity, and fisheries. While some regions may experience short-term gains, prolonged heat and water shortages ultimately reduce agricultural output. Small-scale farmers in developing countries are often the most affected, as they rely heavily on stable weather patterns and have fewer options for adaptation.
+
+Public health is also closely linked to climate change. Heatwaves increase the risk of heat exhaustion and heatstroke, especially among the elderly and those with existing health conditions. Warmer temperatures can expand the range of disease-carrying insects, increasing the spread of illnesses such as malaria and dengue fever. Air pollution from fossil fuel use further worsens respiratory and cardiovascular health problems.
+
+Climate Change and Inequality
+
+One of the most concerning aspects of climate change is the way it deepens existing inequalities. Those who contribute the least to greenhouse gas emissions often face the greatest risks. Low-income countries, indigenous populations, and marginalized communities frequently lack the resources needed to prepare for and recover from climate-related disasters.
+
+Climate-driven displacement is becoming more common as rising sea levels, droughts, and extreme weather force people to leave their homes. These movements can place additional pressure on cities and regions already struggling with limited resources. Addressing climate change therefore requires policies that prioritize fairness and protect vulnerable populations.
+
+There is also a strong intergenerational dimension to climate change. Decisions made today will shape the world inherited by future generations. Continued dependence on fossil fuels places long-term burdens on young people, while investments in sustainable energy and resilient systems offer lasting benefits.
+
+Political and International Responses
+
+Because climate change is a global problem, it requires global cooperation. International agreements such as the Paris Agreement represent important steps toward collective action. By committing to limit global warming and reduce emissions, countries have acknowledged their shared responsibility, even though their individual contributions and capabilities differ.
+
+Despite these efforts, political responses have often been slow and inconsistent. Economic interests, political ideologies, and short-term priorities can delay meaningful action. Some industries resist regulation, arguing that climate policies threaten jobs or economic growth. These tensions highlight the challenge of balancing immediate concerns with long-term environmental stability.
+
+At the same time, progress is being made at local and regional levels. Cities, states, businesses, and community organizations are implementing renewable energy projects, improving efficiency, and advocating for stronger climate policies. These efforts demonstrate that meaningful change does not have to wait for national or international consensus.
+
+Mitigation Strategies
+
+Reducing greenhouse gas emissions is essential for limiting future climate change. Transitioning to renewable energy sources such as solar, wind, and hydropower is one of the most effective ways to cut emissions while meeting energy demands. As technology improves, renewable energy is becoming more affordable and accessible.
+
+Energy efficiency is another powerful tool. Improving the efficiency of buildings, vehicles, and industrial processes reduces energy use and lowers emissions. Policies that encourage efficiency standards and provide incentives for clean technologies can accelerate this transition.
+
+Carbon pricing, through measures such as carbon taxes or cap-and-trade systems, aims to reflect the true environmental cost of emissions. By making pollution more expensive, these policies encourage cleaner alternatives and innovation, even though they can be politically controversial.
+
+Adaptation and Resilience
+
+Even with strong mitigation efforts, some climate impacts are unavoidable. Adaptation focuses on reducing vulnerability and building resilience to these changes. This includes strengthening infrastructure, improving disaster preparedness, and designing cities to cope with extreme weather.
+
+In agriculture, adaptation strategies include developing climate-resistant crops, improving irrigation, and diversifying income sources. Coastal regions can reduce risk by restoring natural barriers such as mangroves and carefully planning development in high-risk areas.
+
+Successful adaptation depends on inclusive decision-making and access to information. When communities are involved in planning and have access to early warning systems and resources, adaptation efforts are more effective and sustainable.
+
+The Role of Individuals and Society
+
+While governments and corporations play a central role in addressing climate change, individual choices also matter. Everyday decisions about energy use, transportation, and consumption collectively influence emissions. Small changes, when adopted widely, can make a meaningful difference.
+
+Education and awareness are critical for building public support for climate action. When people understand how climate change affects their lives, they are more likely to support policies and behaviors that promote sustainability. Youth movements and grassroots activism have been especially influential in bringing urgency and moral clarity to the issue.
+
+At the same time, individual action alone is not enough. Systemic change is needed to ensure that sustainable options are affordable and accessible to everyone. This requires policies that align economic systems with environmental goals.
+
+Conclusion
+
+Climate change is one of the defining challenges of our time. Driven largely by human activity, it is reshaping the planet and affecting societies in complex and unequal ways. The scientific evidence leaves little doubt that continued emissions will lead to more severe consequences, while timely and sustained action can reduce the most serious risks.
+
+Addressing climate change requires a balanced approach that combines emission reductions, adaptation strategies, and a commitment to social justice. Although the task is daunting, it also presents an opportunity to rethink how societies produce energy, manage resources, and care for one another.
+
+The decisions made today will shape the world future generations inherit. By acting with urgency, cooperation, and responsibility, humanity can still build a future in which both people and the planet are able to thrive.",climate change Climate change is no longer a distant or abstract problem—it is a reality that is already shaping the world we live in. Ac...
