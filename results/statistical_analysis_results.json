@@ -8,9 +8,12 @@
     },
     "missing_values": {
       "columns_with_missing": {
-        "upvote_ratio": 2101
+        "title": 2101,
+        "body": 386,
+        "upvote_ratio": 2101,
+        "comments_text": 2721
       },
-      "total_missing_cells": 2101,
+      "total_missing_cells": 7309,
       "clean": false
     },
     "relevance": {
@@ -187,26 +190,26 @@
       "n_total_users": 2533,
       "posts_from_top_users": 2721,
       "top_user_ids": [
-        "8b76f73a21e4b577",
-        "7c7b6efda2a9f680",
-        "525075b17aed1a3e",
-        "df152764a527be35",
-        "959bad26c0c70ed1",
-        "a88280cfb9e91eaa",
-        "15a1d6ae97f5b5d0",
-        "4280551129a33feb",
-        "793c33ce929a48de",
-        "9679a68d3de4b59c",
-        "1f1a721b029acff4",
-        "b725a9b513e45d5e",
-        "9c05486db95129dc",
-        "2ecddd6324fa07ad",
-        "067bd05d0ba98330",
-        "4f22a28097845793",
-        "1bb030da548ca53b",
-        "0da82b1d2e293fa9",
-        "01729bbd9b969104",
-        "34e863d8b15ce11a"
+        "14a2f6fd71c3bf35",
+        "bf07887c5fd66f57",
+        "404467e257e41245",
+        "fdc4025fd6a9531e",
+        "cb099415cab67596",
+        "9185a47271a1782e",
+        "ccfa787970ef0b32",
+        "9610f05558f17b22",
+        "ed8b2cb874c60bf6",
+        "9d9fa7358154b013",
+        "a874d539748d2b64",
+        "0386ab43bf61366b",
+        "261db399897798d0",
+        "c17b611d703396cf",
+        "f712b15b898dc1de",
+        "56908c82a98c46cc",
+        "46875fb942a12b6d",
+        "4411330fcbe9e45f",
+        "c2fef7dc1b92cb06",
+        "0e1af31f5e5c6e64"
       ]
     },
     "full_dataset": {
@@ -1707,19 +1710,19 @@
         "significant": false
       },
       {
-        "word": "half",
-        "coefficient": 0.1914,
-        "odds_ratio": 1.2109,
-        "or_ci_95_lower": 0.9354,
-        "or_ci_95_upper": 1.5676,
-        "significant": false
-      },
-      {
         "word": "massive",
         "coefficient": 0.1914,
         "odds_ratio": 1.2109,
         "or_ci_95_lower": 0.8733,
         "or_ci_95_upper": 1.6792,
+        "significant": false
+      },
+      {
+        "word": "half",
+        "coefficient": 0.1914,
+        "odds_ratio": 1.2109,
+        "or_ci_95_lower": 0.9354,
+        "or_ci_95_upper": 1.5676,
         "significant": false
       },
       {
@@ -2459,19 +2462,19 @@
         "significant": false
       },
       {
-        "word": "grazing",
-        "coefficient": 0.0039,
-        "odds_ratio": 1.0039,
-        "or_ci_95_lower": 0.7508,
-        "or_ci_95_upper": 1.3425,
-        "significant": false
-      },
-      {
         "word": "production",
         "coefficient": 0.0039,
         "odds_ratio": 1.0039,
         "or_ci_95_lower": 0.6839,
         "or_ci_95_upper": 1.4735,
+        "significant": false
+      },
+      {
+        "word": "grazing",
+        "coefficient": 0.0039,
+        "odds_ratio": 1.0039,
+        "or_ci_95_lower": 0.7508,
+        "or_ci_95_upper": 1.3425,
         "significant": false
       },
       {
@@ -2483,19 +2486,19 @@
         "significant": false
       },
       {
-        "word": "know",
-        "coefficient": -0.0046,
-        "odds_ratio": 0.9954,
-        "or_ci_95_lower": 0.7434,
-        "or_ci_95_upper": 1.3328,
-        "significant": false
-      },
-      {
         "word": "out",
         "coefficient": -0.0046,
         "odds_ratio": 0.9954,
         "or_ci_95_lower": 0.7484,
         "or_ci_95_upper": 1.3241,
+        "significant": false
+      },
+      {
+        "word": "know",
+        "coefficient": -0.0046,
+        "odds_ratio": 0.9954,
+        "or_ci_95_lower": 0.7434,
+        "or_ci_95_upper": 1.3328,
         "significant": false
       },
       {
@@ -2579,19 +2582,19 @@
         "significant": false
       },
       {
-        "word": "different",
-        "coefficient": -0.0366,
-        "odds_ratio": 0.9641,
-        "or_ci_95_lower": 0.7175,
-        "or_ci_95_upper": 1.2954,
-        "significant": false
-      },
-      {
         "word": "manure",
         "coefficient": -0.0366,
         "odds_ratio": 0.9641,
         "or_ci_95_lower": 0.7082,
         "or_ci_95_upper": 1.3123,
+        "significant": false
+      },
+      {
+        "word": "different",
+        "coefficient": -0.0366,
+        "odds_ratio": 0.9641,
+        "or_ci_95_lower": 0.7175,
+        "or_ci_95_upper": 1.2954,
         "significant": false
       },
       {
@@ -3059,19 +3062,19 @@
         "significant": false
       },
       {
-        "word": "where",
-        "coefficient": -0.1436,
-        "odds_ratio": 0.8662,
-        "or_ci_95_lower": 0.6459,
-        "or_ci_95_upper": 1.1617,
-        "significant": false
-      },
-      {
         "word": "small",
         "coefficient": -0.1436,
         "odds_ratio": 0.8662,
         "or_ci_95_lower": 0.6535,
         "or_ci_95_upper": 1.1483,
+        "significant": false
+      },
+      {
+        "word": "where",
+        "coefficient": -0.1436,
+        "odds_ratio": 0.8662,
+        "or_ci_95_lower": 0.6459,
+        "or_ci_95_upper": 1.1617,
         "significant": false
       },
       {
@@ -4323,19 +4326,19 @@
         "significant": true
       },
       {
-        "word": "earth",
-        "coefficient": -0.7871,
-        "odds_ratio": 0.4552,
-        "or_ci_95_lower": 0.3317,
-        "or_ci_95_upper": 0.6246,
-        "significant": true
-      },
-      {
         "word": "doesn",
         "coefficient": -0.7871,
         "odds_ratio": 0.4552,
         "or_ci_95_lower": 0.2918,
         "or_ci_95_upper": 0.7099,
+        "significant": true
+      },
+      {
+        "word": "earth",
+        "coefficient": -0.7871,
+        "odds_ratio": 0.4552,
+        "or_ci_95_lower": 0.3317,
+        "or_ci_95_upper": 0.6246,
         "significant": true
       },
       {

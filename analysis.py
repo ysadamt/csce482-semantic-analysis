@@ -138,6 +138,20 @@ def _safe_serializable(obj):
     return obj
 
 
+def _normalize_sentiment_label(raw_label: str) -> Optional[str]:
+    """Normalize model-specific label strings to negative/neutral/positive."""
+    label = str(raw_label).strip().lower()
+
+    if any(token in label for token in ['negative', 'risk', 'pessimistic', 'bear']):
+        return 'negative'
+    if any(token in label for token in ['neutral', 'mixed', 'none']):
+        return 'neutral'
+    if any(token in label for token in ['positive', 'opportunity', 'optimistic', 'bull']):
+        return 'positive'
+
+    return None
+
+
 def extract_keywords_by_sentiment(df: pd.DataFrame,
                                   text_column: str = 'clean_text',
                                   sentiment_column: str = 'sentiment',
@@ -208,9 +222,41 @@ class SentimentAnalyzer:
         self.config = AutoConfig.from_pretrained(model_name)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_name)
         self.model.eval()
-        
-        self.label_map = {0: 'negative', 1: 'neutral', 2: 'positive'}
+
+        self.label_map = self._build_label_map()
         print("✅ Sentiment model loaded")
+
+    def _build_label_map(self) -> Dict[int, str]:
+        """Resolve model id2label to a stable negative/neutral/positive mapping."""
+        id2label = getattr(self.config, 'id2label', None) or {}
+        parsed = {}
+
+        for raw_idx, raw_label in id2label.items():
+            try:
+                idx = int(raw_idx)
+            except Exception:
+                continue
+            parsed[idx] = str(raw_label)
+
+        if not parsed and getattr(self.config, 'num_labels', 0) > 0:
+            for idx in range(int(self.config.num_labels)):
+                parsed[idx] = f'label_{idx}'
+
+        resolved = {}
+        for idx, raw_label in parsed.items():
+            normalized = _normalize_sentiment_label(raw_label)
+            if normalized is not None:
+                resolved[idx] = normalized
+
+        # Backward-compatible fallback for 3-class sentiment models.
+        fallback_order = {0: 'negative', 1: 'neutral', 2: 'positive'}
+        for idx in sorted(parsed.keys()):
+            resolved.setdefault(idx, fallback_order.get(idx, 'neutral'))
+
+        if not resolved:
+            resolved = {0: 'negative', 1: 'neutral', 2: 'positive'}
+
+        return resolved
     
     def _preprocess_for_model(self, text: str) -> str:
         """Preprocess text for twitter-roberta."""
@@ -2537,6 +2583,37 @@ def run_full_analysis(df: pd.DataFrame,
         print(f"   ⚠️ VADER full inference failed: {e}")
         results['vader_inference_error'] = str(e)
 
+    # ===== Step 1D: ClimateBERT Cross-Check Inference =====
+    print("\n🌍 Step 1D: ClimateBERT Cross-Check Inference")
+    print("-" * 40)
+    climatebert_available = False
+    try:
+        climatebert_model = SentimentAnalyzer(
+            model_name='climatebert/distilroberta-base-climate-sentiment'
+        )
+        climatebert_results = climatebert_model.predict_sentiment(df[text_column].tolist())
+        climatebert_results = climatebert_results.rename(columns={
+            'sentiment': 'climatebert_sentiment',
+            'confidence': 'climatebert_confidence',
+            'prob_negative': 'climatebert_prob_negative',
+            'prob_neutral': 'climatebert_prob_neutral',
+            'prob_positive': 'climatebert_prob_positive',
+            'sentiment_score': 'climatebert_sentiment_score',
+        })
+        for col in climatebert_results.columns:
+            df[col] = climatebert_results[col].values
+
+        climatebert_available = True
+        climatebert_dist = df['climatebert_sentiment'].value_counts()
+        print("   ClimateBERT sentiment distribution:")
+        for sent, count in climatebert_dist.items():
+            print(f"      {sent.capitalize()}: {count} ({count/len(df)*100:.1f}%)")
+        results['climatebert_sentiment_distribution'] = climatebert_dist.to_dict()
+        results['climatebert_mean_sentiment_score'] = float(df['climatebert_sentiment_score'].mean())
+    except Exception as e:
+        print(f"   ⚠️ ClimateBERT full inference failed: {e}")
+        results['climatebert_inference_error'] = str(e)
+
     # Representativeness and potential bias disclosure
     representativeness = {}
     if 'subreddit' in df.columns:
@@ -2808,7 +2885,7 @@ def run_full_analysis(df: pd.DataFrame,
         }
     }
 
-    # ===== Step 7: VADER Graph Suite =====
+    # ===== Step 7: Alternate Model Graph Suites =====
     if vader_available:
         print(f"\n🖼️ Step 7: VADER Graph Suite")
         print("-" * 40)
@@ -2824,6 +2901,22 @@ def run_full_analysis(df: pd.DataFrame,
         )
         results['vader_graph_suite'] = vader_summary
         print("   ✅ Saved VADER versions of all primary result graphs")
+
+    if climatebert_available:
+        print(f"\n🖼️ Step 8: ClimateBERT Graph Suite")
+        print("-" * 40)
+        df_climatebert = df.copy()
+        df_climatebert['sentiment'] = df_climatebert['climatebert_sentiment']
+        df_climatebert['sentiment_score'] = df_climatebert['climatebert_sentiment_score']
+        climatebert_summary = generate_model_graph_suite(
+            df_model=df_climatebert,
+            text_column=text_column,
+            date_column=date_column,
+            output_dir=output_dir,
+            model_tag='climatebert'
+        )
+        results['climatebert_graph_suite'] = climatebert_summary
+        print("   ✅ Saved ClimateBERT versions of all primary result graphs")
     
     # ===== Save Results Summary =====
     results_path = os.path.join(output_dir, 'analysis_results.json')

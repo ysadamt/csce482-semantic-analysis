@@ -60,6 +60,12 @@
     "neutral": 470
   },
   "vader_mean_sentiment_score": 0.15203752296949652,
+  "climatebert_sentiment_distribution": {
+    "neutral": 1629,
+    "positive": 561,
+    "negative": 531
+  },
+  "climatebert_mean_sentiment_score": -0.002770817784872488,
   "representativeness": {
     "subreddit_distribution": {
       "environment": 354,
@@ -2037,6 +2043,60 @@
         "pct_neutral": -0.15368620415710282,
         "pct_positive": 0.8292442367616175,
         "net_sentiment": 0.8978868643591901,
+        "avg_sentiment": 1.0
+      }
+    }
+  },
+  "climatebert_graph_suite": {
+    "n_posts": 2721,
+    "topic_count": 3,
+    "correlation_matrix": {
+      "volume": {
+        "volume": 1.0,
+        "pct_negative": 0.08898468598138425,
+        "pct_neutral": -0.06984894560725953,
+        "pct_positive": -0.0038373318602902464,
+        "net_sentiment": -0.05733429111295826,
+        "avg_sentiment": 0.028067729311586822
+      },
+      "pct_negative": {
+        "volume": 0.08898468598138425,
+        "pct_negative": 1.0,
+        "pct_neutral": -0.5863301159544224,
+        "pct_positive": -0.2786086461531569,
+        "net_sentiment": -0.7935257212726656,
+        "avg_sentiment": 0.7396796554403797
+      },
+      "pct_neutral": {
+        "volume": -0.06984894560725953,
+        "pct_negative": -0.5863301159544224,
+        "pct_neutral": 1.0,
+        "pct_positive": -0.6146405383274791,
+        "net_sentiment": -0.027690654521517845,
+        "avg_sentiment": 0.014565212424957615
+      },
+      "pct_positive": {
+        "volume": -0.0038373318602902464,
+        "pct_negative": -0.2786086461531569,
+        "pct_neutral": -0.6146405383274791,
+        "pct_positive": 1.0,
+        "net_sentiment": 0.8055246560143876,
+        "avg_sentiment": -0.737530831499918
+      },
+      "net_sentiment": {
+        "volume": -0.05733429111295826,
+        "pct_negative": -0.7935257212726656,
+        "pct_neutral": -0.027690654521517845,
+        "pct_positive": 0.8055246560143876,
+        "net_sentiment": 1.0,
+        "avg_sentiment": -0.9236947889446777
+      },
+      "avg_sentiment": {
+        "volume": 0.028067729311586822,
+        "pct_negative": 0.7396796554403797,
+        "pct_neutral": 0.014565212424957615,
+        "pct_positive": -0.737530831499918,
+        "net_sentiment": -0.9236947889446777,
         "avg_sentiment": 1.0
       }
     }

@@ -1,0 +1,22 @@
+id,created_date,subreddit,climatebert_sentiment,climatebert_sentiment_score,sentiment,sentiment_score,abs_score_diff,raw_text,text_preview
+15slnru,2023-08-16,environment,positive,0.9691140609793365,neutral,0.0234182253479957,0.9456958356313409,Southeast Asia turns to alternative meats as fight against climate change ramps up. Each dollar invested in the production of meat and dairy alternatives resulted in seven times more greenhouse gas reductions than green buildings and eleven times more than zero-emission cars,Southeast Asia turns to alternative meats as fight against climate change ramps up. Each dollar invested in the production of meat and da...
+bnsw4a,2019-05-12,ClimateOffensive,positive,0.9690915076062083,positive,0.955322265625,0.013769241981208324,"This Mother’s Day, give your mom the best gift of all: the opportunity to make a better world for her grandkids by giving you money! Okay, maybe it’s not a great Mother’s Day present, but you should still share our fundraiser with your family and friends!
+
+We’re raising money to help the Climate Foundation build the first kelp platform off the coast of Tasmania. Kelp is one of the most efficient ways to sequester carbon, replenish ecosystems, and deacidify the oceans. It also has a ton of consumer applications, from biofuels to cow feed that significantly reduces their methane production.
+
+Here’s the donation link: https://www.theintrepidfoundation.org/climateoffensive-1
+
+100% of donations go toward the project’s $350K goal, and all donations are matched by the Intrepid Foundation.","This Mother’s Day, give your mom the best gift of all: the opportunity to make a better world for her grandkids by giving you money! Okay..."
+16uka54,2023-09-28,EverythingScience,positive,0.962999623734504,neutral,0.2986258268356323,0.6643737968988717,"Can Microbes Save the Planet? - Genetic engineering and accelerated evolution of microbes aim to help climate change by reducing methane emissions from livestock, producing chemicals sustainably, aiding crop growth, and biodegrading plastics.
+
+- Researchers are using precision genome editing and CRISPR-Cas gene editing to directly edit the microbes within the stomach of young livestock to produce less methane.
+
+- Engineered microbes can also produce chemicals sustainably, at scale, and without the need for toxic solvents or gases.
+
+- Microbes are being engineered to replace synthetic nitrogen used as fertilizers, reducing inefficiency and water pollution.
+
+- Microbes that can biodegrade plastics and respond to pollutants are being harnessed for large-scale use.
+
+- Scalability and cost are challenges in implementing these solutions, but combining genetic engineering, accelerated evolution, and artificial intelligence can be effective.",Can Microbes Save the Planet? - Genetic engineering and accelerated evolution of microbes aim to help climate change by reducing methane ...
+9xcm7v,2018-11-15,science,positive,0.9618810187093914,positive,0.6853042840957642,0.2765767346136272,"Researchers have demonstrated for the first time that raw human excrement can potentially be converted to a safe, reusable fuel and a nutrient rich fertilizer. Heating the waste could improve sanitation and provide a reusable energy source","Researchers have demonstrated for the first time that raw human excrement can potentially be converted to a safe, reusable fuel and a nut..."
+y7daou,2022-10-18,environment,positive,0.9587892408017069,neutral,0.0308076441287994,0.9279815966729075,"As part of reducing its carbon footprint, British energy giant BP said it would buy for $4.1 billion the U.S. biogas company Archaea Energy, which produces renewable gas — mostly methane — from livestock, food and landfill wastes.","As part of reducing its carbon footprint, British energy giant BP said it would buy for $4.1 billion the U.S. biogas company Archaea Ener..."
