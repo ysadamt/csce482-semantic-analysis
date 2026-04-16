@@ -116,7 +116,6 @@ class RedditDataExtractor:
     def enrich_comments_for_dataframe(self,
                                       df: pd.DataFrame,
                                       id_column: str = 'id',
-                                      content_type_column: str = 'content_type',
                                       comments_column: str = 'comments_text',
                                       comments_count_column: str = 'comments_collected_count',
                                       max_comments_per_post: int = 10,
@@ -153,7 +152,6 @@ class RedditDataExtractor:
             self.attrition_log['comment_enrichment_failed_posts'] = 0
             self.attrition_log['comment_enrichment_total_comments'] = 0
             self.attrition_log['comment_enrichment_skipped_existing'] = 0
-            self.attrition_log['comment_enrichment_skipped_non_post_rows'] = 0
             self.attrition_log['comment_enrichment_skipped_zero_comment_posts'] = 0
             self.attrition_log['comment_enrichment_avg_comments_per_attempted_post'] = 0.0
             return df_out
@@ -162,7 +160,6 @@ class RedditDataExtractor:
         failed = 0
         total_comments = 0
         skipped_existing = 0
-        skipped_non_post_rows = 0
         skipped_zero_comment_posts = 0
 
         print("\nCollecting comments for existing posts (no rescrape)...")
@@ -170,14 +167,6 @@ class RedditDataExtractor:
         # Build an explicit worklist so we can batch submission lookups.
         targets = []
         for row_num, (idx, row) in enumerate(df_out.iterrows(), start=1):
-            if content_type_column in df_out.columns:
-                content_type = str(row.get(content_type_column, 'post')).strip().lower()
-                if content_type and content_type != 'post':
-                    skipped_non_post_rows += 1
-                    df_out.at[idx, comments_column] = ''
-                    df_out.at[idx, comments_count_column] = 0
-                    continue
-
             post_id = str(row[id_column]).strip()
             existing_text = row.get(comments_column, '')
             has_existing = isinstance(existing_text, str) and existing_text.strip() != ''
@@ -253,9 +242,6 @@ class RedditDataExtractor:
         self.attrition_log['comment_enrichment_failed_posts'] = int(failed)
         self.attrition_log['comment_enrichment_total_comments'] = int(total_comments)
         self.attrition_log['comment_enrichment_skipped_existing'] = int(skipped_existing)
-        self.attrition_log['comment_enrichment_skipped_non_post_rows'] = int(
-            skipped_non_post_rows
-        )
         self.attrition_log['comment_enrichment_skipped_zero_comment_posts'] = int(
             skipped_zero_comment_posts
         )
@@ -319,13 +305,13 @@ class RedditDataExtractor:
         Args:
             queries: List of search queries
             subreddits: List of subreddits to search (default: ['all'])
-            target_count: Target number of output rows
+            target_count: Target number of unique posts
             start_date: Filter posts from this date onwards
             end_date: Filter posts until this date
             sort_methods: Reddit sort methods
             time_filters: Time filter options
-            include_comments: Whether to emit comments as separate rows
-            max_comments_per_post: Maximum number of comments emitted per post
+            include_comments: Whether to include comments in `comments_text`
+            max_comments_per_post: Maximum number of comments captured per post
             fast_mode: Reduce search breadth for quicker extraction
         
         Returns:
@@ -374,13 +360,9 @@ class RedditDataExtractor:
         print(f"\n{'='*60}")
         print("REDDIT DATA EXTRACTION - PHASE 1")
         print(f"{'='*60}")
-        print(f"Target: {target_count} output rows (posts + comments)")
+        print(f"Target: {target_count} unique posts")
         print(f"Candidate pool target: {candidate_target} posts")
         print(f"Fast mode: {'ON' if fast_mode else 'OFF'}")
-        if include_comments and max_comments_per_post > 0:
-            print("Row mode: comments are emitted as rows and count toward target")
-        else:
-            print("Row mode: posts only")
         print(f"Date range: {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}")
         print(f"Queries: {len(queries)}")
         print(f"Subreddits: {', '.join(subreddits)}")
@@ -624,40 +606,23 @@ class RedditDataExtractor:
             self.attrition_log['temporal_balance_after'] = after_year_dist
             self.attrition_log['temporal_balance_enabled'] = True
 
-        # Assemble final rows. Comments are emitted as their own rows and
-        # count toward the same target_count budget as posts.
-        final_rows = []
-        post_rows_added = 0
-        comment_rows_added = 0
+        # Enrich final selected posts with comments after sampling to avoid throttling search throughput.
+        if include_comments and len(df) > 0 and max_comments_per_post > 0:
+            print("\nCollecting comments for selected posts...")
+            comments_texts = []
+            comments_counts = []
 
-        if len(df) > 0:
-            if include_comments and max_comments_per_post > 0:
-                print("\nCollecting comments and assembling post/comment rows...")
-            else:
-                print("\nAssembling post rows...")
+            # Skip expensive calls for posts that already report no comments.
+            id_to_num_comments = {
+                str(row['id']): int(row.get('num_comments', 0))
+                for _, row in df[['id', 'num_comments']].iterrows()
+            }
 
-            for idx, post_row in enumerate(df.to_dict('records'), start=1):
-                if len(final_rows) >= target_count:
-                    break
-
-                post_id = str(post_row.get('id', ''))
-
-                post_record = dict(post_row)
-                post_record['content_type'] = 'post'
-                post_record['parent_post_id'] = post_id
-                post_record['comments_text'] = ''
-                post_record['comments_collected_count'] = 0
-                final_rows.append(post_record)
-                post_rows_added += 1
-
-                if not include_comments or max_comments_per_post <= 0:
-                    continue
-
-                num_comments_value = post_row.get('num_comments', 0)
-                try:
-                    if int(num_comments_value) <= 0:
-                        continue
-                except Exception:
+            for idx, post_id in enumerate(df['id'].tolist(), start=1):
+                post_id = str(post_id)
+                if id_to_num_comments.get(post_id, 0) <= 0:
+                    comments_texts.append('')
+                    comments_counts.append(0)
                     continue
 
                 comment_fetch_attempted_posts += 1
@@ -665,60 +630,25 @@ class RedditDataExtractor:
                     submission = post_cache.get(post_id)
                     if submission is None:
                         submission = self.reddit.submission(id=post_id)
-
                     comments, fetch_failed = self._collect_comments(
                         submission,
                         max_comments=max_comments_per_post
                     )
                     if fetch_failed:
                         comment_fetch_failed_posts += 1
-
                     comment_fetch_total_comments += len(comments)
-                    post_record['comments_collected_count'] = len(comments)
-
-                    for comment_idx, comment_text in enumerate(comments, start=1):
-                        if len(final_rows) >= target_count:
-                            break
-
-                        comment_record = dict(post_row)
-                        comment_record['id'] = f"{post_id}_c{comment_idx}"
-                        comment_record['raw_text'] = comment_text
-                        comment_record['title'] = ''
-                        comment_record['body'] = comment_text
-                        comment_record['score'] = 0
-                        comment_record['upvote_ratio'] = np.nan
-                        comment_record['num_comments'] = 0
-                        comment_record['engagement_total'] = 0
-                        comment_record['permalink'] = (
-                            f"{post_row.get('permalink', '')}#comment-{comment_idx}"
-                        )
-                        comment_record['author_id_hash'] = self._hash_user_id(
-                            f"comment_{post_id}_{comment_idx}"
-                        )
-                        comment_record['comments_text'] = ''
-                        comment_record['comments_collected_count'] = 0
-                        comment_record['content_type'] = 'comment'
-                        comment_record['parent_post_id'] = post_id
-
-                        final_rows.append(comment_record)
-                        comment_rows_added += 1
+                    comments_texts.append(" || ".join(comments))
+                    comments_counts.append(len(comments))
                 except Exception:
                     comment_fetch_failed_posts += 1
+                    comments_texts.append('')
+                    comments_counts.append(0)
 
                 if idx % 500 == 0:
-                    print(
-                        f"  assembled {len(final_rows)}/{target_count} rows "
-                        f"from {idx}/{len(df)} candidate posts"
-                    )
+                    print(f"  comments enriched for {idx}/{len(df)} posts")
 
-        if len(final_rows) > 0:
-            df = pd.DataFrame(final_rows)
-        else:
-            df = df.head(0).copy()
-            if 'content_type' not in df.columns:
-                df['content_type'] = pd.Series(dtype='object')
-            if 'parent_post_id' not in df.columns:
-                df['parent_post_id'] = pd.Series(dtype='object')
+            df['comments_text'] = comments_texts
+            df['comments_collected_count'] = comments_counts
 
         self.attrition_log['comment_fetch_enabled'] = bool(include_comments)
         self.attrition_log['comment_fetch_max_per_post'] = int(max_comments_per_post)
@@ -729,21 +659,16 @@ class RedditDataExtractor:
             float(comment_fetch_total_comments / comment_fetch_attempted_posts)
             if comment_fetch_attempted_posts > 0 else 0.0
         )
-        self.attrition_log['comment_rows_added'] = int(comment_rows_added)
         
         # Record attrition from extraction phase
         self.attrition_log['N0_raw_extracted'] = total_attempts
-        self.attrition_log['N1_after_date_filter'] = int(len(df))
-        self.attrition_log['N1_total_records'] = int(len(df))
-        self.attrition_log['N1_unique_posts'] = int(post_rows_added)
-        self.attrition_log['N1_comment_rows'] = int(comment_rows_added)
+        self.attrition_log['N1_after_date_filter'] = len(df)
+        self.attrition_log['N1_unique_posts'] = len(df)
         
         print(f"\n{'='*60}")
         print(f"✅ EXTRACTION COMPLETE")
         print(f"   Total API hits: {total_attempts}")
-        print(f"   Total rows collected: {len(df)}")
-        print(f"   Post rows: {post_rows_added}")
-        print(f"   Comment rows: {comment_rows_added}")
+        print(f"   Unique posts collected: {len(df)}")
         print(f"   Date range achieved: {df['created_date'].min()} to {df['created_date'].max()}" 
               if len(df) > 0 else "   No posts collected")
         if len(df) > 0:
@@ -863,21 +788,11 @@ class RedditDataExtractor:
         with open(attrition_path, 'w') as f:
             json.dump(self.attrition_log, f, indent=2)
         paths['attrition_log'] = attrition_path
-
-        if 'content_type' in df.columns and len(df) > 0:
-            content_types = df['content_type'].fillna('post').astype(str).str.lower()
-            total_post_rows = int((content_types == 'post').sum())
-            total_comment_rows = int((content_types == 'comment').sum())
-        else:
-            total_post_rows = int(len(df))
-            total_comment_rows = 0
         
         # Generate extraction summary
         summary = {
             "extraction_date": timestamp,
-            "total_records": int(len(df)),
-            "total_posts": total_post_rows,
-            "total_comment_rows": total_comment_rows,
+            "total_posts": len(df),
             "date_range": {
                 "start": df['created_date'].min() if len(df) > 0 else None,
                 "end": df['created_date'].max() if len(df) > 0 else None
@@ -958,7 +873,7 @@ def extract_reddit_data(target_count: int = 3000,
     Convenience function to run full extraction pipeline.
     
     Args:
-        target_count: Target output rows (posts + comments, 2500-3000 recommended)
+        target_count: Target number of posts (2500-3000 recommended)
         start_year: Start year for data collection (2018 default)
         include_comments: Include comments in extraction output
         max_comments_per_post: Maximum comments captured per post
@@ -1003,18 +918,8 @@ if __name__ == "__main__":
     
     # Print summary
     if len(df) > 0:
-        if 'content_type' in df.columns:
-            content_types = df['content_type'].fillna('post').astype(str).str.lower()
-            total_post_rows = int((content_types == 'post').sum())
-            total_comment_rows = int((content_types == 'comment').sum())
-        else:
-            total_post_rows = int(len(df))
-            total_comment_rows = 0
-
         print("\n📊 EXTRACTION SUMMARY:")
-        print(f"   Total rows: {len(df)}")
-        print(f"   Post rows: {total_post_rows}")
-        print(f"   Comment rows: {total_comment_rows}")
+        print(f"   Total posts: {len(df)}")
         print(f"   Date range: {df['created_date'].min()} to {df['created_date'].max()}")
         print(f"   Unique subreddits: {df['subreddit'].nunique()}")
         print(f"\n   Top subreddits:")
