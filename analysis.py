@@ -350,6 +350,147 @@ class VaderCrossCheckAnalyzer:
         return pd.DataFrame(rows)
 
 
+def build_weighted_sentiment_ensemble(
+    df: pd.DataFrame,
+    base_weights: Optional[Dict[str, float]] = None,
+) -> Tuple[pd.DataFrame, Dict]:
+    """
+    Build a confidence-aware weighted ensemble from available sentiment models.
+
+    The function looks for model probability columns already attached to ``df`` and
+    combines them into a single ensemble probability distribution.
+    At least two models must be available.
+    """
+    model_columns = {
+        'roberta': {
+            'confidence': 'confidence',
+            'sentiment': 'sentiment',
+            'prob_negative': 'prob_negative',
+            'prob_neutral': 'prob_neutral',
+            'prob_positive': 'prob_positive',
+        },
+        'climatebert': {
+            'confidence': 'climatebert_confidence',
+            'sentiment': 'climatebert_sentiment',
+            'prob_negative': 'climatebert_prob_negative',
+            'prob_neutral': 'climatebert_prob_neutral',
+            'prob_positive': 'climatebert_prob_positive',
+        },
+        'vader': {
+            'confidence': 'vader_confidence',
+            'sentiment': 'vader_sentiment',
+            'prob_negative': 'vader_prob_negative',
+            'prob_neutral': 'vader_prob_neutral',
+            'prob_positive': 'vader_prob_positive',
+        },
+    }
+
+    default_weights = {
+        'roberta': 0.40,
+        'climatebert': 0.40,
+        'vader': 0.20,
+    }
+    if base_weights is None:
+        base_weights = default_weights
+
+    available_models = []
+    for model_name, cols in model_columns.items():
+        prob_cols = [cols['prob_negative'], cols['prob_neutral'], cols['prob_positive']]
+        if all(col in df.columns for col in prob_cols):
+            available_models.append(model_name)
+
+    if len(available_models) < 2:
+        raise ValueError(
+            "Need probabilities from at least two models to build ensemble. "
+            f"Available models: {available_models}"
+        )
+
+    # Keep only positive weights for available models and renormalize fallback if needed.
+    weight_map = {
+        model: max(0.0, float(base_weights.get(model, default_weights.get(model, 0.0))))
+        for model in available_models
+    }
+    if sum(weight_map.values()) <= 0:
+        equal_w = 1.0 / len(available_models)
+        weight_map = {model: equal_w for model in available_models}
+
+    out = df.copy()
+    total_weight = pd.Series(np.zeros(len(out), dtype=float), index=out.index)
+    weighted_negative = pd.Series(np.zeros(len(out), dtype=float), index=out.index)
+    weighted_neutral = pd.Series(np.zeros(len(out), dtype=float), index=out.index)
+    weighted_positive = pd.Series(np.zeros(len(out), dtype=float), index=out.index)
+    effective_weights: Dict[str, pd.Series] = {}
+
+    for model_name in available_models:
+        cols = model_columns[model_name]
+
+        # Row-level confidence scales model contribution without fully zeroing it out.
+        conf_col = cols['confidence']
+        if conf_col in out.columns:
+            confidence = pd.to_numeric(out[conf_col], errors='coerce').fillna(0.5).clip(0.0, 1.0)
+        else:
+            confidence = pd.Series(np.full(len(out), 0.5), index=out.index, dtype=float)
+
+        row_weight = float(weight_map[model_name]) * (0.5 + 0.5 * confidence)
+        effective_weights[model_name] = row_weight
+
+        p_neg = pd.to_numeric(out[cols['prob_negative']], errors='coerce').fillna(0.0).clip(0.0, 1.0)
+        p_neu = pd.to_numeric(out[cols['prob_neutral']], errors='coerce').fillna(0.0).clip(0.0, 1.0)
+        p_pos = pd.to_numeric(out[cols['prob_positive']], errors='coerce').fillna(0.0).clip(0.0, 1.0)
+
+        model_prob_sum = p_neg + p_neu + p_pos
+        model_prob_sum = model_prob_sum.where(model_prob_sum > 0.0, 1.0)
+        p_neg = p_neg / model_prob_sum
+        p_neu = p_neu / model_prob_sum
+        p_pos = p_pos / model_prob_sum
+
+        total_weight = total_weight + row_weight
+        weighted_negative = weighted_negative + (row_weight * p_neg)
+        weighted_neutral = weighted_neutral + (row_weight * p_neu)
+        weighted_positive = weighted_positive + (row_weight * p_pos)
+
+    total_weight = total_weight.where(total_weight > 0.0, 1.0)
+    ens_neg = weighted_negative / total_weight
+    ens_neu = weighted_neutral / total_weight
+    ens_pos = weighted_positive / total_weight
+
+    ens_sum = ens_neg + ens_neu + ens_pos
+    ens_sum = ens_sum.where(ens_sum > 0.0, 1.0)
+    ens_neg = ens_neg / ens_sum
+    ens_neu = ens_neu / ens_sum
+    ens_pos = ens_pos / ens_sum
+
+    stacked = np.column_stack([ens_neg.values, ens_neu.values, ens_pos.values])
+    label_lookup = np.array(['negative', 'neutral', 'positive'])
+    pred_idx = stacked.argmax(axis=1)
+
+    out['ensemble_prob_negative'] = ens_neg
+    out['ensemble_prob_neutral'] = ens_neu
+    out['ensemble_prob_positive'] = ens_pos
+    out['ensemble_sentiment'] = label_lookup[pred_idx]
+    out['ensemble_confidence'] = stacked.max(axis=1)
+    out['ensemble_sentiment_score'] = ens_pos - ens_neg
+
+    details = {
+        'models_used': available_models,
+        'base_weights': {k: float(v) for k, v in weight_map.items()},
+        'mean_effective_weight': {},
+    }
+
+    for model_name in available_models:
+        model_share = (effective_weights[model_name] / total_weight).mean()
+        details['mean_effective_weight'][model_name] = float(model_share)
+
+        sentiment_col = model_columns[model_name]['sentiment']
+        if sentiment_col in out.columns:
+            agreement = (
+                out[sentiment_col].astype(str).str.lower() == out['ensemble_sentiment'].astype(str).str.lower()
+            ).mean()
+            details[f'agreement_with_{model_name}'] = float(agreement)
+
+    return out, details
+
+
 class TrendAnalysis:
     """
     Trend-Based Temporal Sentiment Analysis.
@@ -2614,6 +2755,30 @@ def run_full_analysis(df: pd.DataFrame,
         print(f"   ⚠️ ClimateBERT full inference failed: {e}")
         results['climatebert_inference_error'] = str(e)
 
+    # ===== Step 1E: Ensemble Sentiment Inference =====
+    print("\n🧩 Step 1E: Ensemble Sentiment (RoBERTa + ClimateBERT + VADER)")
+    print("-" * 40)
+    ensemble_available = False
+    try:
+        df, ensemble_details = build_weighted_sentiment_ensemble(df)
+        ensemble_available = True
+
+        ensemble_dist = df['ensemble_sentiment'].value_counts()
+        print("   Ensemble sentiment distribution:")
+        for sent, count in ensemble_dist.items():
+            print(f"      {sent.capitalize()}: {count} ({count/len(df)*100:.1f}%)")
+
+        print("   Models used:", ", ".join(ensemble_details.get('models_used', [])))
+        for model_name, eff_weight in ensemble_details.get('mean_effective_weight', {}).items():
+            print(f"      Mean effective weight ({model_name}): {eff_weight:.3f}")
+
+        results['ensemble_sentiment_distribution'] = ensemble_dist.to_dict()
+        results['ensemble_mean_sentiment_score'] = float(df['ensemble_sentiment_score'].mean())
+        results['ensemble_details'] = ensemble_details
+    except Exception as e:
+        print(f"   ⚠️ Ensemble generation failed: {e}")
+        results['ensemble_generation_error'] = str(e)
+
     # Representativeness and potential bias disclosure
     representativeness = {}
     if 'subreddit' in df.columns:
@@ -2917,6 +3082,22 @@ def run_full_analysis(df: pd.DataFrame,
         )
         results['climatebert_graph_suite'] = climatebert_summary
         print("   ✅ Saved ClimateBERT versions of all primary result graphs")
+
+    if ensemble_available:
+        print(f"\n🖼️ Step 9: Ensemble Graph Suite")
+        print("-" * 40)
+        df_ensemble = df.copy()
+        df_ensemble['sentiment'] = df_ensemble['ensemble_sentiment']
+        df_ensemble['sentiment_score'] = df_ensemble['ensemble_sentiment_score']
+        ensemble_summary = generate_model_graph_suite(
+            df_model=df_ensemble,
+            text_column=text_column,
+            date_column=date_column,
+            output_dir=output_dir,
+            model_tag='ensemble'
+        )
+        results['ensemble_graph_suite'] = ensemble_summary
+        print("   ✅ Saved ensemble versions of all primary result graphs")
     
     # ===== Save Results Summary =====
     results_path = os.path.join(output_dir, 'analysis_results.json')

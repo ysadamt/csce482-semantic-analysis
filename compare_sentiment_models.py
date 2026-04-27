@@ -579,8 +579,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--top-n",
         type=int,
-        default=5,
-        help="Top N posts for positive/negative tables (default: 5)",
+        default=20,
+        help="Top N posts for positive/negative tables (default: 20)",
     )
     parser.add_argument(
         "--climatebert-model",
